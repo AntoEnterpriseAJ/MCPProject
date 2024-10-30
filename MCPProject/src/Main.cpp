@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cstdint>
+#include "Player.h"
 
 static constexpr uint32_t initialWindowWidth = 800;
 static constexpr uint32_t initialWindowHeight = 600;
@@ -8,10 +9,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(initialWindowWidth, initialWindowHeight), "SFML test");
 
-	constexpr float circleRadius = 100.0f;
-    sf::CircleShape circle(circleRadius);
-	circle.setPosition(initialWindowWidth / 2.0f - circleRadius, initialWindowHeight / 2.0f - circleRadius);
-    circle.setFillColor(sf::Color::Blue);
+    Player player(sf::RectangleShape(sf::Vector2f(60, 60)));
 
     sf::Clock clock;
     while (window.isOpen())
@@ -24,12 +22,12 @@ int main()
         }
 
         window.clear();
+
+        player.movePlayer(event);
+
+        window.draw(player.getPlayerShape());
         
 		float currentTime = clock.getElapsedTime().asSeconds();
-        circle.setPosition(circle.getPosition().x + cos(currentTime) * 0.01
-                          , circle.getPosition().y + sin(currentTime) * 0.01);
-
-        window.draw(circle);
 
         window.display();
     }
