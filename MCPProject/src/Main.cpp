@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
 #include <cstdint>
+#include "Player.h"
 
 static constexpr uint32_t initialWindowWidth = 800;
 static constexpr uint32_t initialWindowHeight = 600;
