@@ -17,5 +17,4 @@ private:
 	int m_levelWidth  = 30;
 	int m_levelHeight = 20;
 	std::vector<GameObject> m_levelLayout;
-
 };

@@ -28,14 +28,12 @@ void Level::loadResources()
 			int textureType;
 			fin >> textureType;
 
-			Brick brick;
+			if (textureType == 1)
+			{
+				Brick brick(sf::Vector2f(j * 20, i * 20), brickTexture);
 
-			brick.setPosition(sf::Vector2f(i * 30, j * 30));
-			brick.setTexture(brickTexture);
-			brick.setSize(sf::Vector2f(0.5f, 0.5f));
-			brick.setVelocity(sf::Vector2f(0, 0));
-
-			m_levelLayout.push_back(brick);
+				m_levelLayout.push_back(brick);
+			}
 		}
 }
 

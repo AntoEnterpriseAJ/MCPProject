@@ -18,6 +18,13 @@ int main()
 
     sf::Clock clock;
 
+    sf::Texture texture;
+    texture.loadFromFile("res/albedo.png");
+
+    Player player(sf::Vector2f(100, 100), texture);
+
+    player.setSize(sf::Vector2f(100, 100));
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -34,6 +41,7 @@ int main()
 		float currentTime = clock.getElapsedTime().asSeconds();
 
         window.draw(level);
+        window.draw(player);
 
         window.display();
     }

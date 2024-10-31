@@ -1,11 +1,12 @@
 #include "GameObject.h"
 
 
-GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel)
+GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size, sf::Vector2f vel)
 	: m_velocity(vel)
 {
 	m_sprite.setTexture(texture);
 	m_sprite.setPosition(pos);
+	setSize(size);
 }
 
 void GameObject::setPosition(sf::Vector2f pos)

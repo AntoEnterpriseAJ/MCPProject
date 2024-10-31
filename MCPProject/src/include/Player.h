@@ -5,7 +5,7 @@
 class Player : public GameObject
 {
 public:
-	Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel);
+	Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel = sf::Vector2f(0, 0));
 
 	
 
