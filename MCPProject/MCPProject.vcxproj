@@ -136,12 +136,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\include\Player.cpp" />
+    <ClCompile Include="src\Level.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoadResources.h" />
+    <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\GameObject.h" />
+    <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\Player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="levels.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

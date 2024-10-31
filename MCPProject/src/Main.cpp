@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include <cstdint>
 #include "Player.h"
+#include <fstream>
+#include "Level.h"
 
 static constexpr uint32_t initialWindowWidth = 800;
 static constexpr uint32_t initialWindowHeight = 600;
@@ -10,18 +12,11 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(initialWindowWidth, initialWindowHeight), "SFML test");
 
-	sf::Texture texture;
-	texture.loadFromFile("res/albedo.png");
-
-	GameObject gameObject({ initialWindowWidth / 2.0f, initialWindowHeight / 2.0f }, texture, { 0.0f, 0.0f });
-	gameObject.setSize({ 100.0f, 100.0f });
-
-	constexpr float circleRadius = 100.0f;
-    sf::CircleShape circle(circleRadius);
-	circle.setPosition(initialWindowWidth / 2.0f - circleRadius, initialWindowHeight / 2.0f - circleRadius);
-    circle.setFillColor(sf::Color::Blue);
+    Level level;
+    level.loadResources();
 
     sf::Clock clock;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -34,11 +29,8 @@ int main()
         window.clear(sf::Color(255, 100, 100, 255));
         
 		float currentTime = clock.getElapsedTime().asSeconds();
-        circle.setPosition(circle.getPosition().x + cos(currentTime) * 0.01
-                          , circle.getPosition().y + sin(currentTime) * 0.01);
 
-        window.draw(circle);
-		window.draw(gameObject);
+        window.draw(level);
 
         window.display();
     }
