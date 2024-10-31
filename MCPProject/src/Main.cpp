@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include "GameObject.h"
 #include <cstdint>
+
+#include "GameObject.h"
 #include "Player.h"
 #include <fstream>
 #include "Level.h"
@@ -24,7 +25,9 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            player.movePlayer(event);
         }
+
 
         window.clear(sf::Color(255, 100, 100, 255));
         

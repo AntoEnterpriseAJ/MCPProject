@@ -5,12 +5,12 @@
 class Player : public GameObject
 {
 public:
-	Player(sf::RectangleShape rect);
+	Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel);
 
-	sf::RectangleShape getPlayerShape();
+	
 
 	void movePlayer(sf::Event e);
 
 private:
-	sf::RectangleShape m_rectangle;
+
 };
