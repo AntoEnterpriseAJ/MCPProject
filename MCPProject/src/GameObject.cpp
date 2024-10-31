@@ -1,13 +1,18 @@
 #include "GameObject.h"
 
+GameObject::GameObject() : m_velocity(0.0f, 0.0f), m_sprite() {}
 
-GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size, sf::Vector2f vel)
+GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel)
 	: m_velocity(vel)
 {
+	if (texture.getSize().x == 0 || texture.getSize().y == 0)
+	{
+		throw std::invalid_argument("Invalid texture size");
+	}
 	m_sprite.setTexture(texture);
 	m_sprite.setPosition(pos);
-	setSize(size);
 }
+
 
 void GameObject::setPosition(sf::Vector2f pos)
 {
@@ -32,6 +37,12 @@ void GameObject::setTexture(const sf::Texture& texture)
 sf::Vector2f GameObject::getPosition() const
 {
 	return m_sprite.getPosition();
+}
+
+sf::Vector2f GameObject::getSize() const
+{
+	sf::FloatRect bounds = m_sprite.getGlobalBounds();
+	return sf::Vector2f(bounds.width, bounds.height);
 }
 
 sf::Vector2f GameObject::getVelocity() const

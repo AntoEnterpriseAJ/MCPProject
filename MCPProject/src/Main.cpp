@@ -1,47 +1,50 @@
 #include <SFML/Graphics.hpp>
-#include <cstdint>
-
-#include "GameObject.h"
 #include "Player.h"
-#include <fstream>
-#include "Level.h"
-
-static constexpr uint32_t initialWindowWidth = 800;
-static constexpr uint32_t initialWindowHeight = 600;
+#include "Bullet.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(initialWindowWidth, initialWindowHeight), "SFML test");
+    // Window initialization
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Player Shoot Example");
+    window.setFramerateLimit(100); // Limit FPS
 
-    Level level;
-    level.loadResources();
+    // Create Player
+    sf::RectangleShape playerShape(sf::Vector2f(50.0f, 50.0f)); // Dim player
+    Player player(playerShape);
+    player.setColor(sf::Color::Cyan);
 
-    sf::Clock clock;
-
-    sf::Texture texture;
-    texture.loadFromFile("res/albedo.png");
-
-    Player player(sf::Vector2f(100, 100), texture);
-
-    player.setSize(sf::Vector2f(100, 100));
-
+    // Game
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
-            player.movePlayer(event);
+            }
+            // Shoot => Space
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+            {
+                player.shoot();
+            }
         }
 
+        // Move player
+        player.movePlayer(event);
+        player.updateBullets();
 
-        window.clear(sf::Color(255, 100, 100, 255));
-        
-		float currentTime = clock.getElapsedTime().asSeconds();
+        window.clear();
+        window.draw(player.getPlayerShape());
 
-        window.draw(level);
-        window.draw(player);
+        // Draw bullet
+        for (const auto& bullet : player.getBullets())
+        {
+            sf::RectangleShape bulletShape(sf::Vector2f(5.0f, 5.0f)); // Dim bullet
+            bulletShape.setPosition(bullet.getX(), bullet.getY());
+            bulletShape.setFillColor(sf::Color::Red);
+            window.draw(bulletShape);
+        }
 
         window.display();
     }
