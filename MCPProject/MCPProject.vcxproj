@@ -143,9 +143,9 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="LoadResources.h" />
     <ClInclude Include="src\include\Brick.h" />
+    <ClInclude Include="src\include\Bullet.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Level.h" />

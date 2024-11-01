@@ -28,7 +28,7 @@ void Bullet::update()
 
     // Verify bullet
     if (m_shape.getPosition().y < 0 || m_shape.getPosition().y > 600 ||
-        m_shape.getPosition().x < 0 || m_shape.getPosition().x > 800)
+        m_shape.getPosition().x < 0 || m_shape.getPosition().x > 900)
     {
         m_active = false;
     }
