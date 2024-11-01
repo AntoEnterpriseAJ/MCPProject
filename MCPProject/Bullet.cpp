@@ -1,15 +1,15 @@
-#include "Bullet.h"
+﻿#include "Bullet.h"
 
 Bullet::Bullet(int x, int y, Direction dir, float speed)
     : m_direction(dir), m_speed(speed), m_active(true)
 {
     m_shape.setSize(sf::Vector2f(10.0f, 10.0f));
     m_shape.setPosition(x, y);
+    m_shape.setFillColor(sf::Color::Red);
 }
 
 void Bullet::update()
 {
-    // Direction bullet
     switch (m_direction)
     {
     case Direction::UP:
@@ -26,12 +26,16 @@ void Bullet::update()
         break;
     }
 
-    // Verify bullet
     if (m_shape.getPosition().y < 0 || m_shape.getPosition().y > 600 ||
         m_shape.getPosition().x < 0 || m_shape.getPosition().x > 900)
     {
         m_active = false;
     }
+}
+
+void Bullet::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    target.draw(m_shape, states); // draw bullet
 }
 
 bool Bullet::getIsActive() const

@@ -1,45 +1,49 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Bullet.h"
 
-Player::Player(sf::RectangleShape rect)
-    : m_rectangle(rect)
+Player::Player(const sf::Texture& texture)
 {
-    m_rectangle.setFillColor(sf::Color::Blue); // Player color
-    m_rectangle.setPosition(400, 300); // Initial pozition
+    m_sprite.setTexture(texture);
+    m_sprite.setPosition(400, 300);
 }
 
-void Player::movePlayer(sf::Event event)
+void Player::draw(sf::RenderWindow& window)
+{
+    window.draw(m_sprite);
+}
+
+void Player::movePlayer()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        m_rectangle.move(0, -1); // Move up
+        m_sprite.move(0, -1);
         dir = Direction::UP;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        m_rectangle.move(0, 1); // Move down
+        m_sprite.move(0, 1);
         dir = Direction::DOWN;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        m_rectangle.move(-1, 0); // Move left
+        m_sprite.move(-1, 0);
         dir = Direction::LEFT;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        m_rectangle.move(1, 0); // Move right
+        m_sprite.move(1, 0);
         dir = Direction::RIGHT;
     }
 }
 
-void Player::shoot() {
+void Player::shoot()
+{
     float centerX = getX() + getWidth() / 2.0f;
     float centerY = getY() + getHeight() / 2.0f;
 
     Bullet newBullet(static_cast<int>(centerX), static_cast<int>(centerY), dir, 5);
     bullets.push_back(newBullet);
 }
-
 
 void Player::updateBullets()
 {
@@ -52,35 +56,24 @@ void Player::updateBullets()
         }), bullets.end());
 }
 
-sf::RectangleShape Player::getPlayerShape()
-{
-    return m_rectangle;
-}
-
 float Player::getX() const
 {
-    return m_rectangle.getPosition().x;
+    return m_sprite.getPosition().x;
 }
 
 float Player::getY() const
 {
-    return m_rectangle.getPosition().y;
+    return m_sprite.getPosition().y;
 }
 
 float Player::getWidth() const
 {
-    return m_rectangle.getSize().x;
+    return m_sprite.getGlobalBounds().width;
 }
 
 float Player::getHeight() const
 {
-    return m_rectangle.getSize().y;
-}
-
-void Player::setColor(const sf::Color& color)
-{
-    m_color = color;
-    m_rectangle.setFillColor(m_color);
+    return m_sprite.getGlobalBounds().height;
 }
 
 std::vector<Bullet>& Player::getBullets()

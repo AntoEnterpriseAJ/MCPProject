@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <algorithm>
@@ -10,11 +10,9 @@ class Bullet; // Forward declaration
 class Player : public GameObject
 {
 public:
-    Player(sf::RectangleShape rect);
+    Player(const sf::Texture& texture);
 
-    sf::RectangleShape getPlayerShape();
-
-    void movePlayer(sf::Event event);
+    void movePlayer();
 
     void shoot();
 
@@ -28,13 +26,12 @@ public:
 
     float getHeight() const;
 
-    void setColor(const sf::Color& color);
-
     std::vector<Bullet>& getBullets();
 
+    void draw(sf::RenderWindow& window);
+
 private:
-    sf::Color m_color;
-    sf::RectangleShape m_rectangle;
+    sf::Sprite m_sprite;
     std::vector<Bullet> bullets;
-    Direction dir = Direction::UP; // Initial Direction
+    Direction dir = Direction::UP;
 };
