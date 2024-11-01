@@ -137,7 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\include\Brick.cpp" />
+    <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Main.cpp" />

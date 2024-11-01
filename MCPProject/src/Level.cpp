@@ -30,7 +30,7 @@ void Level::loadResources()
 
 			if (textureType == 1)
 			{
-				Brick brick(sf::Vector2f(j * 20, i * 20), brickTexture);
+				Brick brick(sf::Vector2f(j * Brick::getSize(), i * Brick::getSize()), brickTexture);
 
 				m_levelLayout.push_back(brick);
 			}

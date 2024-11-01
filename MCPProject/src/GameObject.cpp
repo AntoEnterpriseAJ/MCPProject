@@ -2,7 +2,7 @@
 
 GameObject::GameObject() : m_velocity(0.0f, 0.0f), m_sprite() {}
 
-GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel)
+GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size, sf::Vector2f vel)
 	: m_velocity(vel)
 {
 	if (texture.getSize().x == 0 || texture.getSize().y == 0)
@@ -11,6 +11,7 @@ GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2
 	}
 	m_sprite.setTexture(texture);
 	m_sprite.setPosition(pos);
+	setSize(size);
 }
 
 

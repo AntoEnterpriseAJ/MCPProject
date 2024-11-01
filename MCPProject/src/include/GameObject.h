@@ -6,7 +6,7 @@ class GameObject : public sf::Drawable
 {
 public:
 	GameObject();
-	GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f vel = { 0.0f, 0.0f });
+	GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size, sf::Vector2f vel = { 0.0f, 0.0f });
 	virtual ~GameObject() = default;
 
 	void setPosition(sf::Vector2f pos);

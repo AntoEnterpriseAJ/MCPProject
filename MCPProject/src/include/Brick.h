@@ -6,8 +6,9 @@
 class Brick : public GameObject
 {
 public:
-	Brick(sf::Vector2f pos, sf::Texture texture, sf::Vector2f size = sf::Vector2f(30, 30));
+	Brick(sf::Vector2f pos, sf::Texture texture, sf::Vector2f size = sf::Vector2f(m_brickSize, m_brickSize));
+	static int getSize();
 
 private:
-	
+	static const int m_brickSize = 30;
 };
