@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "GameObject.h"
 #include "Direction.h"
+#include "Brick.h"
 
 class Bullet; // Forward declaration
 
@@ -14,7 +15,7 @@ public:
 
     void movePlayer();
     void shoot();
-    void updateBullets();
+    void updateBullets(const std::vector<Brick>& bricks);
 
     void draw(sf::RenderWindow& window);
 

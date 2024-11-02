@@ -18,6 +18,8 @@ public:
 	sf::Vector2f getSize()	   const;
 	sf::Vector2f getVelocity() const;
 
+	sf::Sprite getSprite() const;
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 protected:

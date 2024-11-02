@@ -48,3 +48,13 @@ bool Bullet::getIsActive() const
 {
     return isActive;
 }
+
+sf::FloatRect Bullet::getBounds() const
+{
+    return sprite.getGlobalBounds();
+}
+
+void Bullet::setInactive()
+{
+    isActive = false;
+}

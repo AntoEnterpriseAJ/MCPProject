@@ -51,6 +51,11 @@ sf::Vector2f GameObject::getVelocity() const
 	return m_velocity;
 }
 
+sf::Sprite GameObject::getSprite() const
+{
+	return m_sprite;
+}
+
 void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_sprite, states);

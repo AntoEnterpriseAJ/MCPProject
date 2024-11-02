@@ -50,7 +50,7 @@ int main()
         }
 
         player.movePlayer();
-        player.updateBullets();
+        player.updateBullets(level.getBricks());
 
         window.clear();
 

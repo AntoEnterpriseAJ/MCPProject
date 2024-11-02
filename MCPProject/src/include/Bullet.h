@@ -9,6 +9,8 @@ public:
     void update();
     void draw(sf::RenderWindow& window) const;
     bool getIsActive() const;
+    sf::FloatRect getBounds() const;
+    void setInactive();
 
 private:
     sf::Sprite sprite;

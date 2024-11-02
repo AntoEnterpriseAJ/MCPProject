@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include "Bullet.h"
+#include "Brick.h"
 
 Player::Player(const sf::Texture& texture, const sf::Texture& bulletTexture)
     : bulletTexture(bulletTexture)
@@ -60,15 +61,24 @@ void Player::shoot()
 }
 
 
-void Player::updateBullets()
+void Player::updateBullets(const std::vector<Brick>& bricks)
 {
     for (auto& bullet : bullets)
     {
         bullet.update();
+
+        for (const auto& brick : bricks)
+        {
+            if (bullet.getIsActive() && bullet.getBounds().intersects(brick.getBounds()))
+            {
+                bullet.setInactive();
+                break;
+            }
+        }
     }
-    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet& bullet) {
-        return !bullet.getIsActive();
-        }), bullets.end());
+
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+        [](const Bullet& bullet) { return !bullet.getIsActive(); }), bullets.end());
 }
 
 std::vector<Bullet>& Player::getBullets()
