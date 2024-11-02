@@ -1,54 +1,50 @@
 ﻿#include "Bullet.h"
 
-Bullet::Bullet(int x, int y, Direction dir, float speed)
-    : m_direction(dir), m_speed(speed), m_active(true)
+Bullet::Bullet(float x, float y, Direction dir, float speed, const sf::Texture& texture)
+    : speed(speed), direction(dir), isActive(true)
 {
-    m_shape.setSize(sf::Vector2f(10.0f, 10.0f));
-    m_shape.setPosition(x, y);
-    m_shape.setFillColor(sf::Color::Red);
+    sprite.setTexture(texture);
+    sprite.setPosition(x, y);
+
+    sf::FloatRect bounds = sprite.getGlobalBounds();
+    sprite.setOrigin(bounds.width / 2, bounds.height / 2);
+
+    sprite.setScale(0.05f, 0.05f);
+
+    if (dir == Direction::UP)
+        sprite.setRotation(0.0f);
+    else if (dir == Direction::DOWN)
+        sprite.setRotation(180.0f);
+    else if (dir == Direction::LEFT)
+        sprite.setRotation(270.0f);
+    else if (dir == Direction::RIGHT)
+        sprite.setRotation(90.0f);
 }
 
 void Bullet::update()
 {
-    switch (m_direction)
-    {
-    case Direction::UP:
-        m_shape.move(0, -m_speed);
-        break;
-    case Direction::DOWN:
-        m_shape.move(0, m_speed);
-        break;
-    case Direction::LEFT:
-        m_shape.move(-m_speed, 0);
-        break;
-    case Direction::RIGHT:
-        m_shape.move(m_speed, 0);
-        break;
-    }
+    if (direction == Direction::UP)
+        sprite.move(0, -speed);
+    else if (direction == Direction::DOWN)
+        sprite.move(0, speed);
+    else if (direction == Direction::LEFT)
+        sprite.move(-speed, 0);
+    else if (direction == Direction::RIGHT)
+        sprite.move(speed, 0);
 
-    if (m_shape.getPosition().y < 0 || m_shape.getPosition().y > 600 ||
-        m_shape.getPosition().x < 0 || m_shape.getPosition().x > 900)
+    if (sprite.getPosition().x < 0 || sprite.getPosition().x > 900 ||
+        sprite.getPosition().y < 0 || sprite.getPosition().y > 600)
     {
-        m_active = false;
+        isActive = false;
     }
 }
 
-void Bullet::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Bullet::draw(sf::RenderWindow& window) const
 {
-    target.draw(m_shape, states); // draw bullet
+    window.draw(sprite);
 }
 
 bool Bullet::getIsActive() const
 {
-    return m_active;
-}
-
-int Bullet::getX() const
-{
-    return m_shape.getPosition().x;
-}
-
-int Bullet::getY() const
-{
-    return m_shape.getPosition().y;
+    return isActive;
 }

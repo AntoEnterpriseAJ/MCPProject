@@ -1,7 +1,8 @@
 ﻿#include "Player.h"
 #include "Bullet.h"
 
-Player::Player(const sf::Texture& texture)
+Player::Player(const sf::Texture& texture, const sf::Texture& bulletTexture)
+    : bulletTexture(bulletTexture)
 {
     m_sprite.setTexture(texture);
     m_sprite.setPosition(400, 300);
@@ -13,7 +14,13 @@ Player::Player(const sf::Texture& texture)
 void Player::draw(sf::RenderWindow& window)
 {
     window.draw(m_sprite);
+
+    for (auto& bullet : bullets)
+    {
+        bullet.draw(window);
+    }
 }
+
 
 void Player::movePlayer()
 {
@@ -48,7 +55,7 @@ void Player::shoot()
     float centerX = m_sprite.getPosition().x;
     float centerY = m_sprite.getPosition().y;
 
-    Bullet newBullet(static_cast<int>(centerX), static_cast<int>(centerY), dir, 5);
+    Bullet newBullet(centerX, centerY, dir, 5, bulletTexture);
     bullets.push_back(newBullet);
 }
 
@@ -62,26 +69,6 @@ void Player::updateBullets()
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet& bullet) {
         return !bullet.getIsActive();
         }), bullets.end());
-}
-
-float Player::getX() const
-{
-    return m_sprite.getPosition().x;
-}
-
-float Player::getY() const
-{
-    return m_sprite.getPosition().y;
-}
-
-float Player::getWidth() const
-{
-    return m_sprite.getGlobalBounds().width;
-}
-
-float Player::getHeight() const
-{
-    return m_sprite.getGlobalBounds().height;
 }
 
 std::vector<Bullet>& Player::getBullets()

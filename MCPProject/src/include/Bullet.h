@@ -4,18 +4,15 @@
 
 class Bullet {
 public:
-    Bullet(int x, int y, Direction dir, float speed);
+    Bullet(float x, float y, Direction dir, float speed, const sf::Texture& texture);
 
     void update();
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
+    void draw(sf::RenderWindow& window) const;
     bool getIsActive() const;
-    int getX() const;
-    int getY() const;
 
 private:
-    sf::RectangleShape m_shape;
-    Direction m_direction;
-    float m_speed;
-    bool m_active;
+    sf::Sprite sprite;
+    float speed;
+    Direction direction;
+    bool isActive;
 };

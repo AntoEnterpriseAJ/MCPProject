@@ -10,28 +10,19 @@ class Bullet; // Forward declaration
 class Player : public GameObject
 {
 public:
-    Player(const sf::Texture& texture);
+    Player(const sf::Texture& texture, const sf::Texture& bulletTexture);
 
     void movePlayer();
-
     void shoot();
-
     void updateBullets();
 
-    float getX() const;
-
-    float getY() const;
-
-    float getWidth() const;
-
-    float getHeight() const;
+    void draw(sf::RenderWindow& window);
 
     std::vector<Bullet>& getBullets();
-
-    void draw(sf::RenderWindow& window);
 
 private:
     sf::Sprite m_sprite;
     std::vector<Bullet> bullets;
     Direction dir = Direction::UP;
+    const sf::Texture& bulletTexture;
 };

@@ -21,7 +21,14 @@ int main()
         return -1;
     }
 
-    Player player(playerTexture);
+    sf::Texture bulletTexture;
+    if (!bulletTexture.loadFromFile("res/missile.png"))
+    {
+        std::cerr << "ERROR: Unable to load bullet texture!" << std::endl;
+        return -1;
+    }
+
+    Player player(playerTexture, bulletTexture);
 
     Level level;
     level.loadResources();
@@ -49,14 +56,6 @@ int main()
 
         window.draw(level);
         player.draw(window);
-
-        for (const auto& bullet : player.getBullets())
-        {
-            sf::RectangleShape bulletShape(sf::Vector2f(5.0f, 5.0f));
-            bulletShape.setPosition(bullet.getX(), bullet.getY());
-            bulletShape.setFillColor(sf::Color::Red);
-            window.draw(bulletShape);
-        }
 
         window.display();
     }
