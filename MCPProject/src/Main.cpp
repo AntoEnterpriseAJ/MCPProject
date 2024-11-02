@@ -49,8 +49,8 @@ int main()
             }
         }
 
-        player.movePlayer(level.getBricks()); // Transmite cărămizile la movePlayer
-        player.updateBullets(level.getBricks()); // Transmite cărămizile pentru update-ul gloanțelor
+        player.movePlayer(level.getBricks());
+        player.updateBullets(level.getBricks());
 
         window.clear();
 
