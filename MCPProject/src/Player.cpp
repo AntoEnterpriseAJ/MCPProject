@@ -22,28 +22,59 @@ void Player::draw(sf::RenderWindow& window)
     }
 }
 
-
-void Player::movePlayer()
+bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    sf::FloatRect nextPosition = m_sprite.getGlobalBounds();
+
+    // Ajustăm poziția viitoare în funcție de direcție
+    switch (direction)
+    {
+    case Direction::UP:
+        nextPosition.top -= 1;
+        break;
+    case Direction::DOWN:
+        nextPosition.top += 1;
+        break;
+    case Direction::LEFT:
+        nextPosition.left -= 1;
+        break;
+    case Direction::RIGHT:
+        nextPosition.left += 1;
+        break;
+    }
+
+    for (const auto& brick : bricks)
+    {
+        if (nextPosition.intersects(brick.getBounds()))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+void Player::movePlayer(const std::vector<Brick>& bricks)
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && canMove(Direction::UP, bricks))
     {
         m_sprite.move(0, -1);
         dir = Direction::UP;
         m_sprite.setRotation(0.0f);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && canMove(Direction::DOWN, bricks))
     {
         m_sprite.move(0, 1);
         dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && canMove(Direction::LEFT, bricks))
     {
         m_sprite.move(-1, 0);
         dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && canMove(Direction::RIGHT, bricks))
     {
         m_sprite.move(1, 0);
         dir = Direction::RIGHT;
