@@ -6,6 +6,7 @@ class Level : public sf::Drawable
 public:
     void loadResources();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    std::vector<Brick>& getBricks();
     const std::vector<Brick>& getBricks() const;
 
 private:

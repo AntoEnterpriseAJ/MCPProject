@@ -42,6 +42,11 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 }
 
+std::vector<Brick>& Level::getBricks()
+{
+    return m_levelLayout;
+}
+
 const std::vector<Brick>& Level::getBricks() const
 {
     return m_levelLayout;

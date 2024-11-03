@@ -6,9 +6,16 @@ class Brick : public GameObject
 {
 public:
     Brick(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size = sf::Vector2f(m_brickSize, m_brickSize));
+
+    bool hit();
+
     static int getSize();
+
     sf::FloatRect getBounds() const;
 
+    bool operator==(const Brick& other) const;
+
 private:
+    int health = 3;
     static const int m_brickSize = 30;
 };

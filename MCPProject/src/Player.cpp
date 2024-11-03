@@ -105,17 +105,23 @@ void Player::shoot()
 }
 
 
-void Player::updateBullets(const std::vector<Brick>& bricks)
+void Player::updateBullets(std::vector<Brick>& bricks)
 {
     for (auto& bullet : bullets)
     {
         bullet.update();
 
-        for (const auto& brick : bricks)
+        for (auto& brick : bricks)
         {
             if (bullet.getIsActive() && bullet.getBounds().intersects(brick.getBounds()))
             {
                 bullet.setInactive();
+
+                // delete brick
+                if (brick.hit())
+                {
+                    bricks.erase(std::remove(bricks.begin(), bricks.end(), brick), bricks.end());
+                }
                 break;
             }
         }

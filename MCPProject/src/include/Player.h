@@ -15,7 +15,7 @@ public:
 
     void movePlayer(const std::vector<Brick>& bricks);
     void shoot();
-    void updateBullets(const std::vector<Brick>& bricks);
+    void updateBullets(std::vector<Brick>& bricks);
 
     void draw(sf::RenderWindow& window);
 
@@ -24,6 +24,7 @@ public:
     std::vector<Bullet>& getBullets();
 
 private:
+    float health;
     sf::Sprite m_sprite;
     std::vector<Bullet> bullets;
     Direction dir = Direction::UP;
