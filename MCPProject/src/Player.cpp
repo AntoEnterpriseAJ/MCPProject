@@ -55,11 +55,13 @@ bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
 
 void Player::movePlayer(const std::vector<Brick>& bricks)
 {
+    sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         dir = Direction::UP;
         m_sprite.setRotation(0.0f);
-        if (canMove(Direction::UP, bricks))
+        if (canMove(Direction::UP, bricks) && playerBounds.top > 0)
         {
             m_sprite.move(0, -1);
         }
@@ -68,7 +70,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
-        if (canMove(Direction::DOWN, bricks))
+        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 600)
         {
             m_sprite.move(0, 1);
         }
@@ -77,7 +79,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
-        if (canMove(Direction::LEFT, bricks))
+        if (canMove(Direction::LEFT, bricks) && playerBounds.left > 0)
         {
             m_sprite.move(-1, 0);
         }
@@ -86,7 +88,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
-        if (canMove(Direction::RIGHT, bricks))
+        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 900)
         {
             m_sprite.move(1, 0);
         }
