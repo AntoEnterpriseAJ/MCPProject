@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\Level.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
     <ClInclude Include="src\include\Direction.h" />
+    <ClInclude Include="src\include\Explosion.h" />
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\Player.h" />

@@ -54,6 +54,11 @@ sf::FloatRect Bullet::getBounds() const
     return sprite.getGlobalBounds();
 }
 
+sf::Vector2f Bullet::getPosition() const 
+{
+    return sprite.getPosition();
+}
+
 void Bullet::setInactive()
 {
     isActive = false;

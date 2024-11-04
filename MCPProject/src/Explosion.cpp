@@ -8,26 +8,38 @@ Explosion::Explosion(float x, float y, const std::vector<sf::Texture>& textures)
     sprite.setOrigin(sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height / 2);
 }
 
-void Explosion::update(float deltaTime) {
+void Explosion::update(float deltaTime) 
+{
     elapsedTime += deltaTime;
-    if (elapsedTime >= frameTime) {
+    if (elapsedTime >= frameTime)
+    {
         elapsedTime = 0.0f;
         currentFrame++;
-        if (currentFrame < frames.size()) {
+        if (currentFrame < frames.size()) 
+        {
             sprite.setTexture(frames[currentFrame]);
         }
-        else {
-            finished = true; // Explozia s-a terminat
+        else 
+        {
+            finished = true;
         }
     }
 }
 
-void Explosion::draw(sf::RenderWindow& window) const {
-    if (!finished) {
+void Explosion::draw(sf::RenderWindow& window) const 
+{
+    if (!finished) 
+    {
         window.draw(sprite);
     }
 }
 
-bool Explosion::hasFinished() const {
+bool Explosion::hasFinished() const 
+{
     return finished;
+}
+
+sf::Vector2f Explosion::getPosition() const
+{
+    return sprite.getPosition();
 }
