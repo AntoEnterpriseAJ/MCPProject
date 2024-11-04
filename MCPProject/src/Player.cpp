@@ -6,10 +6,11 @@ Player::Player(const sf::Texture& texture, const sf::Texture& bulletTexture)
     : bulletTexture(bulletTexture)
 {
     m_sprite.setTexture(texture);
-    m_sprite.setPosition(400, 300);
+    m_sprite.setPosition(30, 30);
+    m_sprite.setScale(sf::Vector2f(0.75f, 0.75f));
 
     sf::FloatRect bounds = m_sprite.getGlobalBounds();
-    m_sprite.setOrigin(bounds.width / 2, bounds.height / 2);
+    m_sprite.setOrigin(bounds.width / 2 + Brick::getSize() / 2, bounds.height / 2 + Brick::getSize() / 2);
 }
 
 void Player::draw(sf::RenderWindow& window)
@@ -66,7 +67,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
             m_sprite.move(0, -1);
         }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
@@ -75,7 +76,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
             m_sprite.move(0, 1);
         }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
@@ -84,7 +85,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
             m_sprite.move(-1, 0);
         }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
@@ -117,7 +118,6 @@ void Player::updateBullets(std::vector<Brick>& bricks)
             {
                 bullet.setInactive();
 
-                // delete brick
                 if (brick.hit())
                 {
                     bricks.erase(std::remove(bricks.begin(), bricks.end(), brick), bricks.end());

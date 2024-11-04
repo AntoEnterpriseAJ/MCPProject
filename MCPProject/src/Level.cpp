@@ -1,10 +1,25 @@
 #include <fstream>
 #include <iostream>
 #include "Level.h"
+#include <random>
+#include <string>
 
 void Level::loadResources()
 {
-    std::ifstream fin("levels.txt");
+    auto getRandomIndex = []() -> int {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(1, 5);
+        int randomNumber = dist(gen);
+        return randomNumber;
+        };
+
+    int randomIndex = getRandomIndex();
+
+    std::string levelFileName = "level" + std::to_string(randomIndex) + ".txt";
+
+
+    std::ifstream fin(levelFileName);
 
     if (!fin)
     {
@@ -38,7 +53,7 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (const auto& obj : m_levelLayout)
     {
-        target.draw(obj); // draw bricks
+        target.draw(obj);
     }
 }
 

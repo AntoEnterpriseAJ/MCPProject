@@ -10,7 +10,7 @@ int main()
     const float baseHeight = 600.0f;
 
     sf::RenderWindow window(sf::VideoMode(baseWidth, baseHeight), "Player Shoot Example", sf::Style::Close);
-    window.setFramerateLimit(100); // Limit FPS
+    window.setFramerateLimit(100);
 
     sf::View view = window.getDefaultView();
 
@@ -42,7 +42,7 @@ int main()
             {
                 window.close();
             }
-            // Shoot => SPACE
+            
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
             {
                 player.shoot();
