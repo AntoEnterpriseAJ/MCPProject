@@ -93,7 +93,7 @@ int main() {
                     float explosionX = bullet.getPosition().x;
                     float explosionY = bullet.getPosition().y;
 
-                    explosions.emplace_back(explosionX, explosionY, explosionTextures);
+                    explosions.emplace_back(explosionX, explosionY, loadExplosionFrames("res/explosion.png", 32, 32, 16));
                     bullet.setInactive();
 
                     if (brick.hit())
