@@ -10,6 +10,7 @@ public:
     void draw(sf::RenderWindow& window) const;
     bool getIsActive() const;
     sf::FloatRect getBounds() const;
+    sf::Vector2f getPosition() const;
     void setInactive();
 
 private:

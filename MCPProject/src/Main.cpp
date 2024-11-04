@@ -1,11 +1,34 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include "Player.h"
 #include "Bullet.h"
 #include "Level.h"
+#include "Explosion.h"
 
-int main()
+std::vector<sf::Texture> loadExplosionFrames(const std::string& filePath, int frameWidth, int frameHeight, int numFrames)
 {
+    sf::Image image;
+    if (!image.loadFromFile(filePath))
+    {
+        std::cerr << "ERROR: Unable to load image!" << std::endl;
+        return {};
+    }
+
+    std::vector<sf::Texture> textures(numFrames);
+    for (int i = 0; i < numFrames; ++i)
+    {
+        sf::Texture texture;
+        sf::IntRect rect((i % 4) * frameWidth, (i / 4) * frameHeight, frameWidth, frameHeight);
+        texture.loadFromImage(image, rect);
+        textures[i] = texture;
+    }
+
+    return textures;
+}
+
+int main() {
     const float baseWidth = 900.0f;
     const float baseHeight = 600.0f;
 
@@ -29,9 +52,11 @@ int main()
     }
 
     Player player(playerTexture, bulletTexture);
-
     Level level;
     level.loadResources();
+
+    std::vector<Explosion> explosions;
+    sf::Clock clock;
 
     while (window.isOpen())
     {
@@ -52,10 +77,53 @@ int main()
         player.movePlayer(level.getBricks());
         player.updateBullets(level.getBricks());
 
-        window.clear();
+        for (auto& bullet : player.getBullets())
+        {
+            sf::FloatRect bulletBounds = bullet.getBounds();
 
+            bulletBounds.left -= 15;
+            bulletBounds.top -= 15;
+            bulletBounds.width += 30;
+            bulletBounds.height += 30;
+
+            for (auto& brick : level.getBricks())
+            {
+                if (bulletBounds.intersects(brick.getBounds()))
+                {
+                    float explosionX = bullet.getPosition().x;
+                    float explosionY = bullet.getPosition().y;
+
+                    explosions.emplace_back(explosionX, explosionY, explosionTextures);
+                    bullet.setInactive();
+
+                    if (brick.hit())
+                    {
+                        level.getBricks().erase(std::remove(level.getBricks().begin(), level.getBricks().end(), brick), level.getBricks().end());
+                    }
+                    break;
+                }
+            }
+        }
+
+        float deltaTime = clock.restart().asSeconds();
+
+        for (auto& explosion : explosions)
+        {
+            explosion.update(deltaTime);
+        }
+
+        explosions.erase(std::remove_if(explosions.begin(), explosions.end(),
+            [](const Explosion& explosion) { return explosion.hasFinished(); }),
+            explosions.end());
+
+        window.clear();
         window.draw(level);
         player.draw(window);
+
+        for (const auto& explosion : explosions)
+        {
+            explosion.draw(window);
+        }
 
         window.display();
     }

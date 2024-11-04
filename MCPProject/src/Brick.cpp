@@ -3,15 +3,16 @@
 Brick::Brick(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject(pos, texture, size)
 {
+
 }
 
-bool Brick::hit()
+bool Brick::hit() 
 {
     health--;
     return health <= 0;
 }
 
-int Brick::getSize()
+int Brick::getSize() 
 {
     return m_brickSize;
 }
