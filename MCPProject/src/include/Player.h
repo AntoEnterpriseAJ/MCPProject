@@ -1,32 +1,33 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <algorithm>
 #include "GameObject.h"
 #include "Direction.h"
+#include "Bullet.h"
 #include "Brick.h"
 
-class Bullet; // Forward declaration
-
+// TODO: should the player handle it's own input?
 class Player : public GameObject
 {
 public:
-    Player(const sf::Texture& texture, const sf::Texture& bulletTexture);
+    Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
 
+    // TODO: think about how we're gonna handle the texture loading
+    //       textures should load ONLY ONCE per game, not every time we shoot
+    //       ResourceManager singleton class?
+    void shoot(const sf::Texture& bulletTexture);
+
+    //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
     void movePlayer(const std::vector<Brick>& bricks);
-    void shoot();
+
+    //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
     void updateBullets(std::vector<Brick>& bricks);
 
-    void draw(sf::RenderWindow& window);
-
     bool canMove(Direction direction, const std::vector<Brick>& bricks);
-
     std::vector<Bullet>& getBullets();
 
 private:
-    float health;
-    sf::Sprite m_sprite;
-    std::vector<Bullet> bullets;
-    Direction dir = Direction::UP;
-    const sf::Texture& bulletTexture;
+    float m_health;
+    std::vector<Bullet> m_bullets;
+    Direction m_dir;
 };
