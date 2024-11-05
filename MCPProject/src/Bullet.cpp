@@ -27,8 +27,9 @@ void Bullet::update()
     else if (m_direction == Direction::RIGHT)
         m_sprite.move(kBulletSpeed, 0);
 
-    if (m_sprite.getPosition().x < 0 || m_sprite.getPosition().x > 900 ||
-        m_sprite.getPosition().y < 0 || m_sprite.getPosition().y > 600)
+    // TODO: fix hardcoded values, maybe in the Game class?
+    if (m_sprite.getPosition().x < 0 || m_sprite.getPosition().x > 1200.0f ||
+        m_sprite.getPosition().y < 0 || m_sprite.getPosition().y > 900.0f)
     {
         m_state = State::Inactive;
     }
