@@ -1,50 +1,46 @@
-#include "Bullet.h"
+﻿#include "Bullet.h"
 
-Bullet::Bullet(int x, int y, Direction dir, float speed)
-    : m_direction(dir), m_speed(speed), m_active(true)
+Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::Vector2f size)
+    : GameObject{ pos, texture, size }, m_state{State::Active}, m_direction{dir}
 {
-    m_shape.setSize(sf::Vector2f(10.0f, 10.0f));
-    m_shape.setPosition(x, y);
+    m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
+
+    if (dir == Direction::UP)
+        m_sprite.setRotation(0.0f);
+    else if (dir == Direction::DOWN)
+        m_sprite.setRotation(180.0f);
+    else if (dir == Direction::LEFT)
+        m_sprite.setRotation(270.0f);
+    else if (dir == Direction::RIGHT)
+        m_sprite.setRotation(90.0f);
 }
 
 void Bullet::update()
 {
-    // Direction bullet
-    switch (m_direction)
-    {
-    case Direction::UP:
-        m_shape.move(0, -m_speed);
-        break;
-    case Direction::DOWN:
-        m_shape.move(0, m_speed);
-        break;
-    case Direction::LEFT:
-        m_shape.move(-m_speed, 0);
-        break;
-    case Direction::RIGHT:
-        m_shape.move(m_speed, 0);
-        break;
-    }
+    // TODO: maybe try using the velocity from GameObject, instead of kBulletSpeed
+    if (m_direction == Direction::UP)
+        m_sprite.move(0, -kBulletSpeed);
+    else if (m_direction == Direction::DOWN)
+        m_sprite.move(0, kBulletSpeed);
+    else if (m_direction == Direction::LEFT)
+        m_sprite.move(-kBulletSpeed, 0);
+    else if (m_direction == Direction::RIGHT)
+        m_sprite.move(kBulletSpeed, 0);
 
-    // Verify bullet
-    if (m_shape.getPosition().y < 0 || m_shape.getPosition().y > 600 ||
-        m_shape.getPosition().x < 0 || m_shape.getPosition().x > 800)
+    if (m_sprite.getPosition().x < 0 || m_sprite.getPosition().x > 900 ||
+        m_sprite.getPosition().y < 0 || m_sprite.getPosition().y > 600)
     {
-        m_active = false;
+        m_state = State::Inactive;
     }
 }
 
-bool Bullet::getIsActive() const
+void Bullet::setState(Bullet::State state)
 {
-    return m_active;
+    m_state = state;
 }
 
-int Bullet::getX() const
+Bullet::State Bullet::getState() const
 {
-    return m_shape.getPosition().x;
+    return m_state;
 }
 
-int Bullet::getY() const
-{
-    return m_shape.getPosition().y;
-}
