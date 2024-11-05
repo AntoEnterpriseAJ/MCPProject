@@ -65,7 +65,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
-        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 600)
+        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 900)
         {
             m_sprite.move(0, 1);
         }
@@ -83,7 +83,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
-        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 900)
+        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 1200)
         {
             m_sprite.move(1, 0);
         }

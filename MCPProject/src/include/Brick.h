@@ -17,5 +17,5 @@ public:
 
 private:
     int health = 3;
-    static const int m_brickSize = 30;
+    static const int m_brickSize = 40;
 };

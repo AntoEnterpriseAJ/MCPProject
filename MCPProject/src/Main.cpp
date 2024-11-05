@@ -29,8 +29,8 @@ std::vector<sf::Texture> loadExplosionFrames(const std::string& filePath, int fr
 }
 
 int main() {
-    const float baseWidth = 900.0f;
-    const float baseHeight = 600.0f;
+    const float baseWidth = 1200.0f;
+    const float baseHeight = 900.0f;
 
     sf::RenderWindow window(sf::VideoMode(baseWidth, baseHeight), "Player Shoot Example", sf::Style::Close);
     window.setFramerateLimit(100);
