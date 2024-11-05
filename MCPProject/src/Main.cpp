@@ -35,8 +35,8 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(baseWidth, baseHeight), "Player Shoot Example", sf::Style::Close);
     window.setFramerateLimit(100);
 
-    sf::View view = window.getDefaultView();
-
+    //TODO: textures bounding boxes are slightly bigger than the actual texture (SEE res/plane.png, res/missile.png, ....)
+    //      fix the bounding boxes
     sf::Texture playerTexture;
     if (!playerTexture.loadFromFile("res/plane.png"))
     {
@@ -44,6 +44,8 @@ int main() {
         return -1;
     }
 
+    //TODO: textures bounding boxes are slightly bigger than the actual texture (SEE res/plane.png, res/missile.png, ....)
+    //      fix the bounding boxes
     sf::Texture bulletTexture;
     if (!bulletTexture.loadFromFile("res/missile.png"))
     {
@@ -51,7 +53,7 @@ int main() {
         return -1;
     }
 
-    Player player(playerTexture, bulletTexture);
+    Player player(sf::Vector2f{ 100.0f, 80.0f }, playerTexture, sf::Vector2f{ 45.0f, 45.0f });
     Level level;
     level.loadResources();
 
@@ -70,62 +72,76 @@ int main() {
             
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
             {
-                player.shoot();
+                player.shoot(bulletTexture);
             }
         }
 
         player.movePlayer(level.getBricks());
         player.updateBullets(level.getBricks());
 
+        window.clear();
+
         for (auto& bullet : player.getBullets())
         {
-            sf::FloatRect bulletBounds = bullet.getBounds();
-
-            bulletBounds.left -= 15;
-            bulletBounds.top -= 15;
-            bulletBounds.width += 30;
-            bulletBounds.height += 30;
-
-            for (auto& brick : level.getBricks())
-            {
-                if (bulletBounds.intersects(brick.getBounds()))
-                {
-                    float explosionX = bullet.getPosition().x;
-                    float explosionY = bullet.getPosition().y;
-
-                    explosions.emplace_back(explosionX, explosionY, loadExplosionFrames("res/explosion.png", 32, 32, 16));
-                    bullet.setInactive();
-
-                    if (brick.hit())
-                    {
-                        level.getBricks().erase(std::remove(level.getBricks().begin(), level.getBricks().end(), brick), level.getBricks().end());
-                    }
-                    break;
-                }
-            }
+            window.draw(bullet);
         }
 
-        float deltaTime = clock.restart().asSeconds();
-
-        for (auto& explosion : explosions)
-        {
-            explosion.update(deltaTime);
-        }
-
-        explosions.erase(std::remove_if(explosions.begin(), explosions.end(),
-            [](const Explosion& explosion) { return explosion.hasFinished(); }),
-            explosions.end());
-
-        window.clear();
         window.draw(level);
-        player.draw(window);
-
-        for (const auto& explosion : explosions)
-        {
-            explosion.draw(window);
-        }
+        window.draw(player);
 
         window.display();
+
+
+
+        //TODO: Move this inside a class. Game class?
+        // 
+        //for (auto& bullet : player.getBullets())
+        //{
+        //    sf::FloatRect bulletBounds = bullet.getBounds();
+
+        //    bulletBounds.left -= 15;
+        //    bulletBounds.top -= 15;
+        //    bulletBounds.width += 30;
+        //    bulletBounds.height += 30;
+
+        //    for (auto& brick : level.getBricks())
+        //    {
+        //        if (bulletBounds.intersects(brick.getBounds()))
+        //        {
+        //            float explosionX = bullet.getPosition().x;
+        //            float explosionY = bullet.getPosition().y;
+
+        //            explosions.emplace_back(explosionX, explosionY, loadExplosionFrames("res/explosion.png", 32, 32, 16));
+        //            bullet.setInactive();
+
+        //            if (brick.hit())
+        //            {
+        //                level.getBricks().erase(std::remove(level.getBricks().begin(), level.getBricks().end(), brick), level.getBricks().end());
+        //            }
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //float deltaTime = clock.restart().asSeconds();
+
+        //for (auto& explosion : explosions)
+        //{
+        //    explosion.update(deltaTime);
+        //}
+
+        //explosions.erase(std::remove_if(explosions.begin(), explosions.end(),
+        //    [](const Explosion& explosion) { return explosion.hasFinished(); }),
+        //    explosions.end());
+
+        //window.clear();
+        //window.draw(level);
+        //player.draw(window);
+
+        //for (const auto& explosion : explosions)
+        //{
+        //    explosion.draw(window);
+        //}
     }
 
     return 0;
