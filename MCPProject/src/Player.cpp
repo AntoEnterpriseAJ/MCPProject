@@ -7,10 +7,10 @@ Player::Player(const sf::Texture& texture, const sf::Texture& bulletTexture)
 {
     m_sprite.setTexture(texture);
     m_sprite.setPosition(30, 30);
-    m_sprite.setScale(sf::Vector2f(0.75f, 0.75f));
+    m_sprite.setScale(sf::Vector2f(1.f, 1.f));
 
     sf::FloatRect bounds = m_sprite.getGlobalBounds();
-    m_sprite.setOrigin(bounds.width / 2 + Brick::getSize() / 2, bounds.height / 2 + Brick::getSize() / 2);
+    m_sprite.setOrigin(bounds.width / 2, bounds.height / 2);
 }
 
 void Player::draw(sf::RenderWindow& window)
@@ -71,7 +71,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
-        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 600)
+        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 900)
         {
             m_sprite.move(0, 1);
         }
@@ -89,7 +89,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
-        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 900)
+        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 1200)
         {
             m_sprite.move(1, 0);
         }

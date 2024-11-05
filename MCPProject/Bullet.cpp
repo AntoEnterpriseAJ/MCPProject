@@ -32,8 +32,8 @@ void Bullet::update()
     else if (direction == Direction::RIGHT)
         sprite.move(speed, 0);
 
-    if (sprite.getPosition().x < 0 || sprite.getPosition().x > 900 ||
-        sprite.getPosition().y < 0 || sprite.getPosition().y > 600)
+    if (sprite.getPosition().x < 0 || sprite.getPosition().x > 1200 ||
+        sprite.getPosition().y < 0 || sprite.getPosition().y > 900)    // MAP SIZE
     {
         isActive = false;
     }
