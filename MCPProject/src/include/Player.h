@@ -10,6 +10,7 @@
 class Player : public GameObject
 {
 public:
+    Player() = default;
     Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
 
     // TODO: think about how we're gonna handle the texture loading

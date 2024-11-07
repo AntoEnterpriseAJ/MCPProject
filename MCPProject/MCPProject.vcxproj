@@ -137,8 +137,10 @@
   <ItemGroup>
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\Explosion.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Brick.cpp" />
+    <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -150,9 +152,11 @@
     <ClInclude Include="src\include\Bullet.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Explosion.h" />
+    <ClInclude Include="src\include\Game.h" />
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\Player.h" />
+    <ClInclude Include="src\include\ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="level1.txt" />

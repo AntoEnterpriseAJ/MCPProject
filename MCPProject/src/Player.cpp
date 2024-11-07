@@ -7,10 +7,6 @@
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
-    //sf::FloatRect bounds = m_sprite.getGlobalBounds();
-    // We're setting the origin in local space, not in world space
-    // this means we don't need those extra offsets to center the origin of the sprite
-    //m_sprite.setOrigin(bounds.width / 2 + Brick::getSize() / 2, bounds.height / 2 + Brick::getSize() / 2);
 
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
 }
@@ -90,9 +86,6 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     }
 }
 
-// TODO: think about how we're gonna handle the texture loading
-//       textures should load ONLY ONCE per game, not every time we shoot
-//       ResourceManager singleton class?
 void Player::shoot(const sf::Texture& bulletTexture)
 {
     float centerX = m_sprite.getPosition().x;
