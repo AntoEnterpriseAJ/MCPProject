@@ -22,9 +22,9 @@ public:
     State getState() const;
 
 private:
-    static constexpr float kBulletSizeX = 50.0f;
-    static constexpr float kBulletSizeY = 100.0f;
-    static constexpr float kBulletSpeed = 5.0f;
+    static constexpr float kBulletSizeX = 30.0f;
+    static constexpr float kBulletSizeY = 70.0f;
+    static constexpr float kBulletSpeed = 1.0f;
 private:
     Direction m_direction;
     State     m_state;

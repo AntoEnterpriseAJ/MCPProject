@@ -35,8 +35,8 @@ void Game::handleInputs()
         }
     }
 
-    m_player.movePlayer(m_level.getBricks());
-    m_player.updateBullets(m_level.getBricks());
+    m_player.movePlayer(Level::getBricks());
+    m_player.updateBullets(Level::getBricks());
 }
 
 void Game::render()

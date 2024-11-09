@@ -68,7 +68,7 @@
     <ClInclude Include="src\include\Explosion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
+    <ClInclude Include="src\include\Block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Game.h">

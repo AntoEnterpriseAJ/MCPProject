@@ -20,16 +20,16 @@ bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
     switch (direction)
     {
     case Direction::UP:
-        nextPosition.top -= 1;
+        nextPosition.top -= 0.1;
         break;
     case Direction::DOWN:
-        nextPosition.top += 1;
+        nextPosition.top += 0.1;
         break;
     case Direction::LEFT:
-        nextPosition.left -= 1;
+        nextPosition.left -= 0.1;
         break;
     case Direction::RIGHT:
-        nextPosition.left += 1;
+        nextPosition.left += 0.1;
         break;
     }
 
@@ -54,7 +54,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_sprite.setRotation(0.0f);
         if (canMove(Direction::UP, bricks) && playerBounds.top > 0)
         {
-            m_sprite.move(0, -1);
+            m_sprite.move(0, -kPlayerSpeed);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -63,7 +63,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_sprite.setRotation(180.0f);
         if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 900)
         {
-            m_sprite.move(0, 1);
+            m_sprite.move(0, kPlayerSpeed);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -72,7 +72,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_sprite.setRotation(270.0f);
         if (canMove(Direction::LEFT, bricks) && playerBounds.left > 0)
         {
-            m_sprite.move(-1, 0);
+            m_sprite.move(-kPlayerSpeed, 0);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -81,7 +81,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_sprite.setRotation(90.0f);
         if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 1200)
         {
-            m_sprite.move(1, 0);
+            m_sprite.move(kPlayerSpeed, 0);
         }
     }
 }
@@ -126,4 +126,5 @@ void Player::updateBullets(std::vector<Brick>& bricks)
 std::vector<Bullet>& Player::getBullets()
 {
     return m_bullets;
+    std::cout << m_bullets.size() << '\n';
 }

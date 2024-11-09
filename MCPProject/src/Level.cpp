@@ -1,6 +1,7 @@
+#include "Level.h"
+
 #include <fstream>
 #include <iostream>
-#include "Level.h"
 #include <random>
 #include <string>
 
@@ -42,7 +43,7 @@ void Level::loadResources()
 
             if (textureType == 1)
             {
-                Brick brick(sf::Vector2f(j * Brick::getSize(), i * Brick::getSize()), m_brickTexture);
+                Brick brick(sf::Vector2f(j * Brick::getSize(), i * Brick::getSize()), m_brickTexture, true);
                 m_levelLayout.push_back(brick);
             }
         }
@@ -57,12 +58,18 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 }
 
-std::vector<Brick>& Level::getBricks()
+Brick& Level::findBrick(float posX, float posY)
 {
-    return m_levelLayout;
+    for (auto& brick : m_levelLayout)
+    {
+        if (brick.getPosition().x == posX && brick.getPosition().y == posY)
+        {
+            return brick;
+        }
+    }
 }
 
-const std::vector<Brick>& Level::getBricks() const
+std::vector<Brick>& Level::getBricks()
 {
     return m_levelLayout;
 }

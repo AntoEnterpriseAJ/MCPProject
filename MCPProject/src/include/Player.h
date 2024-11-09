@@ -31,4 +31,6 @@ private:
     float m_health;
     std::vector<Bullet> m_bullets;
     Direction m_dir;
+
+    static constexpr float kPlayerSpeed = 0.25f;
 };
