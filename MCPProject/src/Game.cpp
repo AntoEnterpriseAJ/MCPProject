@@ -31,7 +31,7 @@ void Game::handleInputs()
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
         {
-            //m_player.shoot();
+            m_player.shoot(ResourceManager::getInstace().getTexture("bullet"));
         }
     }
 
