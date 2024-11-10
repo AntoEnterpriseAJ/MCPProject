@@ -7,8 +7,9 @@
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
-
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
+    m_cooldownDuration = 3.f;
+    m_canShoot = true;
 }
 
 bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
@@ -88,10 +89,16 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
 
 void Player::shoot(const sf::Texture& bulletTexture)
 {
-    float centerX = m_sprite.getPosition().x;
-    float centerY = m_sprite.getPosition().y;
+    if (m_canShoot)
+    {
+        float centerX = m_sprite.getPosition().x;
+        float centerY = m_sprite.getPosition().y;
 
-    m_bullets.push_back(Bullet(sf::Vector2f{ centerX, centerY }, bulletTexture, m_dir)); //TODO: emplace back
+        m_bullets.push_back(Bullet(sf::Vector2f{ centerX, centerY }, bulletTexture, m_dir)); //TODO: emplace back
+
+        m_canShoot = false;
+        m_cooldownClock.restart();
+    }
 }
 
 //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
@@ -127,4 +134,12 @@ std::vector<Bullet>& Player::getBullets()
 {
     return m_bullets;
     std::cout << m_bullets.size() << '\n';
+}
+
+void Player::updateTimer()
+{
+    if (!m_canShoot && m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
+    {
+        m_canShoot = true;
+    }
 }

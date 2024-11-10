@@ -27,10 +27,16 @@ public:
     bool canMove(Direction direction, const std::vector<Brick>& bricks);
     std::vector<Bullet>& getBullets();
 
+    void updateTimer();
+
 private:
     float m_health;
     std::vector<Bullet> m_bullets;
     Direction m_dir;
 
-    static constexpr float kPlayerSpeed = 0.25f;
+    sf::Clock m_cooldownClock;
+    float m_cooldownDuration;
+    bool m_canShoot;
+
+    static constexpr float kPlayerSpeed = 0.15f;
 };

@@ -24,7 +24,7 @@ public:
 private:
     static constexpr float kBulletSizeX = 30.0f;
     static constexpr float kBulletSizeY = 70.0f;
-    static constexpr float kBulletSpeed = 1.0f;
+    static constexpr float kBulletSpeed = 0.6f;
 private:
     Direction m_direction;
     State     m_state;

@@ -1,8 +1,8 @@
 #include "Game.h"
 #include "ResourceManager.h"
 
-Game::Game(uint16_t windowWidth, uint16_t windowHeight)
-    : m_window(sf::VideoMode(windowWidth, windowHeight), "Test"), m_level{}
+Game::Game()
+    : m_window(sf::VideoMode(m_windowWidth, m_windowHeight), "Test"), m_level{}
 {
     ResourceManager& instance = ResourceManager::getInstace();
 
@@ -44,6 +44,8 @@ void Game::render()
     while (m_window.isOpen())
     {
         handleInputs();
+
+        m_player.updateTimer();
 
         m_window.clear();
 

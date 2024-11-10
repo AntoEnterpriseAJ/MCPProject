@@ -9,7 +9,7 @@ class Game
 {
 public:
 
-    Game(uint16_t windowWidth, uint16_t windowHeight);
+    Game();
 
     void render();
     void handleInputs();
@@ -19,4 +19,7 @@ private:
     std::vector<Bullet> m_bullets; 
     sf::RenderWindow m_window;
     Level m_level;
+
+    static constexpr uint16_t m_windowWidth = 1200;
+    static constexpr uint16_t m_windowHeight = 800;
 };

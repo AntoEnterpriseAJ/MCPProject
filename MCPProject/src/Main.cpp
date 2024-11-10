@@ -30,11 +30,8 @@ std::vector<sf::Texture> loadExplosionFrames(const std::string& filePath, int fr
 }
 
 int main() {
-    const float baseWidth = 1200.0f;
-    const float baseHeight = 900.0f;
 
-
-    Game game(baseWidth, baseHeight);
+    Game game;
 
     game.render();
 
