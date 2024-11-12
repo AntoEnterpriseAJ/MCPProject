@@ -14,6 +14,8 @@ public:
 	void setVelocity(sf::Vector2f vel);
 	void setTexture(const sf::Texture& texture);
 
+	
+
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize()	   const;
 	sf::Vector2f getVelocity() const;

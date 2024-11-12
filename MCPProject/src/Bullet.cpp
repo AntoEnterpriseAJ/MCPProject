@@ -1,4 +1,5 @@
 ﻿#include "Bullet.h"
+#include "Game.h"
 
 Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_state{State::Active}, m_direction{dir}
@@ -17,7 +18,6 @@ Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::
 
 void Bullet::update()
 {
-    // TODO: maybe try using the velocity from GameObject, instead of kBulletSpeed
     if (m_direction == Direction::UP)
         m_sprite.move(0, -kBulletSpeed);
     else if (m_direction == Direction::DOWN)
@@ -27,9 +27,8 @@ void Bullet::update()
     else if (m_direction == Direction::RIGHT)
         m_sprite.move(kBulletSpeed, 0);
 
-    // TODO: fix hardcoded values, maybe in the Game class?
-    if (m_sprite.getPosition().x < 0 || m_sprite.getPosition().x > 1200.0f ||
-        m_sprite.getPosition().y < 0 || m_sprite.getPosition().y > 900.0f)
+    if (m_sprite.getPosition().x < 0 || m_sprite.getPosition().x > Game::getWindowWidth() ||
+        m_sprite.getPosition().y < 0 || m_sprite.getPosition().y > Game::getWindowHeight())
     {
         m_state = State::Inactive;
     }

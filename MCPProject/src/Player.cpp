@@ -1,6 +1,9 @@
 ﻿#include "Player.h"
 #include "Bullet.h"
 #include "Brick.h"
+#include "Game.h"
+
+#include <algorithm>
 
 #include <iostream> // Only used for the cerr below, TODO: delete it
 
@@ -16,21 +19,19 @@ bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
 {
     sf::FloatRect nextPosition = m_sprite.getGlobalBounds();
 
-    // TODO: fix
-    // We move by the set velocity in GameObject, not by 1
     switch (direction)
     {
     case Direction::UP:
-        nextPosition.top -= 0.1;
+        nextPosition.top -= kPlayerSpeed;
         break;
     case Direction::DOWN:
-        nextPosition.top += 0.1;
+        nextPosition.top += kPlayerSpeed;
         break;
     case Direction::LEFT:
-        nextPosition.left -= 0.1;
+        nextPosition.left -= kPlayerSpeed;
         break;
     case Direction::RIGHT:
-        nextPosition.left += 0.1;
+        nextPosition.left += kPlayerSpeed;
         break;
     }
 
@@ -62,7 +63,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
-        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < 900)
+        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             m_sprite.move(0, kPlayerSpeed);
         }
@@ -80,7 +81,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
-        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < 1200)
+        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             m_sprite.move(kPlayerSpeed, 0);
         }
@@ -94,7 +95,7 @@ void Player::shoot(const sf::Texture& bulletTexture)
         float centerX = m_sprite.getPosition().x;
         float centerY = m_sprite.getPosition().y;
 
-        m_bullets.push_back(Bullet(sf::Vector2f{ centerX, centerY }, bulletTexture, m_dir)); //TODO: emplace back
+        m_bullets.push_back(Bullet(sf::Vector2f{ centerX, centerY }, bulletTexture, m_dir));
 
         m_canShoot = false;
         m_cooldownClock.restart();
@@ -104,7 +105,7 @@ void Player::shoot(const sf::Texture& bulletTexture)
 //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
 void Player::updateBullets(std::vector<Brick>& bricks)
 {
-    for (auto& bullet : m_bullets)  
+    for (Bullet& bullet : m_bullets)  
     {
         bullet.update();
 
@@ -125,15 +126,13 @@ void Player::updateBullets(std::vector<Brick>& bricks)
         }
     }
 
-    // TODO: fix, slow
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
         [](const Bullet& bullet) { return bullet.getState() == Bullet::State::Inactive; }), m_bullets.end());
 }
 
-std::vector<Bullet>& Player::getBullets()
+std::list<Bullet>& Player::getBullets()
 {
     return m_bullets;
-    std::cout << m_bullets.size() << '\n';
 }
 
 void Player::updateTimer()

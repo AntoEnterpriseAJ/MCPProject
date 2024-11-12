@@ -2,7 +2,7 @@
 #include "ResourceManager.h"
 
 Game::Game()
-    : m_window(sf::VideoMode(m_windowWidth, m_windowHeight), "Test"), m_level{}
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}
 {
     ResourceManager& instance = ResourceManager::getInstace();
 
@@ -37,6 +37,16 @@ void Game::handleInputs()
 
     m_player.movePlayer(Level::getBricks());
     m_player.updateBullets(Level::getBricks());
+}
+
+uint16_t Game::getWindowWidth()
+{
+    return kWindowWidth;
+}
+
+uint16_t Game::getWindowHeight()
+{
+    return kWindowHeight;
 }
 
 void Game::render()
