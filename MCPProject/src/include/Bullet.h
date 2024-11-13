@@ -11,10 +11,15 @@ public:
         Active,
         Inactive,
     };
+
 public:
 
-    Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction,
-           sf::Vector2f size = sf::Vector2f(kBulletSizeX, kBulletSizeY));
+    Bullet(
+        sf::Vector2f       pos, 
+        const sf::Texture& texture, 
+        Direction,
+        sf::Vector2f       size = sf::Vector2f(kBulletSizeX, kBulletSizeY)
+    );
 
     void update();
     void setState(State state);
@@ -22,9 +27,10 @@ public:
     State getState() const;
 
 private:
-    static constexpr float kBulletSizeX = 30.0f;
-    static constexpr float kBulletSizeY = 70.0f;
-    static constexpr float kBulletSpeed = 0.6f;
+    static constexpr float kBulletSizeX { 30.0f };
+    static constexpr float kBulletSizeY { 70.0f };
+    static constexpr float kBulletSpeed { 0.6f };
+
 private:
     Direction m_direction;
     State     m_state;

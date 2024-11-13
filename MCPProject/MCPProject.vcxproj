@@ -146,7 +146,6 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\Block.h" />
     <ClInclude Include="LoadResources.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />

@@ -15,6 +15,7 @@ void Explosion::update(float deltaTime)
     {
         elapsedTime = 0.0f;
         currentFrame++;
+
         if (currentFrame < frames.size()) 
         {
             sprite.setTexture(frames[currentFrame]);

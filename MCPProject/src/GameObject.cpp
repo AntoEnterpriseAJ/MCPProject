@@ -7,6 +7,7 @@ GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2
 	{
 		throw std::invalid_argument("Invalid texture size");
 	}
+
 	m_sprite.setTexture(texture);
 	m_sprite.setPosition(pos);
 	setSize(size);

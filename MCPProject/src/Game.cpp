@@ -10,7 +10,12 @@ Game::Game()
     instance.loadTextureFromFile("res/albedo.png", "brick");
     instance.loadTextureFromFile("res/missile.png", "bullet");
 
-    m_player = Player(sf::Vector2f{ 100.0f, 80.0f }, ResourceManager::getInstace().getTexture("player"), sf::Vector2f{ 50.0f, 50.0f });
+    m_player = Player(
+        sf::Vector2f{ 100.0f, 80.0f }, 
+        ResourceManager::getInstace().getTexture("player"), 
+        sf::Vector2f{ 50.0f, 50.0f }
+    );
+
     m_level.loadResources();
 }
 

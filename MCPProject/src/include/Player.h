@@ -26,18 +26,19 @@ public:
     void updateBullets(std::vector<Brick>& bricks);
 
     bool canMove(Direction direction, const std::vector<Brick>& bricks);
+
     std::list<Bullet>& getBullets();
 
     void updateTimer();
 
 private:
-    float m_health;
+    float             m_health;
     std::list<Bullet> m_bullets;
-    Direction m_dir;
+    Direction         m_dir;
 
     sf::Clock m_cooldownClock;
-    float m_cooldownDuration;
-    bool m_canShoot;
+    float     m_cooldownDuration;
+    bool      m_canShoot;
 
-    float kPlayerSpeed = 0.15f;
+    float kPlayerSpeed { 0.15f };
 };

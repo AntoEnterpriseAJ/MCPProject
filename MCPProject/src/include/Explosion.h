@@ -15,8 +15,9 @@ public:
 private:
     std::vector<sf::Texture> frames;
     sf::Sprite sprite;
-    int currentFrame;
+
+    int   currentFrame;
     float frameTime;
     float elapsedTime;
-    bool finished;
+    bool  finished;
 };

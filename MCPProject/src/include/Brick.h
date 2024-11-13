@@ -7,12 +7,22 @@ static constexpr int kBrickSize = 40;
 class Brick : public GameObject
 {
 public:
-    Brick(sf::Vector2f pos, const sf::Texture& texture, bool isDestroyable, sf::Vector2f size = sf::Vector2f(kBrickSize, kBrickSize));
+    Brick(
+        sf::Vector2f       pos, 
+        const sf::Texture& texture, 
+        bool               isDestroyable, 
+        sf::Vector2f       size = sf::Vector2f(kBrickSize, kBrickSize)
+    );
 
     static int getSize();
 
     bool hit();
-    bool isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight);
+
+    bool isInArea(
+        const sf::Vector2f& upLeft, 
+        const sf::Vector2f& downRight
+    );
+
     void destroyArea();
 
     sf::FloatRect getBounds() const;
@@ -20,7 +30,7 @@ public:
     bool operator==(const Brick& other) const;
 
 private:
-    bool m_isDestroyable = false;
-    int m_brickHealth = 3;
-    int m_explosionRadius = 3;
+    bool m_isDestroyable   { false };
+    int  m_brickHealth     { 3 };
+    int  m_explosionRadius { 3 };
 };

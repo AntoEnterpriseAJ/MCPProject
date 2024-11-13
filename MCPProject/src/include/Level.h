@@ -16,7 +16,8 @@ public:
     static std::vector<Brick>& getBricks();
 
 private:
-    int m_levelWidth = 30;
-    int m_levelHeight = 20;
+    int m_levelWidth  { 30 };
+    int m_levelHeight { 20 };
+
     sf::Texture m_brickTexture;
 };

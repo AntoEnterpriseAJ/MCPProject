@@ -24,6 +24,8 @@ bool Brick::hit()
 
 bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
 {
+    // TODO: Find a way to convert from getPosition().x type to int 
+    //       to be able to use list initialization
     int x = this->getPosition().x;
     int y = this->getPosition().y;
 
@@ -33,18 +35,28 @@ bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
 
 void Brick::destroyArea()
 {
-    sf::Vector2f brickPos = this->getPosition();
+    sf::Vector2f brickPos{ this->getPosition() };
 
-    sf::Vector2f upLeft = sf::Vector2f(brickPos.x - kBrickSize * m_explosionRadius,
-        brickPos.y + kBrickSize * m_explosionRadius);
-    sf::Vector2f downRight = sf::Vector2f(brickPos.x + kBrickSize * m_explosionRadius,
-        brickPos.y - kBrickSize * m_explosionRadius);
+    sf::Vector2f upLeft{ sf::Vector2f(
+        brickPos.x - kBrickSize * m_explosionRadius,
+        brickPos.y + kBrickSize * m_explosionRadius
+    ) };
+
+    sf::Vector2f downRight{ sf::Vector2f(
+        brickPos.x + kBrickSize * m_explosionRadius,
+        brickPos.y - kBrickSize * m_explosionRadius
+    ) };
     
     for (Brick& brick : Level::getBricks())
     {
         if (brick.isInArea(upLeft, downRight))
         {
-            Level::getBricks().erase(std::remove(Level::getBricks().begin(), Level::getBricks().end(), brick), Level::getBricks().end());
+            Level::getBricks().erase(
+                std::remove(
+                    Level::getBricks().begin(), 
+                    Level::getBricks().end(), brick
+                ), Level::getBricks().end()
+            );
         }
     }
 }

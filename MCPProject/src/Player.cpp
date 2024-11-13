@@ -54,6 +54,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::UP;
         m_sprite.setRotation(0.0f);
+
         if (canMove(Direction::UP, bricks) && playerBounds.top > 0)
         {
             m_sprite.move(0, -kPlayerSpeed);
@@ -63,6 +64,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
+
         if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             m_sprite.move(0, kPlayerSpeed);
@@ -72,6 +74,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
+
         if (canMove(Direction::LEFT, bricks) && playerBounds.left > 0)
         {
             m_sprite.move(-kPlayerSpeed, 0);
@@ -81,6 +84,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     {
         m_dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
+
         if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             m_sprite.move(kPlayerSpeed, 0);
@@ -95,7 +99,11 @@ void Player::shoot(const sf::Texture& bulletTexture)
         float centerX = m_sprite.getPosition().x;
         float centerY = m_sprite.getPosition().y;
 
-        m_bullets.push_back(Bullet(sf::Vector2f{ centerX, centerY }, bulletTexture, m_dir));
+        m_bullets.push_back(Bullet(
+            sf::Vector2f{ centerX, centerY }, 
+            bulletTexture, 
+            m_dir
+        ));
 
         m_canShoot = false;
         m_cooldownClock.restart();
@@ -113,7 +121,8 @@ void Player::updateBullets(std::vector<Brick>& bricks)
         {
             //TODO: maybe make it so GameObject has a getBounds() function
             //      so we don't do getSprite().getGlobalBounds() all the time
-            if (bullet.getState() == Bullet::State::Active && bullet.getSprite().getGlobalBounds().intersects(brick.getSprite().getGlobalBounds()))
+            if (bullet.getState() == Bullet::State::Active && 
+                bullet.getSprite().getGlobalBounds().intersects(brick.getSprite().getGlobalBounds()))
             {
                 bullet.setState(Bullet::State::Inactive);
 
@@ -127,7 +136,9 @@ void Player::updateBullets(std::vector<Brick>& bricks)
     }
 
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
-        [](const Bullet& bullet) { return bullet.getState() == Bullet::State::Inactive; }), m_bullets.end());
+        [](const Bullet& bullet) { 
+            return bullet.getState() == Bullet::State::Inactive; 
+        }), m_bullets.end());
 }
 
 std::list<Bullet>& Player::getBullets()
