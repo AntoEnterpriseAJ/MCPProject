@@ -6,7 +6,7 @@
 class Bullet : public GameObject
 {
 public:
-    enum class State
+    enum class State : uint8_t
     {
         Active,
         Inactive,
@@ -32,6 +32,6 @@ private:
     static constexpr float kBulletSpeed { 0.6f };
 
 private:
-    Direction m_direction;
-    State     m_state;
+    Direction m_direction : 2;
+    State     m_state     : 1;
 };
