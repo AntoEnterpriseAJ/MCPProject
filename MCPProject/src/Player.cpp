@@ -6,10 +6,6 @@
 #include <variant>
 #include <vector>
 
-#include <algorithm>
-
-#include <iostream> // Only used for the cerr below, TODO: delete it
-
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
@@ -18,26 +14,9 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
 }
 
 bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout)
-Direction Player::getDirection() const
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     sf::Vector2f movement = { 0, 0 };
-    return m_dir;
-}
-
-bool Player::canShoot() const
-{
-    if (m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
-    {
-        return true;
-    }
-
-    return false;
-}
-
-bool Player::canMove(Direction direction, const std::vector<Brick>& bricks) const
-{
-    sf::FloatRect nextPosition = m_sprite.getGlobalBounds();
 
     switch (direction)
     {
@@ -78,6 +57,19 @@ bool Player::canMove(Direction direction, const std::vector<Brick>& bricks) cons
     return true;
 }
 
+Direction Player::getDirection() const
+{
+    return m_dir;
+}
+
+bool Player::canShoot() const
+{
+    if (m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
+    {
+        return true;
+    }
+    return false;
+}
 
 void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
