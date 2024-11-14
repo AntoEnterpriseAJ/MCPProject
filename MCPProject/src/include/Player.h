@@ -6,6 +6,8 @@
 #include "Direction.h"
 #include "Bullet.h"
 #include "Brick.h"
+#include "Bush.h"
+#include <variant>
 
 class Player : public GameObject
 {
@@ -15,6 +17,22 @@ public:
 
     void movePlayer(const std::vector<Brick>& bricks);
     void restartTimer();
+    // TODO: think about how we're gonna handle the texture loading
+    //       textures should load ONLY ONCE per game, not every time we shoot
+    //       ResourceManager singleton class?
+    void shoot(const sf::Texture& bulletTexture);
+
+    //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
+    void movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout);
+
+    //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
+    void updateBullets(std::vector<std::variant<Brick, Bush>>& levelLayout);
+
+    bool canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout);
+
+    std::list<Bullet>& getBullets();
+
+    void updateTimer();
 
     Direction getDirection() const;
     bool canShoot() const;

@@ -2,6 +2,9 @@
 #include "Bullet.h"
 #include "Brick.h"
 #include "Game.h"
+#include "Bush.h"
+#include <variant>
+#include <vector>
 
 #include <algorithm>
 
@@ -14,8 +17,11 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     m_cooldownDuration = 0.5f;
 }
 
+bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout)
 Direction Player::getDirection() const
 {
+    sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
+    sf::Vector2f movement = { 0, 0 };
     return m_dir;
 }
 
@@ -36,31 +42,44 @@ bool Player::canMove(Direction direction, const std::vector<Brick>& bricks) cons
     switch (direction)
     {
     case Direction::UP:
-        nextPosition.top -= kPlayerSpeed;
+        movement.y = -kPlayerSpeed;
         break;
     case Direction::DOWN:
-        nextPosition.top += kPlayerSpeed;
+        movement.y = kPlayerSpeed;
         break;
     case Direction::LEFT:
-        nextPosition.left -= kPlayerSpeed;
+        movement.x = -kPlayerSpeed;
         break;
     case Direction::RIGHT:
-        nextPosition.left += kPlayerSpeed;
+        movement.x = kPlayerSpeed;
         break;
     }
 
-    for (const auto& brick : bricks)
+    playerBounds.left += movement.x;
+    playerBounds.top += movement.y;
+
+    for (const auto& obj : levelLayout)
     {
-        if (nextPosition.intersects(brick.getBounds()))
+        if (auto* brick = std::get_if<Brick>(&obj))
         {
-            return false;
+            if (playerBounds.intersects(brick->getBounds()))
+            {
+                return false;
+            }
+        }
+        else if (auto* bush = std::get_if<Bush>(&obj))
+        {
+            if (playerBounds.intersects(bush->getBounds()))
+            {
+                //return false;
+            }
         }
     }
     return true;
 }
 
 
-void Player::movePlayer(const std::vector<Brick>& bricks)
+void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 
@@ -69,7 +88,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::UP;
         m_sprite.setRotation(0.0f);
 
-        if (canMove(Direction::UP, bricks) && playerBounds.top > 0)
+        if (canMove(Direction::UP, levelLayout) && playerBounds.top > 0)
         {
             m_sprite.move(0, -kPlayerSpeed);
         }
@@ -79,7 +98,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
 
-        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
+        if (canMove(Direction::DOWN, levelLayout) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             m_sprite.move(0, kPlayerSpeed);
         }
@@ -89,7 +108,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
 
-        if (canMove(Direction::LEFT, bricks) && playerBounds.left > 0)
+        if (canMove(Direction::LEFT, levelLayout) && playerBounds.left > 0)
         {
             m_sprite.move(-kPlayerSpeed, 0);
         }
@@ -99,7 +118,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
 
-        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
+        if (canMove(Direction::RIGHT, levelLayout) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             m_sprite.move(kPlayerSpeed, 0);
         }

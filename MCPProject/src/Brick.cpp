@@ -35,17 +35,19 @@ bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
 
 void Brick::destroy()
 {
-    // Obține poziția acestei cărămizi
-    sf::Vector2f brickPos{ this->getPosition() };
-
-    // Găsește și șterge această cărămidă din lista de cărămizi
     auto& bricks = Level::getBricks();
+
     bricks.erase(
         std::remove_if(
             bricks.begin(),
             bricks.end(),
-            [this](const Brick& brick) { return &brick == this; }
-        ),
+            [this](const std::variant<Brick, Bush>& obj) {
+                if (auto* brick = std::get_if<Brick>(&obj))
+                {
+                    return &(*brick) == this;
+                }
+                return false;
+            }),
         bricks.end()
     );
 }
