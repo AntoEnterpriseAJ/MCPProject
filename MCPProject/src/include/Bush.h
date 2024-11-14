@@ -2,8 +2,6 @@
 #include "SFML/Graphics.hpp"
 #include "GameObject.h"
 
-
-//  TODO: player move under the bush
 class Bush : public GameObject
 {
 public:
