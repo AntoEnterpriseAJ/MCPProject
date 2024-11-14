@@ -21,16 +21,16 @@ public:
         sf::Vector2f       size = sf::Vector2f(kBulletSizeX, kBulletSizeY)
     );
 
-    void update();
     void setState(State state);
-    
+    void move(float offsetX, float offsetY);
+
+    Direction getDirection() const;
     State getState() const;
 
+    static constexpr float kBulletSpeed { 0.6f };
 private:
     static constexpr float kBulletSizeX { 20.0f };
     static constexpr float kBulletSizeY { 50.0f };
-    static constexpr float kBulletSpeed { 0.6f };
-
 private:
     Direction m_direction : 2;
     State     m_state     : 1;
