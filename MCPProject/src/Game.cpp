@@ -36,12 +36,21 @@ void Game::handleInputs()
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
         {
-            m_player.shoot(ResourceManager::getInstance().getTexture("bullet"));
+            if (m_player.canShoot())
+            {
+                Bullet bullet{
+                    m_player.getPosition(),
+                    ResourceManager::getInstance().getTexture("bullet"),
+                    m_player.getDirection()
+                };
+
+                m_bulletManager.addBullet(bullet);
+                m_player.restartTimer();
+            }
         }
     }
 
     m_player.movePlayer(Level::getBricks());
-    m_player.updateBullets(Level::getBricks());
 }
 
 uint16_t Game::getWindowWidth()
@@ -54,26 +63,46 @@ uint16_t Game::getWindowHeight()
     return kWindowHeight;
 }
 
+void Game::drawGrid()
+{
+    constexpr int cellSize = 25;
+
+    for (int i = 0; i < kWindowWidth; i += cellSize)
+    {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(i, 0)),
+            sf::Vertex(sf::Vector2f(i, kWindowHeight))
+        };
+
+        m_window.draw(line, 2, sf::Lines);
+    }
+
+    for (int i = 0; i < kWindowHeight; i += cellSize)
+    {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(0, i)),
+            sf::Vertex(sf::Vector2f(kWindowWidth, i))
+        };
+
+        m_window.draw(line, 2, sf::Lines);
+    }
+}
+
 void Game::render()
 {
     while (m_window.isOpen())
     {
         handleInputs();
-
-        m_player.updateTimer();
+        m_bulletManager.update(m_level.getBricks());
 
         m_window.clear();
 
-        for (auto& bullet : m_player.getBullets())
-        {
-            m_window.draw(bullet);
-        }
-
         m_window.draw(m_level);
         m_window.draw(m_player);
+        m_bulletManager.draw(m_window);
+
+        drawGrid(); // debug purpose
 
         m_window.display();
     }
 }
-
-
