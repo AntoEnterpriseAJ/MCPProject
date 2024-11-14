@@ -23,7 +23,7 @@ public:
         const sf::Vector2f& downRight
     );
 
-    void destroyArea();
+    void destroy();
 
     sf::FloatRect getBounds() const;
 

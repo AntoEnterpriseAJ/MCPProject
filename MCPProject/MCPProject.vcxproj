@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Bullet.cpp" />
+    <ClCompile Include="src\Bush.cpp" />
     <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="LoadResources.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
+    <ClInclude Include="src\include\Bush.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Explosion.h" />
     <ClInclude Include="src\include\Game.h" />

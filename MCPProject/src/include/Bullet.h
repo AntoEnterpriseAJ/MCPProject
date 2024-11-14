@@ -27,8 +27,8 @@ public:
     State getState() const;
 
 private:
-    static constexpr float kBulletSizeX { 30.0f };
-    static constexpr float kBulletSizeY { 70.0f };
+    static constexpr float kBulletSizeX { 20.0f };
+    static constexpr float kBulletSizeY { 50.0f };
     static constexpr float kBulletSpeed { 0.6f };
 
 private:
