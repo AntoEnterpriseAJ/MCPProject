@@ -62,7 +62,6 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (const auto& obj : m_levelLayout)
     {
-        // Desenãm fie Brick, fie Bush
         std::visit([&target, &states](const auto& obj) { target.draw(obj, states); }, obj);
     }
 }

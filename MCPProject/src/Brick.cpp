@@ -37,16 +37,13 @@ void Brick::destroy()
 {
     auto& bricks = Level::getBricks();
 
-    // Șterge cărămida din lista de brick-uri
     bricks.erase(
         std::remove_if(
             bricks.begin(),
             bricks.end(),
             [this](const std::variant<Brick, Bush>& obj) {
-                // Verifică dacă obiectul este de tipul Brick
                 if (auto* brick = std::get_if<Brick>(&obj))
                 {
-                    // Verifică dacă este aceeași cărămidă
                     return &(*brick) == this;
                 }
                 return false;

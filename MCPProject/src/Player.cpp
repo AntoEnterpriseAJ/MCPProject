@@ -14,7 +14,7 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
-    m_cooldownDuration = 0.2f;
+    m_cooldownDuration = 2.f;
     m_canShoot = true;
 }
 
@@ -23,7 +23,6 @@ bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, 
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     sf::Vector2f movement = { 0, 0 };
 
-    // Setează mișcarea în funcție de direcție
     switch (direction)
     {
     case Direction::UP:
@@ -40,7 +39,6 @@ bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, 
         break;
     }
 
-    // Verifică dacă noul loc al playerului intră într-o coliziune cu Brick sau Bush
     playerBounds.left += movement.x;
     playerBounds.top += movement.y;
 
@@ -50,18 +48,18 @@ bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, 
         {
             if (playerBounds.intersects(brick->getBounds()))
             {
-                return false;  // Coliziune cu Brick
+                return false;
             }
         }
         else if (auto* bush = std::get_if<Bush>(&obj))
         {
             if (playerBounds.intersects(bush->getBounds()))
             {
-                //return false;  // Coliziune cu Bush
+                //return false;
             }
         }
     }
-    return true;  // Nu există coliziune
+    return true;
 }
 
 
@@ -134,33 +132,30 @@ void Player::updateBullets(std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
     for (Bullet& bullet : m_bullets)
     {
-        bullet.update(); // Actualizăm poziția glonțului
+        bullet.update();
 
         for (auto& obj : levelLayout)
         {
-            if (auto* brick = std::get_if<Brick>(&obj)) // Verificăm dacă este Brick
+            if (auto* brick = std::get_if<Brick>(&obj))
             {
                 if (bullet.getState() == Bullet::State::Active &&
                     bullet.getSprite().getGlobalBounds().intersects(brick->getSprite().getGlobalBounds()))
                 {
-                    bullet.setState(Bullet::State::Inactive); // Face glonțul inactiv
+                    bullet.setState(Bullet::State::Inactive);
 
-                    if (brick->hit()) // Verificăm dacă Brick-ul este distrus
+                    if (brick->hit())
                     {
-                        // Dacă brick-ul este distrus, îl eliminăm din nivel
                         levelLayout.erase(std::remove(levelLayout.begin(), levelLayout.end(), obj), levelLayout.end());
                     }
-                    break; // Ieșim din bucla de coliziune pentru acest glonț
                 }
             }
-            else if (auto* bush = std::get_if<Bush>(&obj)) // Dacă este Bush, nu facem nimic
+            else if (auto* bush = std::get_if<Bush>(&obj))
             {
-                // Glonțul trece prin Bush fără efect
+                
             }
         }
     }
 
-    // Eliminăm glonțurile care sunt inactivate (deci distruse)
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
         [](const Bullet& bullet) {
             return bullet.getState() == Bullet::State::Inactive;
