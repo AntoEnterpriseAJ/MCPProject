@@ -4,7 +4,7 @@
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}
 {
-    ResourceManager& instance = ResourceManager::getInstace();
+    ResourceManager& instance = ResourceManager::getInstance();
 
     instance.loadTextureFromFile("res/plane.png", "player");
     instance.loadTextureFromFile("res/albedo.png", "brick");
@@ -12,7 +12,7 @@ Game::Game()
 
     m_player = Player(
         sf::Vector2f{ 100.0f, 80.0f }, 
-        ResourceManager::getInstace().getTexture("player"), 
+        ResourceManager::getInstance().getTexture("player"), 
         sf::Vector2f{ 50.0f, 50.0f }
     );
 
@@ -36,7 +36,7 @@ void Game::handleInputs()
 
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
         {
-            m_player.shoot(ResourceManager::getInstace().getTexture("bullet"));
+            m_player.shoot(ResourceManager::getInstance().getTexture("bullet"));
         }
     }
 

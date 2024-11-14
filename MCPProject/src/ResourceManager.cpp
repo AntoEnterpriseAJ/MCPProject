@@ -1,7 +1,7 @@
 #include "ResourceManager.h"
 #include <iostream>
 
-ResourceManager& ResourceManager::getInstace()
+ResourceManager& ResourceManager::getInstance()
 {
     static ResourceManager resourceManager;
     return resourceManager;
