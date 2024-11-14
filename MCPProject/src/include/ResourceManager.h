@@ -6,10 +6,10 @@
 class ResourceManager
 {
 public:
-    static ResourceManager& getInstace();
+    static ResourceManager& getInstance();
 
     void loadTextureFromFile(std::string_view path, std::string_view name);
-    const sf::Texture& getTexture(std::string_view name) const;
+    [[nodiscard]] const sf::Texture& getTexture(std::string_view name) const;
 
 private:
     ResourceManager() = default;
