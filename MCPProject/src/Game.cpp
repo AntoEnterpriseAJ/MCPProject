@@ -9,6 +9,7 @@ Game::Game()
     instance.loadTextureFromFile("res/plane.png", "player");
     instance.loadTextureFromFile("res/albedo.png", "brick");
     instance.loadTextureFromFile("res/missile.png", "bullet");
+    instance.loadTextureFromFile("res/bush.png", "bush");
 
     m_player = Player(
         sf::Vector2f{ 100.0f, 80.0f }, 
@@ -75,5 +76,3 @@ void Game::render()
         m_window.display();
     }
 }
-
-

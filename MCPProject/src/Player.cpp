@@ -2,6 +2,9 @@
 #include "Bullet.h"
 #include "Brick.h"
 #include "Game.h"
+#include "Bush.h"
+#include <variant>
+#include <vector>
 
 #include <algorithm>
 
@@ -11,42 +14,58 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
-    m_cooldownDuration = 3.f;
+    m_cooldownDuration = 0.2f;
     m_canShoot = true;
 }
 
-bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
+bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
-    sf::FloatRect nextPosition = m_sprite.getGlobalBounds();
+    sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
+    sf::Vector2f movement = { 0, 0 };
 
+    // Setează mișcarea în funcție de direcție
     switch (direction)
     {
     case Direction::UP:
-        nextPosition.top -= kPlayerSpeed;
+        movement.y = -kPlayerSpeed;
         break;
     case Direction::DOWN:
-        nextPosition.top += kPlayerSpeed;
+        movement.y = kPlayerSpeed;
         break;
     case Direction::LEFT:
-        nextPosition.left -= kPlayerSpeed;
+        movement.x = -kPlayerSpeed;
         break;
     case Direction::RIGHT:
-        nextPosition.left += kPlayerSpeed;
+        movement.x = kPlayerSpeed;
         break;
     }
 
-    for (const auto& brick : bricks)
+    // Verifică dacă noul loc al playerului intră într-o coliziune cu Brick sau Bush
+    playerBounds.left += movement.x;
+    playerBounds.top += movement.y;
+
+    for (const auto& obj : levelLayout)
     {
-        if (nextPosition.intersects(brick.getBounds()))
+        if (auto* brick = std::get_if<Brick>(&obj))
         {
-            return false;
+            if (playerBounds.intersects(brick->getBounds()))
+            {
+                return false;  // Coliziune cu Brick
+            }
+        }
+        else if (auto* bush = std::get_if<Bush>(&obj))
+        {
+            if (playerBounds.intersects(bush->getBounds()))
+            {
+                //return false;  // Coliziune cu Bush
+            }
         }
     }
-    return true;
+    return true;  // Nu există coliziune
 }
 
 
-void Player::movePlayer(const std::vector<Brick>& bricks)
+void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 
@@ -55,7 +74,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::UP;
         m_sprite.setRotation(0.0f);
 
-        if (canMove(Direction::UP, bricks) && playerBounds.top > 0)
+        if (canMove(Direction::UP, levelLayout) && playerBounds.top > 0)
         {
             m_sprite.move(0, -kPlayerSpeed);
         }
@@ -65,7 +84,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::DOWN;
         m_sprite.setRotation(180.0f);
 
-        if (canMove(Direction::DOWN, bricks) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
+        if (canMove(Direction::DOWN, levelLayout) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             m_sprite.move(0, kPlayerSpeed);
         }
@@ -75,7 +94,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::LEFT;
         m_sprite.setRotation(270.0f);
 
-        if (canMove(Direction::LEFT, bricks) && playerBounds.left > 0)
+        if (canMove(Direction::LEFT, levelLayout) && playerBounds.left > 0)
         {
             m_sprite.move(-kPlayerSpeed, 0);
         }
@@ -85,7 +104,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
         m_dir = Direction::RIGHT;
         m_sprite.setRotation(90.0f);
 
-        if (canMove(Direction::RIGHT, bricks) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
+        if (canMove(Direction::RIGHT, levelLayout) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             m_sprite.move(kPlayerSpeed, 0);
         }
@@ -111,33 +130,40 @@ void Player::shoot(const sf::Texture& bulletTexture)
 }
 
 //TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
-void Player::updateBullets(std::vector<Brick>& bricks)
+void Player::updateBullets(std::vector<std::variant<Brick, Bush>>& levelLayout)
 {
-    for (Bullet& bullet : m_bullets)  
+    for (Bullet& bullet : m_bullets)
     {
-        bullet.update();
+        bullet.update(); // Actualizăm poziția glonțului
 
-        for (auto& brick : bricks)
+        for (auto& obj : levelLayout)
         {
-            //TODO: maybe make it so GameObject has a getBounds() function
-            //      so we don't do getSprite().getGlobalBounds() all the time
-            if (bullet.getState() == Bullet::State::Active && 
-                bullet.getSprite().getGlobalBounds().intersects(brick.getSprite().getGlobalBounds()))
+            if (auto* brick = std::get_if<Brick>(&obj)) // Verificăm dacă este Brick
             {
-                bullet.setState(Bullet::State::Inactive);
-
-                if (brick.hit())
+                if (bullet.getState() == Bullet::State::Active &&
+                    bullet.getSprite().getGlobalBounds().intersects(brick->getSprite().getGlobalBounds()))
                 {
-                    bricks.erase(std::remove(bricks.begin(), bricks.end(), brick), bricks.end());
+                    bullet.setState(Bullet::State::Inactive); // Face glonțul inactiv
+
+                    if (brick->hit()) // Verificăm dacă Brick-ul este distrus
+                    {
+                        // Dacă brick-ul este distrus, îl eliminăm din nivel
+                        levelLayout.erase(std::remove(levelLayout.begin(), levelLayout.end(), obj), levelLayout.end());
+                    }
+                    break; // Ieșim din bucla de coliziune pentru acest glonț
                 }
-                break;
+            }
+            else if (auto* bush = std::get_if<Bush>(&obj)) // Dacă este Bush, nu facem nimic
+            {
+                // Glonțul trece prin Bush fără efect
             }
         }
     }
 
+    // Eliminăm glonțurile care sunt inactivate (deci distruse)
     m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
-        [](const Bullet& bullet) { 
-            return bullet.getState() == Bullet::State::Inactive; 
+        [](const Bullet& bullet) {
+            return bullet.getState() == Bullet::State::Inactive;
         }), m_bullets.end());
 }
 
