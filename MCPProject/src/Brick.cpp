@@ -16,7 +16,7 @@ bool Brick::hit()
     m_brickHealth--;
     if (m_brickHealth <= 0)
     {
-        this->destroyArea();
+        this->destroy();
     }
 
     return m_brickHealth <= 0;
@@ -33,32 +33,21 @@ bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
         y <= upLeft.y && y >= downRight.y;
 }
 
-void Brick::destroyArea()
+void Brick::destroy()
 {
+    // Obține poziția acestei cărămizi
     sf::Vector2f brickPos{ this->getPosition() };
 
-    sf::Vector2f upLeft{ sf::Vector2f(
-        brickPos.x - kBrickSize * m_explosionRadius,
-        brickPos.y + kBrickSize * m_explosionRadius
-    ) };
-
-    sf::Vector2f downRight{ sf::Vector2f(
-        brickPos.x + kBrickSize * m_explosionRadius,
-        brickPos.y - kBrickSize * m_explosionRadius
-    ) };
-    
-    for (Brick& brick : Level::getBricks())
-    {
-        if (brick.isInArea(upLeft, downRight))
-        {
-            Level::getBricks().erase(
-                std::remove(
-                    Level::getBricks().begin(), 
-                    Level::getBricks().end(), brick
-                ), Level::getBricks().end()
-            );
-        }
-    }
+    // Găsește și șterge această cărămidă din lista de cărămizi
+    auto& bricks = Level::getBricks();
+    bricks.erase(
+        std::remove_if(
+            bricks.begin(),
+            bricks.end(),
+            [this](const Brick& brick) { return &brick == this; }
+        ),
+        bricks.end()
+    );
 }
 
 sf::FloatRect Brick::getBounds() const
