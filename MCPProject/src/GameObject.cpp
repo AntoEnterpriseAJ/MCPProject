@@ -13,7 +13,6 @@ GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2
 	setSize(size);
 }
 
-
 void GameObject::setPosition(sf::Vector2f pos)
 {
 	m_sprite.setPosition(pos);

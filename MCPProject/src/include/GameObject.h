@@ -14,7 +14,7 @@ public:
 		sf::Vector2f       vel = { 0.0f, 0.0f }
 	);
 
-	virtual ~GameObject() = default;
+	~GameObject() override = default;
 
 	void setPosition(sf::Vector2f pos);
 	void setSize    (sf::Vector2f size);
@@ -24,7 +24,7 @@ public:
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize()	   const;
 	sf::Vector2f getVelocity() const;
-	sf::Sprite   getSprite() const;
+	sf::Sprite   getSprite()   const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
