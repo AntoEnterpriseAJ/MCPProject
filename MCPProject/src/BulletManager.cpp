@@ -43,17 +43,15 @@ void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& lev
     //    {
     //        std::visit([&](auto&& obj) {
     //            if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, Brick>) {
-    //                // Check for collision with Brick only
     //                if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
     //                {
     //                    bullet.setState(Bullet::State::Inactive);
     //                    if (obj.hit()) {
-    //                        // Erase the Brick from the level after it gets hit
     //                        std::erase(level, obj);
     //                    }
     //                }
     //            }
-    //        }, object);  // Visit the current object in the variant
+    //        }, object);
     //    }
     //}
 
