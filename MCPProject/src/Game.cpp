@@ -98,8 +98,8 @@ void Game::render()
 
         m_window.clear();
 
-        m_window.draw(m_level);
         m_window.draw(m_player);
+        m_window.draw(m_level);
         m_bulletManager.draw(m_window);
 
         drawGrid(); // debug purpose
