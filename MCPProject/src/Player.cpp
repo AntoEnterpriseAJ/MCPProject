@@ -11,11 +11,25 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
-    m_cooldownDuration = 3.f;
-    m_canShoot = true;
+    m_cooldownDuration = 0.5f;
 }
 
-bool Player::canMove(Direction direction, const std::vector<Brick>& bricks)
+Direction Player::getDirection() const
+{
+    return m_dir;
+}
+
+bool Player::canShoot() const
+{
+    if (m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool Player::canMove(Direction direction, const std::vector<Brick>& bricks) const
 {
     sf::FloatRect nextPosition = m_sprite.getGlobalBounds();
 
@@ -92,64 +106,7 @@ void Player::movePlayer(const std::vector<Brick>& bricks)
     }
 }
 
-void Player::shoot(const sf::Texture& bulletTexture)
+void Player::restartTimer()
 {
-    if (m_canShoot)
-    {
-        float centerX = m_sprite.getPosition().x;
-        float centerY = m_sprite.getPosition().y;
-
-        m_bullets.push_back(Bullet(
-            sf::Vector2f{ centerX, centerY }, 
-            bulletTexture, 
-            m_dir
-        ));
-
-        m_canShoot = false;
-        m_cooldownClock.restart();
-    }
-}
-
-//TODO: should the player handle it's own bullets? Maybe a bullet manager in the Game class? 
-void Player::updateBullets(std::vector<Brick>& bricks)
-{
-    for (Bullet& bullet : m_bullets)  
-    {
-        bullet.update();
-
-        for (auto& brick : bricks)
-        {
-            //TODO: maybe make it so GameObject has a getBounds() function
-            //      so we don't do getSprite().getGlobalBounds() all the time
-            if (bullet.getState() == Bullet::State::Active && 
-                bullet.getSprite().getGlobalBounds().intersects(brick.getSprite().getGlobalBounds()))
-            {
-                bullet.setState(Bullet::State::Inactive);
-
-                if (brick.hit())
-                {
-                    bricks.erase(std::remove(bricks.begin(), bricks.end(), brick), bricks.end());
-                }
-                break;
-            }
-        }
-    }
-
-    m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
-        [](const Bullet& bullet) { 
-            return bullet.getState() == Bullet::State::Inactive; 
-        }), m_bullets.end());
-}
-
-std::list<Bullet>& Player::getBullets()
-{
-    return m_bullets;
-}
-
-void Player::updateTimer()
-{
-    if (!m_canShoot && m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
-    {
-        m_canShoot = true;
-    }
+    m_cooldownClock.restart();
 }
