@@ -7,12 +7,13 @@ class BulletManager
 {
 public:
     void addBullet(const Bullet& bullet);
-    void update(std::vector<Brick>& level);
+    void update(std::vector<std::variant<Brick, Bush>>& level);
 
     void draw(sf::RenderWindow& window) const;
 
 private:
-    void handleCollisions(std::vector<Brick>& bricks);
+    // TODO: Repair the collision cause the merge broke it
+    void handleCollisions(std::vector<std::variant<Brick, Bush>>& level);
 private:
     std::vector<Bullet> m_bullets;
 };

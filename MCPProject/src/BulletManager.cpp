@@ -11,7 +11,7 @@ void BulletManager::addBullet(const Bullet& bullet)
     std::cout << bullet.getSize().x << " " << bullet.getSize().y << "\n";
 }
 
-void BulletManager::update(std::vector<Brick>& level)
+void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level)
 {
     handleCollisions(level);
 
@@ -34,30 +34,32 @@ void BulletManager::update(std::vector<Brick>& level)
     }
 }
 
-void BulletManager::handleCollisions(std::vector<Brick>& bricks)
+// TODO: Repair the collision cause the merge broke it
+void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& level)
 {
-    for (auto& bullet : m_bullets)
-    {
-        for (auto& brick : bricks)
-        {
-            if (bullet.getSprite().getGlobalBounds().intersects(brick.getSprite().getGlobalBounds()))
-            {
-                bullet.setState(Bullet::State::Inactive);
-                if (brick.hit())
-                {
-                    std::erase_if(bricks, [&brick](const Brick& other)
-                    {
-                        return brick == other;
-                    });
-                }
-                break;
-            }
-        }
-    }
+    //for (auto& bullet : m_bullets)
+    //{
+    //    for (auto& object : level)
+    //    {
+    //        std::visit([&](auto&& obj) {
+    //            if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, Brick>) {
+    //                // Check for collision with Brick only
+    //                if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
+    //                {
+    //                    bullet.setState(Bullet::State::Inactive);
+    //                    if (obj.hit()) {
+    //                        // Erase the Brick from the level after it gets hit
+    //                        std::erase(level, obj);
+    //                    }
+    //                }
+    //            }
+    //        }, object);  // Visit the current object in the variant
+    //    }
+    //}
 
-    std::erase_if(m_bullets, [](const Bullet& bullet){
-        return bullet.getState() == Bullet::State::Inactive;
-    });
+    //std::erase_if(m_bullets, [](const Bullet& bullet){
+    //    return bullet.getState() == Bullet::State::Inactive;
+    //});
 }
 
 void BulletManager::draw(sf::RenderWindow& window) const
