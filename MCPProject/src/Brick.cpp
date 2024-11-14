@@ -42,10 +42,9 @@ void Brick::destroy()
             bricks.begin(),
             bricks.end(),
             [this](const std::variant<Brick, Bush>& obj) {
-                if (std::holds_alternative<Brick>(obj)) // Adaugă verificarea aici
+                if (auto* brick = std::get_if<Brick>(&obj))
                 {
-                    const Brick& brick = std::get<Brick>(obj);
-                    return &brick == this;
+                    return &(*brick) == this;
                 }
                 return false;
             }),

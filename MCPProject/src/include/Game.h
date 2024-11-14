@@ -18,7 +18,7 @@ public:
     static uint16_t getWindowHeight();
 
 private:
-    //void drawGrid();
+    void drawGrid();
 private:
     static constexpr uint16_t kWindowWidth = 1200;
     static constexpr uint16_t kWindowHeight = 800;
@@ -27,5 +27,5 @@ private:
     std::vector<Bullet> m_bullets;
     sf::RenderWindow m_window;
     Level m_level;
-    //BulletManager m_bulletManager;
+    BulletManager m_bulletManager;
 };

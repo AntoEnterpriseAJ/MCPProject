@@ -73,8 +73,8 @@ Brick& Level::findBrick(float posX, float posY)
     {
         if (auto* brick = std::get_if<Brick>(&obj))
         {
-            if (std::abs(brick->getPosition().x - posX) == 0 &&
-                std::abs(brick->getPosition().y - posY) == 0)
+            if (std::abs(brick->getPosition().x - posX) < 0.1f &&
+                std::abs(brick->getPosition().y - posY) < 0.1f)
             {
                 return *brick;
             }
