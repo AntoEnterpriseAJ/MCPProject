@@ -14,7 +14,7 @@ Game::Game()
     m_player = Player(
         sf::Vector2f{ 100.0f, 80.0f }, 
         ResourceManager::getInstance().getTexture("player"), 
-        sf::Vector2f{ 42.0f, 42.0f }
+        sf::Vector2f{ 39.5f, 39.5f }
     );
 
     m_level.loadResources();
@@ -39,8 +39,28 @@ void Game::handleInputs()
         {
             if (m_player.canShoot())
             {
+                Direction dir = m_player.getDirection();
+                sf::Vector2f offset{ 0.0f, 0.0f };
+                float bulletOffsetDistance = 20.0f;
+
+                switch (m_player.getDirection())
+                {
+                case Direction::UP:
+                    offset.y = -bulletOffsetDistance;
+                    break;
+                case Direction::DOWN:
+                    offset.y = bulletOffsetDistance;
+                    break;
+                case Direction::LEFT:
+                    offset.x = -bulletOffsetDistance;
+                    break;
+                case Direction::RIGHT:
+                    offset.x = bulletOffsetDistance;
+                    break;
+                }
+
                 Bullet bullet{
-                    m_player.getPosition(),
+                    m_player.getPosition() + offset,
                     ResourceManager::getInstance().getTexture("bullet"),
                     m_player.getDirection()
                 };
@@ -100,9 +120,14 @@ void Game::render()
 
         m_window.clear();
 
-        m_window.draw(m_player);
-        m_window.draw(m_level);
+        // Desenăm mai întâi bullet-urile (sub player)
         m_bulletManager.draw(m_window);
+
+        // Desenăm player-ul (peste bullet-uri)
+        m_window.draw(m_player);
+
+        // Desenăm bush-ul (peste player)
+        m_window.draw(m_level);
 
         drawGrid(); // debug purpose
 
