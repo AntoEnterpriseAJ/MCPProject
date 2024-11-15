@@ -34,32 +34,52 @@ void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level)
     }
 }
 
-// TODO: Repair the collision cause the merge broke it
+//TODO: check if this is actually this painful to write
 void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& level)
 {
-    //for (auto& bullet : m_bullets)
-    //{
-    //    for (auto& object : level)
-    //    {
-    //        std::visit([&](auto&& obj) {
-    //            if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, Brick>) {
-    //                // Check for collision with Brick only
-    //                if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
-    //                {
-    //                    bullet.setState(Bullet::State::Inactive);
-    //                    if (obj.hit()) {
-    //                        // Erase the Brick from the level after it gets hit
-    //                        std::erase(level, obj);
-    //                    }
-    //                }
-    //            }
-    //        }, object);  // Visit the current object in the variant
-    //    }
-    //}
+    for (auto& bullet : m_bullets)
+    {
+        // TODO: don't check for every obj, check only the surroundings of the bullet
+        for (auto& object : level)
+        {
+            std::visit([&](auto& obj) {
+                using objType = std::decay_t<decltype(obj)>;
 
-    //std::erase_if(m_bullets, [](const Bullet& bullet){
-    //    return bullet.getState() == Bullet::State::Inactive;
-    //});
+                if constexpr (std::is_same_v<objType, Brick>)
+                {
+                    if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
+                    {
+                        bullet.setState(Bullet::State::Inactive);
+                        obj.hit();
+                    }
+                }
+            }, object);
+        }
+    }
+
+    removeInactive(level);
+}
+
+//TODO: check if this is actually this painful to write
+void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush>>& level)
+{
+    std::erase_if(level, [](const std::variant<Brick, Bush>& object){
+        return std::visit([](const auto& obj) -> bool {
+            using objType = std::decay_t<decltype(obj)>;
+            if constexpr (std::is_same_v<objType, Brick>)
+            {
+                return obj.isDestroyed();
+            }
+            else
+            {
+                return false;
+            }
+        }, object);
+    });
+
+    std::erase_if(m_bullets, [](const Bullet& bullet){
+        return bullet.getState() == Bullet::State::Inactive;
+    });
 }
 
 void BulletManager::draw(sf::RenderWindow& window) const
