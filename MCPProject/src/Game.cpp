@@ -66,7 +66,7 @@ uint16_t Game::getWindowHeight()
 
 void Game::drawGrid()
 {
-    constexpr int cellSize = 25;
+    constexpr int cellSize = 40;
 
     for (int i = 0; i < kWindowWidth; i += cellSize)
     {
