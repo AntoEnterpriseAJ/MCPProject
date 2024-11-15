@@ -39,14 +39,14 @@ bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, 
 
     for (const auto& obj : levelLayout)
     {
-        if (auto* brick = std::get_if<Brick>(&obj))
+        if (auto brick = std::get_if<Brick>(&obj))
         {
             if (playerBounds.intersects(brick->getBounds()))
             {
                 return false;
             }
         }
-        else if (auto* bush = std::get_if<Bush>(&obj))
+        else if (auto bush = std::get_if<Bush>(&obj))
         {
             if (playerBounds.intersects(bush->getBounds()))
             {
