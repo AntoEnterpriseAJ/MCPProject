@@ -16,6 +16,18 @@ Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::
         m_sprite.setRotation(90.0f);
 }
 
+void Bullet::update(float deltaTime)
+{
+    if (m_direction == Direction::UP)
+        this->move(0, -Bullet::kBulletSpeed * deltaTime);
+    else if (m_direction == Direction::DOWN)
+        this->move(0, Bullet::kBulletSpeed * deltaTime);
+    else if (m_direction == Direction::LEFT)
+        this->move(-Bullet::kBulletSpeed * deltaTime, 0);
+    else if (m_direction == Direction::RIGHT)
+        this->move(Bullet::kBulletSpeed * deltaTime, 0);
+}
+
 void Bullet::setState(Bullet::State state)
 {
     m_state = state;
