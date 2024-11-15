@@ -16,14 +16,13 @@ public:
 
     static int getSize();
 
-    bool hit();
+    bool isDestroyed() const;
+    void hit();
 
     bool isInArea(
         const sf::Vector2f& upLeft, 
         const sf::Vector2f& downRight
     );
-
-    void destroy();
 
     sf::FloatRect getBounds() const;
 

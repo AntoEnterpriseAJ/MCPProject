@@ -11,15 +11,14 @@ int Brick::getSize()
     return kBrickSize;
 }
 
-bool Brick::hit()
+bool Brick::isDestroyed() const
+{
+    return m_brickHealth <= 0;
+}
+
+void Brick::hit()
 {
     m_brickHealth--;
-    if (m_brickHealth <= 0)
-    {
-        this->destroy();
-    }
-
-    return m_brickHealth <= 0;
 }
 
 bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
@@ -31,25 +30,6 @@ bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
 
     return x >= upLeft.x && x <= downRight.x &&
         y <= upLeft.y && y >= downRight.y;
-}
-
-void Brick::destroy()
-{
-    auto& bricks = Level::getBricks();
-
-    bricks.erase(
-        std::remove_if(
-            bricks.begin(),
-            bricks.end(),
-            [this](const std::variant<Brick, Bush>& obj) {
-                if (auto* brick = std::get_if<Brick>(&obj))
-                {
-                    return &(*brick) == this;
-                }
-                return false;
-            }),
-        bricks.end()
-    );
 }
 
 sf::FloatRect Brick::getBounds() const
