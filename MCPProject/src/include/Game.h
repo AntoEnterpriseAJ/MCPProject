@@ -23,8 +23,8 @@ private:
     static constexpr uint16_t kWindowWidth = 1200;
     static constexpr uint16_t kWindowHeight = 800;
 private:
+    sf::Clock m_lastFrameTimeClock;
     Player m_player; //TODO: vector of players for multiplayer
-    std::vector<Bullet> m_bullets;
     sf::RenderWindow m_window;
     Level m_level;
     BulletManager m_bulletManager;

@@ -93,8 +93,10 @@ void Game::render()
 {
     while (m_window.isOpen())
     {
+        float deltaTime = m_lastFrameTimeClock.restart().asSeconds();
+
         handleInputs();
-        m_bulletManager.update(m_level.getBricks());
+        m_bulletManager.update(m_level.getBricks(), deltaTime);
 
         m_window.clear();
 
