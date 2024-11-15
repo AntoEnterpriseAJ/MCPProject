@@ -11,20 +11,13 @@ void BulletManager::addBullet(const Bullet& bullet)
     std::cout << bullet.getSize().x << " " << bullet.getSize().y << "\n";
 }
 
-void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level)
+void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level, float deltaTime)
 {
     handleCollisions(level);
 
     for (auto& bullet : m_bullets)
     {
-        if (bullet.getDirection() == Direction::UP)
-            bullet.move(0, -Bullet::kBulletSpeed);
-        else if (bullet.getDirection() == Direction::DOWN)
-            bullet.move(0, Bullet::kBulletSpeed);
-        else if (bullet.getDirection() == Direction::LEFT)
-            bullet.move(-Bullet::kBulletSpeed, 0);
-        else if (bullet.getDirection() == Direction::RIGHT)
-            bullet.move(Bullet::kBulletSpeed, 0);
+        bullet.update(deltaTime);
 
         if (bullet.getPosition().x < 0 || bullet.getPosition().x > Game::getWindowWidth() ||
             bullet.getPosition().y < 0 || bullet.getPosition().y > Game::getWindowHeight())

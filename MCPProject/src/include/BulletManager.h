@@ -7,7 +7,7 @@ class BulletManager
 {
 public:
     void addBullet(const Bullet& bullet);
-    void update(std::vector<std::variant<Brick, Bush>>& level);
+    void update(std::vector<std::variant<Brick, Bush>>& level, float deltaTime);
 
     void draw(sf::RenderWindow& window) const;
 
