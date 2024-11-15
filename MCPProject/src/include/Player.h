@@ -23,7 +23,6 @@ public:
     void movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout);
 private:
     float             m_health;
-    std::list<Bullet> m_bullets;
     Direction         m_dir : 2;
 
     // TODO: should the player hold the cooldown timer?

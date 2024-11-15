@@ -41,7 +41,7 @@ sf::Vector2f GameObject::getPosition() const
 sf::Vector2f GameObject::getSize() const
 {
 	sf::FloatRect bounds = m_sprite.getGlobalBounds();
-	return sf::Vector2f(bounds.width, bounds.height);
+    return {bounds.width, bounds.height};
 }
 
 sf::Vector2f GameObject::getVelocity() const
