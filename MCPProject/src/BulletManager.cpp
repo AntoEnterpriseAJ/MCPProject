@@ -1,5 +1,6 @@
 #include "BulletManager.h"
 #include "Game.h"
+#include "BrickManager.h"
 
 
 #include <iostream>
@@ -61,7 +62,12 @@ void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush>>& level
             using objType = std::decay_t<decltype(obj)>;
             if constexpr (std::is_same_v<objType, Brick>)
             {
-                return obj.isDestroyed();
+                if (obj.isDestroyed())
+                {
+                    BrickManager::destroyBlocksInArea(m_levelLayout, 3000, obj.getPosition());
+                    return true;
+                }
+              
             }
             else
             {

@@ -21,17 +21,6 @@ void Brick::hit()
     m_brickHealth--;
 }
 
-bool Brick::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
-{
-    // TODO: Find a way to convert from getPosition().x type to int 
-    //       to be able to use list initialization
-    int x = this->getPosition().x;
-    int y = this->getPosition().y;
-
-    return x >= upLeft.x && x <= downRight.x &&
-        y <= upLeft.y && y >= downRight.y;
-}
-
 sf::FloatRect Brick::getBounds() const
 {
     return getSprite().getGlobalBounds();

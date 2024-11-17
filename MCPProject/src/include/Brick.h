@@ -19,11 +19,6 @@ public:
     bool isDestroyed() const;
     void hit();
 
-    bool isInArea(
-        const sf::Vector2f& upLeft, 
-        const sf::Vector2f& downRight
-    );
-
     sf::FloatRect getBounds() const;
 
     bool operator==(const Brick& other) const;

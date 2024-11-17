@@ -21,6 +21,11 @@ public:
 	void setVelocity(sf::Vector2f vel);
 	void setTexture (const sf::Texture& texture);
 
+	bool isInArea(
+		const sf::Vector2f& upLeft,
+		const sf::Vector2f& downRight
+	);
+
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize()	   const;
 	sf::Vector2f getVelocity() const;

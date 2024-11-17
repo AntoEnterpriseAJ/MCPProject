@@ -33,6 +33,17 @@ void GameObject::setTexture(const sf::Texture& texture)
 	m_sprite.setTexture(texture);
 }
 
+bool GameObject::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
+{
+	// TODO: Find a way to convert from getPosition().x type to int 
+		//       to be able to use list initialization
+	int x = this->getPosition().x;
+	int y = this->getPosition().y;
+
+	return x >= upLeft.x && x <= downRight.x &&
+		y <= upLeft.y && y >= downRight.y;
+}
+
 sf::Vector2f GameObject::getPosition() const
 {
 	return m_sprite.getPosition();
