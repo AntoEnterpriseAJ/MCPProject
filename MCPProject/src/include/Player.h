@@ -15,19 +15,22 @@ public:
     Player() = default;
     Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
 
-    bool canShoot() const;
     Direction getDirection() const;
 
-    void restartTimer();
-    bool canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout);
-    void movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout);
+    void update(float deltaTime);
+    void restartCooldown();
+    
+    bool canShoot() const;
+    bool canMove(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime);
+    void movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime);
+
 private:
     float             m_health;
-    Direction         m_dir : 2;
+    Direction         m_direction    : 2;
 
-    // TODO: should the player hold the cooldown timer?
-    sf::Clock m_cooldownClock;
-    float     m_cooldownDuration;
 
-    float kPlayerSpeed { 0.15f };
+    float                  m_cooldownDuration;
+    static constexpr float kCooldownTime = 0.5f;
+    static constexpr float kPlayerSpeed = 150.15f;
+
 };

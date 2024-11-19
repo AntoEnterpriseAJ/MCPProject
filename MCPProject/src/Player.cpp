@@ -5,32 +5,53 @@
 #include "Bush.h"
 #include <variant>
 #include <vector>
+#include <iostream>
 
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
-    : GameObject{ pos, texture, size }, m_health{ 100 }, m_dir{Direction::LEFT} //Health currently unused
+    : GameObject{ pos, texture, size }, m_health{ 100 }, m_direction{Direction::Left} //Health currently unused
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
     m_cooldownDuration = 0.5f;
 }
 
-bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, Bush>>& levelLayout)
+void Player::update(float deltaTime)
+{
+    if (m_cooldownDuration > 0)
+    {
+        m_cooldownDuration -= deltaTime;
+        if (m_cooldownDuration < 0) m_cooldownDuration = 0; \
+    }
+}
+
+bool Player::canShoot() const
+{
+    return m_cooldownDuration <= 0; 
+}
+
+void Player::restartCooldown()
+{
+    m_cooldownDuration = kCooldownTime;
+}
+
+
+bool Player::canMove(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     sf::Vector2f movement = { 0, 0 };
 
-    switch (direction)
+    switch (m_direction)
     {
-    case Direction::UP:
-        movement.y = -kPlayerSpeed;
+    case Direction::Up:
+        movement.y = -kPlayerSpeed * deltaTime;
         break;
-    case Direction::DOWN:
-        movement.y = kPlayerSpeed;
+    case Direction::Down:
+        movement.y = kPlayerSpeed * deltaTime;
         break;
-    case Direction::LEFT:
-        movement.x = -kPlayerSpeed;
+    case Direction::Left:
+        movement.x = -kPlayerSpeed * deltaTime;
         break;
-    case Direction::RIGHT:
-        movement.x = kPlayerSpeed;
+    case Direction::Right:
+        movement.x = kPlayerSpeed * deltaTime;
         break;
     }
 
@@ -43,81 +64,61 @@ bool Player::canMove(Direction direction, const std::vector<std::variant<Brick, 
         {
             if (playerBounds.intersects(brick->getBounds()))
             {
+                std::cout << "collides\n";
                 return false;
             }
         }
-        else if (auto bush = std::get_if<Bush>(&obj))
-        {
-            if (playerBounds.intersects(bush->getBounds()))
-            {
-                //return false;
-            }
-        }
+        
     }
     return true;
 }
 
-Direction Player::getDirection() const
-{
-    return m_dir;
-}
-
-bool Player::canShoot() const
-{
-    if (m_cooldownClock.getElapsedTime().asSeconds() >= m_cooldownDuration)
-    {
-        return true;
-    }
-    return false;
-}
-
-void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout)
+void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        m_dir = Direction::UP;
+        m_direction = Direction::Up;
         m_sprite.setRotation(0.0f);
 
-        if (canMove(Direction::UP, levelLayout) && playerBounds.top > 0)
+        if (canMove(levelLayout, deltaTime) && playerBounds.top > 0)
         {
-            m_sprite.move(0, -kPlayerSpeed);
+            m_sprite.move(0, -kPlayerSpeed * deltaTime);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        m_dir = Direction::DOWN;
+        m_direction = Direction::Down;
         m_sprite.setRotation(180.0f);
 
-        if (canMove(Direction::DOWN, levelLayout) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
+        if (canMove(levelLayout, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
-            m_sprite.move(0, kPlayerSpeed);
+            m_sprite.move(0, kPlayerSpeed * deltaTime);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        m_dir = Direction::LEFT;
+        m_direction = Direction::Left;
         m_sprite.setRotation(270.0f);
 
-        if (canMove(Direction::LEFT, levelLayout) && playerBounds.left > 0)
+        if (canMove(levelLayout, deltaTime) && playerBounds.left > 0)
         {
-            m_sprite.move(-kPlayerSpeed, 0);
+            m_sprite.move(-kPlayerSpeed * deltaTime, 0);
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        m_dir = Direction::RIGHT;
+        m_direction = Direction::Right;
         m_sprite.setRotation(90.0f);
 
-        if (canMove(Direction::RIGHT, levelLayout) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
+        if (canMove(levelLayout, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
-            m_sprite.move(kPlayerSpeed, 0);
+            m_sprite.move(kPlayerSpeed * deltaTime, 0);
         }
     }
 }
-
-void Player::restartTimer()
+Direction Player::getDirection() const
 {
-    m_cooldownClock.restart();
+    return m_direction;
 }
