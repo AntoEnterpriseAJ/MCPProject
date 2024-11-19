@@ -64,7 +64,7 @@ void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush>>& level
             {
                 if (obj.isDestroyed())
                 {
-                    BrickManager::destroyBlocksInArea(m_levelLayout, 3000, obj.getPosition());
+                    //BrickManager::destroyBlocksInArea(level, 3000, obj.getPosition());
                     return true;
                 }
               
