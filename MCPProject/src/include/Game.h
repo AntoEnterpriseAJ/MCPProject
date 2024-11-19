@@ -13,7 +13,8 @@ public:
     Game();
 
     void render();
-    void handleInputs();
+    void handleInputs(float deltaTime);
+    void insertPlayer(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
 
     static uint16_t getWindowWidth();
     static uint16_t getWindowHeight();
@@ -27,7 +28,7 @@ private:
 
 private:
     sf::Clock m_lastFrameTimeClock;
-    Player m_player; //TODO: vector of players for multiplayer
+    std::vector<Player> m_players; 
     sf::RenderWindow m_window;
     Level m_level;
     BulletManager m_bulletManager;

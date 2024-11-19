@@ -11,16 +11,30 @@ Game::Game()
     instance.loadTextureFromFile("res/missile.png", "bullet");
     instance.loadTextureFromFile("res/bush.png", "bush");
 
-    m_player = Player(
+    
+
+    insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 
         ResourceManager::getInstance().getTexture("player"), 
         sf::Vector2f{ 39.5f, 39.5f }
     );
+    insertPlayer(
+        sf::Vector2f{ 50.0f, 30.0f }, 
+        ResourceManager::getInstance().getTexture("player"), 
+        sf::Vector2f{ 20.5f, 20.5f }
+    );//testing
+    
+    insertPlayer(
+        sf::Vector2f{ 150.0f, 30.0f }, 
+        ResourceManager::getInstance().getTexture("player"), 
+        sf::Vector2f{ 20.5f, 20.5f }
+    );//testing
 
     m_level.loadResources();
 }
 
-void Game::handleInputs()
+
+void Game::handleInputs(float deltaTime)
 {
     sf::Event event;
     while (m_window.pollEvent(event))
@@ -35,43 +49,55 @@ void Game::handleInputs()
             m_window.close();
         }
 
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+        for (auto& player : m_players)
         {
-            if (m_player.canShoot())
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
             {
-                Direction dir = m_player.getDirection();
-                sf::Vector2f offset{ 0.0f, 0.0f };
-                float bulletOffsetDistance = 20.0f;
-
-                switch (m_player.getDirection())
+                if (player.canShoot())
                 {
-                case Direction::UP:
-                    offset.y = -bulletOffsetDistance;
-                    break;
-                case Direction::DOWN:
-                    offset.y = bulletOffsetDistance;
-                    break;
-                case Direction::LEFT:
-                    offset.x = -bulletOffsetDistance;
-                    break;
-                case Direction::RIGHT:
-                    offset.x = bulletOffsetDistance;
-                    break;
+                    Direction dir = player.getDirection();
+                    sf::Vector2f offset{ 0.0f, 0.0f };
+                    float bulletOffsetDistance = 20.0f;
+
+                    switch (player.getDirection())
+                    {
+                    case Direction::Up:
+                        offset.y = -bulletOffsetDistance;
+                        break;
+                    case Direction::Down:
+                        offset.y = bulletOffsetDistance;
+                        break;
+                    case Direction::Left:
+                        offset.x = -bulletOffsetDistance;
+                        break;
+                    case Direction::Right:
+                        offset.x = bulletOffsetDistance;
+                        break;
+                    }
+
+                    Bullet bullet{
+                        player.getPosition() + offset,
+                        ResourceManager::getInstance().getTexture("bullet"),
+                        player.getDirection()
+                    };
+
+                    m_bulletManager.addBullet(bullet);
+                    player.restartCooldown();
                 }
-
-                Bullet bullet{
-                    m_player.getPosition() + offset,
-                    ResourceManager::getInstance().getTexture("bullet"),
-                    m_player.getDirection()
-                };
-
-                m_bulletManager.addBullet(bullet);
-                m_player.restartTimer();
             }
         }
     }
 
-    m_player.movePlayer(Level::getBricks());
+    for (auto& player : m_players)
+    {
+        player.update(deltaTime);
+    }
+}
+
+
+void Game::insertPlayer(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
+{
+    m_players.emplace_back( pos, texture, size );
 }
 
 uint16_t Game::getWindowWidth()
@@ -109,27 +135,34 @@ void Game::drawGrid()
     }
 }
 
+
 void Game::render()
 {
     while (m_window.isOpen())
     {
         float deltaTime = m_lastFrameTimeClock.restart().asSeconds();
 
-        handleInputs();
+        handleInputs(deltaTime);
+
+        for (auto& player : m_players)
+        {
+            player.movePlayer(m_level.getBricks(), deltaTime);
+
+        }
         m_bulletManager.update(m_level.getBricks(), deltaTime);
 
         m_window.clear();
 
-        // Desenăm mai întâi bullet-urile (sub player)
         m_bulletManager.draw(m_window);
 
-        // Desenăm player-ul (peste bullet-uri)
-        m_window.draw(m_player);
+        for (auto& player : m_players)
+        {
+            m_window.draw(player);
+        }
 
-        // Desenăm bush-ul (peste player)
         m_window.draw(m_level);
 
-        drawGrid(); // debug purpose
+        drawGrid(); // Debugging purpose
 
         m_window.display();
     }
