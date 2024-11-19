@@ -6,25 +6,25 @@ Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
 
-    if (dir == Direction::UP)
+    if (dir == Direction::Up)
         m_sprite.setRotation(0.0f);
-    else if (dir == Direction::DOWN)
+    else if (dir == Direction::Down)
         m_sprite.setRotation(180.0f);
-    else if (dir == Direction::LEFT)
+    else if (dir == Direction::Left)
         m_sprite.setRotation(270.0f);
-    else if (dir == Direction::RIGHT)
+    else if (dir == Direction::Right)
         m_sprite.setRotation(90.0f);
 }
 
 void Bullet::update(float deltaTime)
 {
-    if (m_direction == Direction::UP)
+    if (m_direction == Direction::Up)
         this->move(0, -Bullet::kBulletSpeed * deltaTime);
-    else if (m_direction == Direction::DOWN)
+    else if (m_direction == Direction::Down)
         this->move(0, Bullet::kBulletSpeed * deltaTime);
-    else if (m_direction == Direction::LEFT)
+    else if (m_direction == Direction::Left)
         this->move(-Bullet::kBulletSpeed * deltaTime, 0);
-    else if (m_direction == Direction::RIGHT)
+    else if (m_direction == Direction::Right)
         this->move(Bullet::kBulletSpeed * deltaTime, 0);
 }
 
