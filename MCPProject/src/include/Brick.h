@@ -16,8 +16,9 @@ public:
 
     static int getSize();
 
-    bool isDestroyed() const;
-    void hit();
+    virtual bool isDestroyed() const;
+
+    virtual void hit();
 
     sf::FloatRect getBounds() const;
 

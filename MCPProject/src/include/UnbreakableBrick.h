@@ -3,24 +3,20 @@
 
 class UnbreakableBrick : public Brick {
 public:
-    /**
-     * Constructor pentru UnbreakableBrick.
-     *
-     * @param pos - poziția cărămizii în joc.
-     * @param texture - textura asociată cărămizii.
-     * @param size - dimensiunea cărămizii.
-     */
-    UnbreakableBrick(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size = sf::Vector2f(32.0f, 32.0f));
+    UnbreakableBrick(
+        sf::Vector2f pos,
+        const sf::Texture& texture,
+        sf::Vector2f size = sf::Vector2f(40.0f, 40.0f)
+    );
 
-    /**
-     * Suprascrierea metodei hit. Cărămida indestructibilă nu poate fi distrusă.
-     */
+    bool isPassable() const;
+
     void hit() override;
 
-    /**
-     * Verifică dacă este distrusă (mereu returnează false).
-     *
-     * @return false - cărămida este indestructibilă.
-     */
     bool isDestroyed() const override;
+
+    sf::FloatRect getBounds() const;
+
+private:
+    bool m_isPassable{ false };
 };

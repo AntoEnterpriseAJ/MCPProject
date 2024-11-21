@@ -1,4 +1,4 @@
-#include "BulletManager.h"
+﻿#include "BulletManager.h"
 #include "Game.h"
 #include "BrickManager.h"
 
@@ -12,7 +12,7 @@ void BulletManager::addBullet(const Bullet& bullet)
     std::cout << bullet.getSize().x << " " << bullet.getSize().y << "\n";
 }
 
-void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level, float deltaTime)
+void BulletManager::update(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level, float deltaTime)
 {
     handleCollisions(level);
 
@@ -29,11 +29,10 @@ void BulletManager::update(std::vector<std::variant<Brick, Bush>>& level, float 
 }
 
 //TODO: check if this is actually this painful to write
-void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& level)
+void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level)
 {
     for (auto& bullet : m_bullets)
     {
-        // TODO: don't check for every obj, check only the surroundings of the bullet
         for (auto& object : level)
         {
             std::visit([&](auto& obj) {
@@ -47,7 +46,14 @@ void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& lev
                         obj.hit();
                     }
                 }
-            }, object);
+                else if constexpr (std::is_same_v<objType, UnbreakableBrick>)
+                {
+                    if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
+                    {
+                        bullet.setState(Bullet::State::Inactive);
+                    }
+                }
+                }, object);
         }
     }
 
@@ -55,9 +61,9 @@ void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush>>& lev
 }
 
 //TODO: check if this is actually this painful to write
-void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush>>& level)
+void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level)
 {
-    std::erase_if(level, [](const std::variant<Brick, Bush>& object){
+    std::erase_if(level, [](const std::variant<Brick, Bush, UnbreakableBrick>& object){
         return std::visit([](const auto& obj) -> bool {
             using objType = std::decay_t<decltype(obj)>;
             if constexpr (std::is_same_v<objType, Brick>)

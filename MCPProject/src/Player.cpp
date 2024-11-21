@@ -34,7 +34,7 @@ void Player::restartCooldown()
 }
 
 
-bool Player::canMove(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime)
+bool Player::canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     sf::Vector2f movement = { 0, 0 };
@@ -64,16 +64,30 @@ bool Player::canMove(const std::vector<std::variant<Brick, Bush>>& levelLayout, 
         {
             if (playerBounds.intersects(brick->getBounds()))
             {
-                std::cout << "collides\n";
+                std::cout << "Collides with brick\n";
                 return false;
             }
         }
         
     }
+
+    for (const auto& obj : levelLayout)
+    {
+        if (auto unbreakableBrick = std::get_if<UnbreakableBrick>(&obj))
+        {
+            if (playerBounds.intersects(unbreakableBrick->getBounds()))
+            {
+                std::cout << "Collides with unbreakable brick\n";
+                return false;
+            }
+        }
+
+    }
+
     return true;
 }
 
-void Player::movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime)
+void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 

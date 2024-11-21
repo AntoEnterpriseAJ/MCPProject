@@ -147,7 +147,7 @@
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="UnbreakableBrick.cpp" />
+    <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\BrickManager.h" />
@@ -163,7 +163,7 @@
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
-    <ClInclude Include="UnbreakableBrick.h" />
+    <ClInclude Include="src\include\UnbreakableBrick.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="level1.txt" />

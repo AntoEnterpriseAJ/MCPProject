@@ -51,7 +51,7 @@
     <ClCompile Include="src\BrickManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnbreakableBrick.cpp">
+    <ClCompile Include="src\UnbreakableBrick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="src\include\BulletManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnbreakableBrick.h">
+    <ClInclude Include="src\include\UnbreakableBrick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

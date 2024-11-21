@@ -7,6 +7,7 @@
 #include "Bullet.h"
 #include "Brick.h"
 #include "Bush.h"
+#include "UnbreakableBrick.h"
 #include <variant>
 
 class Player : public GameObject
@@ -21,8 +22,8 @@ public:
     void restartCooldown();
     
     bool canShoot() const;
-    bool canMove(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime);
-    void movePlayer(const std::vector<std::variant<Brick, Bush>>& levelLayout, float deltaTime);
+    bool canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime);
+    void movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime);
 
 private:
     float             m_health;

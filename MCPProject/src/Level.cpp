@@ -1,4 +1,4 @@
-#include "Level.h"
+﻿#include "Level.h"
 
 #include <fstream>
 #include <iostream>
@@ -36,6 +36,12 @@ void Level::loadResources()
         return;
     }
 
+    if (!m_unbreakableTexture.loadFromFile("res/unbreakable.png"))
+    {
+        std::cerr << "ERROR: Failed to load the unbreakable brick texture!\n";
+        return;
+    }
+
     for (int i = 0; i < m_levelHeight; ++i)
     {
         for (int j = 0; j < m_levelWidth; ++j)
@@ -53,6 +59,11 @@ void Level::loadResources()
             {
                 Bush bush(position, m_bushTexture);
                 m_levelLayout.push_back(bush);
+            }
+            else if (textureType == 3)
+            {
+                UnbreakableBrick unbreakableBrick(position, m_unbreakableTexture);
+                m_levelLayout.push_back(unbreakableBrick);
             }
         }
     }
@@ -82,7 +93,7 @@ Brick& Level::findBrick(float posX, float posY)
     }
 }
 
-std::vector<std::variant<Brick, Bush>>& Level::getBricks()
+std::vector<LevelObject>& Level::getBricks()
 {
     return m_levelLayout;
 }

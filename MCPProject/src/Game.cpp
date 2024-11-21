@@ -10,8 +10,7 @@ Game::Game()
     instance.loadTextureFromFile("res/albedo.png", "brick");
     instance.loadTextureFromFile("res/missile.png", "bullet");
     instance.loadTextureFromFile("res/bush.png", "bush");
-
-    
+    instance.loadTextureFromFile("res/unbreakable.png", "unbreakableBrick");
 
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 

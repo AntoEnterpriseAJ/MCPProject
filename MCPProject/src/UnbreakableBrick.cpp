@@ -6,12 +6,22 @@ UnbreakableBrick::UnbreakableBrick(sf::Vector2f pos, const sf::Texture& texture,
 {
 }
 
+bool UnbreakableBrick::isPassable() const
+{
+    return m_isPassable;
+}
+
 void UnbreakableBrick::hit()
 {
-    // Nu se întâmplã nimic deoarece cãrãmida este indestructibilã.
+    // empty
 }
 
 bool UnbreakableBrick::isDestroyed() const
 {
-    return false; // Niciodatã nu este distrusã.
+    return false;
+}
+
+sf::FloatRect UnbreakableBrick::getBounds() const
+{
+    return getSprite().getGlobalBounds();
 }

@@ -1,6 +1,6 @@
 #include "BrickManager.h"
 
-void BrickManager::destroyBlocksInArea(std::vector<std::variant<Brick, Bush>>& bricks,
+void BrickManager::destroyBlocksInArea(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& bricks,
     float area, const sf::Vector2f& position)
 {
     for (int index = 0; index < bricks.size(); ++index)
