@@ -18,17 +18,18 @@ Game::Game()
         ResourceManager::getInstance().getTexture("player"), 
         sf::Vector2f{ 39.5f, 39.5f }
     );
-    insertPlayer(
-        sf::Vector2f{ 50.0f, 30.0f }, 
-        ResourceManager::getInstance().getTexture("player"), 
-        sf::Vector2f{ 20.5f, 20.5f }
-    );//testing
-    
-    insertPlayer(
-        sf::Vector2f{ 150.0f, 30.0f }, 
-        ResourceManager::getInstance().getTexture("player"), 
-        sf::Vector2f{ 20.5f, 20.5f }
-    );//testing
+
+    //insertPlayer(
+    //    sf::Vector2f{ 50.0f, 30.0f }, 
+    //    ResourceManager::getInstance().getTexture("player"), 
+    //    sf::Vector2f{ 20.5f, 20.5f }
+    //);//testing
+    //
+    //insertPlayer(
+    //    sf::Vector2f{ 150.0f, 30.0f }, 
+    //    ResourceManager::getInstance().getTexture("player"), 
+    //    sf::Vector2f{ 20.5f, 20.5f }
+    //);//testing
 
     m_level.loadResources();
 }
@@ -162,7 +163,7 @@ void Game::render()
 
         m_window.draw(m_level);
 
-        drawGrid(); // Debugging purpose
+        //drawGrid(); // Debugging purpose
 
         m_window.display();
     }
