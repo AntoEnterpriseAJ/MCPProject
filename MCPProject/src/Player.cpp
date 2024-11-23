@@ -34,7 +34,7 @@ void Player::restartCooldown()
 }
 
 
-bool Player::canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime)
+bool Player::canMove(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     sf::Vector2f movement = { 0, 0 };
@@ -57,6 +57,8 @@ bool Player::canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBric
 
     playerBounds.left += movement.x;
     playerBounds.top += movement.y;
+
+    const std::vector<LevelObject>& levelLayout = level.getBricks();
 
     for (const auto& obj : levelLayout)
     {
@@ -87,7 +89,7 @@ bool Player::canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBric
     return true;
 }
 
-void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime)
+void Player::movePlayer(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 
@@ -96,7 +98,7 @@ void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableB
         m_direction = Direction::Up;
         m_sprite.setRotation(0.0f);
 
-        if (canMove(levelLayout, deltaTime) && playerBounds.top > 0)
+        if (canMove(level, deltaTime) && playerBounds.top > 0)
         {
             m_sprite.move(0, -kPlayerSpeed * deltaTime);
         }
@@ -106,7 +108,7 @@ void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableB
         m_direction = Direction::Down;
         m_sprite.setRotation(180.0f);
 
-        if (canMove(levelLayout, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
+        if (canMove(level, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             m_sprite.move(0, kPlayerSpeed * deltaTime);
         }
@@ -116,7 +118,7 @@ void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableB
         m_direction = Direction::Left;
         m_sprite.setRotation(270.0f);
 
-        if (canMove(levelLayout, deltaTime) && playerBounds.left > 0)
+        if (canMove(level, deltaTime) && playerBounds.left > 0)
         {
             m_sprite.move(-kPlayerSpeed * deltaTime, 0);
         }
@@ -126,7 +128,7 @@ void Player::movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableB
         m_direction = Direction::Right;
         m_sprite.setRotation(90.0f);
 
-        if (canMove(levelLayout, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
+        if (canMove(level, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             m_sprite.move(kPlayerSpeed * deltaTime, 0);
         }

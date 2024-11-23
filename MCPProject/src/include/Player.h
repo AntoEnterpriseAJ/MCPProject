@@ -1,14 +1,8 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
-#include <vector>
-#include <list>
 #include "GameObject.h"
 #include "Direction.h"
-#include "Bullet.h"
-#include "Brick.h"
-#include "Bush.h"
-#include "UnbreakableBrick.h"
-#include <variant>
+#include "Level.h"
 
 class Player : public GameObject
 {
@@ -22,16 +16,14 @@ public:
     void restartCooldown();
     
     bool canShoot() const;
-    bool canMove(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime);
-    void movePlayer(const std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& levelLayout, float deltaTime);
+    bool canMove(const Level& level, float deltaTime);
+    void movePlayer(const Level& level, float deltaTime);
 
 private:
-    float             m_health;
-    Direction         m_direction    : 2;
-
-
-    float                  m_cooldownDuration;
     static constexpr float kCooldownTime = 0.5f;
-    static constexpr float kPlayerSpeed = 150.15f;
-
+    static constexpr float kPlayerSpeed = 150.0f;
+private:
+    float     m_health;
+    float     m_cooldownDuration;
+    Direction m_direction : 2;
 };
