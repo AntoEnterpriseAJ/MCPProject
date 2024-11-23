@@ -30,7 +30,8 @@ Game::Game()
     //    sf::Vector2f{ 20.5f, 20.5f }
     //);//testing
 
-    m_level.loadResources();
+
+    m_level.load();
 }
 
 
@@ -146,10 +147,10 @@ void Game::render()
 
         for (auto& player : m_players)
         {
-            player.movePlayer(m_level.getBricks(), deltaTime);
+            player.movePlayer(m_level, deltaTime);
 
         }
-        m_bulletManager.update(m_level.getBricks(), deltaTime);
+        m_bulletManager.update(m_level, deltaTime);
 
         m_window.clear();
 
