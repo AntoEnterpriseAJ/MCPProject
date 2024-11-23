@@ -52,7 +52,7 @@ void Game::handleInputs(float deltaTime)
 
         for (auto& player : m_players)
         {
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
             {
                 if (player.canShoot())
                 {
