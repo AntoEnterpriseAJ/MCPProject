@@ -1,11 +1,11 @@
 ﻿#include "Level.h"
+#include "ResourceManager.h"
 
 #include <fstream>
 #include <iostream>
 #include <random>
-#include <string>
 
-void Level::loadResources()
+void Level::load()
 {
     auto getRandomIndex = []() -> int {
         std::random_device rd;
@@ -24,45 +24,34 @@ void Level::loadResources()
         return;
     }
 
-    if (!m_brickTexture.loadFromFile("res/albedo.png"))
-    {
-        std::cerr << "ERROR: Failed to load the brick texture!\n";
-        return;
-    }
+    m_levelLayout.reserve(kLevelHeight * kLevelWidth);
 
-    if (!m_bushTexture.loadFromFile("res/bush.png"))
+    // TODO std::emplace_back not explicit enough, maybe std::push_back(std::move());
+    for (int i = 0; i < kLevelHeight; ++i)
     {
-        std::cerr << "ERROR: Failed to load the bush texture!\n";
-        return;
-    }
-
-    if (!m_unbreakableTexture.loadFromFile("res/unbreakable.png"))
-    {
-        std::cerr << "ERROR: Failed to load the unbreakable brick texture!\n";
-        return;
-    }
-
-    for (int i = 0; i < m_levelHeight; ++i)
-    {
-        for (int j = 0; j < m_levelWidth; ++j)
+        for (int j = 0; j < kLevelWidth; ++j)
         {
             int textureType;
             fin >> textureType;
 
             sf::Vector2f position(j * Brick::getSize(), i * Brick::getSize());
-            if (textureType == 1)
+            if (textureType == 0)
             {
-                Brick brick(position, m_brickTexture, true);
+                m_levelLayout.push_back(std::monostate{});
+            }
+            else if (textureType == 1)
+            {
+                Brick brick{position, ResourceManager::getInstance().getTexture("brick"), true};
                 m_levelLayout.push_back(brick);
             }
             else if (textureType == 2)
             {
-                Bush bush(position, m_bushTexture);
+                Bush bush{position, ResourceManager::getInstance().getTexture("bush")};
                 m_levelLayout.push_back(bush);
             }
             else if (textureType == 3)
             {
-                UnbreakableBrick unbreakableBrick(position, m_unbreakableTexture);
+                UnbreakableBrick unbreakableBrick{position, ResourceManager::getInstance().getTexture("unbreakableBrick")};
                 m_levelLayout.push_back(unbreakableBrick);
             }
         }
@@ -73,27 +62,37 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (const auto& obj : m_levelLayout)
     {
-        std::visit([&target, &states](const auto& obj) { target.draw(obj, states); }, obj);
+        std::visit([&target, &states](const auto& levelObject)
+        {
+            using objType = std::decay_t<decltype(levelObject)>;
+
+            if constexpr (!std::is_same_v<objType, std::monostate>)
+            {
+                levelObject.draw(target, states);
+            }
+
+        }, obj);
     }
 }
 
-Brick& Level::findBrick(float posX, float posY)
+LevelObject& Level::operator[](const Position& position)
 {
+    const auto& [row, column] = position;
+    return m_levelLayout[row * kLevelWidth + column];
+}
 
-    for (auto& obj : m_levelLayout)
-    {
-        if (auto* brick = std::get_if<Brick>(&obj))
-        {
-            if (std::abs(brick->getPosition().x - posX) < 0.1f &&
-                std::abs(brick->getPosition().y - posY) < 0.1f)
-            {
-                return *brick;
-            }
-        }
-    }
+const LevelObject& Level::operator[](const Position& position) const
+{
+    const auto& [row, column] = position;
+    return m_levelLayout[row * kLevelHeight + column];
 }
 
 std::vector<LevelObject>& Level::getBricks()
+{
+    return m_levelLayout;
+}
+
+const std::vector<LevelObject>& Level::getBricks() const
 {
     return m_levelLayout;
 }

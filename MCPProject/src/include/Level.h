@@ -6,24 +6,24 @@
 #include <vector>
 #include <variant>
 
-using LevelObject = std::variant<Brick, Bush, UnbreakableBrick>;
+using LevelObject = std::variant<std::monostate, Brick, Bush, UnbreakableBrick>;
 
 class Level : public sf::Drawable
 {
 public:
-    void loadResources();
+    using Position = std::pair<uint16_t, uint16_t>;
+public:
+    void load();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    Brick& findBrick(float posX, float posY);
+    LevelObject& operator[](const Position& position);
+    const LevelObject& operator[](const Position& position) const;
+
     std::vector<LevelObject>& getBricks();
+    const std::vector<LevelObject>& getBricks() const;
 private:
-    int m_levelWidth{ 30 };
-    int m_levelHeight{ 20 };
-
-
+    static constexpr uint16_t kLevelWidth{ 30 };
+    static constexpr uint16_t kLevelHeight{ 20 };
+private:
     std::vector<LevelObject> m_levelLayout;
-
-    sf::Texture m_brickTexture;
-    sf::Texture m_bushTexture;
-    sf::Texture m_unbreakableTexture;
 };
