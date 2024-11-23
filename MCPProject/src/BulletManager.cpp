@@ -1,8 +1,6 @@
 ﻿#include "BulletManager.h"
 #include "Game.h"
 #include "BrickManager.h"
-
-
 #include <iostream>
 
 void BulletManager::addBullet(const Bullet& bullet)
@@ -12,7 +10,7 @@ void BulletManager::addBullet(const Bullet& bullet)
     std::cout << bullet.getSize().x << " " << bullet.getSize().y << "\n";
 }
 
-void BulletManager::update(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level, float deltaTime)
+void BulletManager::update(Level& level, float deltaTime)
 {
     handleCollisions(level);
 
@@ -29,11 +27,13 @@ void BulletManager::update(std::vector<std::variant<Brick, Bush, UnbreakableBric
 }
 
 //TODO: check if this is actually this painful to write
-void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level)
+void BulletManager::handleCollisions(Level& level)
 {
+    std::vector<LevelObject>& levelLayout = level.getBricks();
+
     for (auto& bullet : m_bullets)
     {
-        for (auto& object : level)
+        for (auto& object : levelLayout)
         {
             std::visit([&](auto& obj) {
                 using objType = std::decay_t<decltype(obj)>;
@@ -61,9 +61,11 @@ void BulletManager::handleCollisions(std::vector<std::variant<Brick, Bush, Unbre
 }
 
 //TODO: check if this is actually this painful to write
-void BulletManager::removeInactive(std::vector<std::variant<Brick, Bush, UnbreakableBrick>>& level)
+void BulletManager::removeInactive(Level& level)
 {
-    std::erase_if(level, [](const std::variant<Brick, Bush, UnbreakableBrick>& object){
+    std::vector<LevelObject>& levelLayout = level.getBricks();
+
+    std::erase_if(levelLayout, [](const LevelObject& object){
         return std::visit([](const auto& obj) -> bool {
             using objType = std::decay_t<decltype(obj)>;
             if constexpr (std::is_same_v<objType, Brick>)
