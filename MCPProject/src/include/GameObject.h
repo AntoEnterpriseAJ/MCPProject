@@ -26,10 +26,10 @@ public:
 		const sf::Vector2f& downRight
 	);
 
-	sf::Vector2f getPosition() const;
-	sf::Vector2f getSize()	   const;
-	sf::Vector2f getVelocity() const;
-	sf::Sprite   getSprite()   const;
+	sf::Vector2f getPosition() const noexcept;
+	sf::Vector2f getSize()	   const noexcept;
+	sf::Vector2f getVelocity() const noexcept;
+	sf::Sprite   getSprite()   const noexcept;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

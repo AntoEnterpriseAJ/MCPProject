@@ -44,23 +44,23 @@ bool GameObject::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRi
 		y <= upLeft.y && y >= downRight.y;
 }
 
-sf::Vector2f GameObject::getPosition() const
+sf::Vector2f GameObject::getPosition() const noexcept
 {
 	return m_sprite.getPosition();
 }
 
-sf::Vector2f GameObject::getSize() const
+sf::Vector2f GameObject::getSize() const noexcept
 {
 	sf::FloatRect bounds = m_sprite.getGlobalBounds();
     return {bounds.width, bounds.height};
 }
 
-sf::Vector2f GameObject::getVelocity() const
+sf::Vector2f GameObject::getVelocity() const noexcept
 {
 	return m_velocity;
 }
 
-sf::Sprite GameObject::getSprite() const
+sf::Sprite GameObject::getSprite() const noexcept
 {
 	return m_sprite;
 }
