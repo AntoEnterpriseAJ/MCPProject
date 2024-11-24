@@ -15,7 +15,7 @@ void Level::load()
         };
 
     int randomIndex = getRandomIndex();
-    std::string levelFileName = "level" + std::to_string(randomIndex) + ".txt";
+    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";
 
     std::ifstream fin(levelFileName);
     if (!fin)
