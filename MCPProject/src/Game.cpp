@@ -6,11 +6,11 @@ Game::Game()
 {
     ResourceManager& instance = ResourceManager::getInstance();
 
-    instance.loadTextureFromFile("res/plane.png", "player");
-    instance.loadTextureFromFile("res/albedo.png", "brick");
-    instance.loadTextureFromFile("res/missile.png", "bullet");
-    instance.loadTextureFromFile("res/bush.png", "bush");
-    instance.loadTextureFromFile("res/unbreakable.png", "unbreakableBrick");
+    instance.loadTextureFromFile("res/textures/plane.png", "player");
+    instance.loadTextureFromFile("res/textures/albedo.png", "brick");
+    instance.loadTextureFromFile("res/textures/missile.png", "bullet");
+    instance.loadTextureFromFile("res/textures/bush.png", "bush");
+    instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
 
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 
