@@ -44,7 +44,7 @@ void BulletManager::handleCollisions(Level& level)
             std::visit([&](auto& obj) {
                 using objType = std::decay_t<decltype(obj)>;
 
-                if constexpr (std::is_same_v<objType, Brick>)
+                if constexpr (std::is_same_v<objType, Brick> || std::is_same_v<objType, UnbreakableBrick>)
                 {
                     if (bullet.getBounds().intersects(obj.getBounds()))
                     {
@@ -52,13 +52,6 @@ void BulletManager::handleCollisions(Level& level)
 
                         addExplosion(bullet); // TODO: fix, it can add 2 explosions at once if bullet hits 2 bricks
                         obj.hit();
-                    }
-                }
-                else if constexpr (std::is_same_v<objType, UnbreakableBrick>)
-                {
-                    if (bullet.getBounds().intersects(obj.getBounds()))
-                    {
-                        bullet.setState(Bullet::State::Inactive);
                     }
                 }
             }, object);
