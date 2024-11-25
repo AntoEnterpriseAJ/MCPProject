@@ -1,5 +1,6 @@
 ﻿#include "Game.h"
 #include "ResourceManager.h"
+#include "Explosion.h"
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}
@@ -12,6 +13,7 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
     instance.loadTextureFromFile("res/textures/background.png", "background");
+    instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
 
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 
@@ -136,7 +138,6 @@ void Game::drawGrid()
         m_window.draw(line, 2, sf::Lines);
     }
 }
-
 
 void Game::render()
 {
