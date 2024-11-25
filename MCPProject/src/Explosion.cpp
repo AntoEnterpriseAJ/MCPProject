@@ -52,10 +52,5 @@ void Explosion::updateExplosionFrame()
     int col = m_currentFrame % 4;
 
     sf::IntRect currentFrame = sf::IntRect(col * 32, row * 32, 32, 32);
-
-    std::cout << "TextureRect(" << currentFrame.left << ", "
-        << currentFrame.top << ", " << currentFrame.width << ", "
-        << currentFrame.height << ")" << std::endl;
-
     m_explosionSheet.setTextureRect(currentFrame);
 }
