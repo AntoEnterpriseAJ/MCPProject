@@ -15,6 +15,7 @@ public:
 public:
     void load();
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void drawBackground(sf::RenderWindow& window) const;
 
     LevelObject& operator[](const Position& position);
     const LevelObject& operator[](const Position& position) const;
@@ -22,8 +23,11 @@ public:
     std::vector<LevelObject>& getBricks();
     const std::vector<LevelObject>& getBricks() const;
 private:
+    void loadBackground();
+private:
     static constexpr uint16_t kLevelWidth{ 30 };
     static constexpr uint16_t kLevelHeight{ 20 };
 private:
     std::vector<LevelObject> m_levelLayout;
+    sf::Sprite m_background;
 };

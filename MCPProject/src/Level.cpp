@@ -14,6 +14,8 @@ void Level::load()
         return dist(gen);
         };
 
+    loadBackground();
+
     int randomIndex = getRandomIndex();
     std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";
 
@@ -75,6 +77,11 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 }
 
+void Level::drawBackground(sf::RenderWindow& window) const
+{
+    window.draw(m_background);
+}
+
 LevelObject& Level::operator[](const Position& position)
 {
     const auto& [row, column] = position;
@@ -95,4 +102,10 @@ std::vector<LevelObject>& Level::getBricks()
 const std::vector<LevelObject>& Level::getBricks() const
 {
     return m_levelLayout;
+}
+
+void Level::loadBackground()
+{
+    m_background.setTexture(ResourceManager::getInstance().getTexture("background"));
+    m_background.setPosition(sf::Vector2{ 0.0f, 0.0f });
 }
