@@ -2,7 +2,6 @@
 #include "SFML/Graphics.hpp"
 #include "GameObject.h"
 
-static constexpr int kBrickSize = 40;
 
 class Brick : public GameObject
 {
@@ -14,16 +13,13 @@ public:
         sf::Vector2f       size = sf::Vector2f(kBrickSize, kBrickSize)
     );
 
+    bool isDestroyed() const;
+    void hit();
+
     static int getSize();
 
-    virtual bool isDestroyed() const;
-
-    virtual void hit();
-
-    sf::FloatRect getBounds() const;
-
-    bool operator==(const Brick& other) const;
-
+private:
+    static constexpr int kBrickSize = 40;
 private:
     bool m_isDestroyable   { false };
     int  m_brickHealth     { 3 };

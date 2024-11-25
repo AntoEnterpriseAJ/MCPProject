@@ -20,13 +20,3 @@ void Brick::hit()
 {
     m_brickHealth--;
 }
-
-sf::FloatRect Brick::getBounds() const
-{
-    return getSprite().getGlobalBounds();
-}
-
-bool Brick::operator==(const Brick& other) const
-{
-    return this == &other;
-}
