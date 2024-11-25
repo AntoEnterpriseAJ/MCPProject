@@ -36,7 +36,7 @@ void Player::restartCooldown()
 
 bool Player::canMove(const Level& level, float deltaTime)
 {
-    sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
+    sf::FloatRect playerBounds = this->getBounds();
     sf::Vector2f movement = { 0, 0 };
 
     switch (m_direction)
