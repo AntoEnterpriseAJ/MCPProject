@@ -12,9 +12,6 @@ public:
     );
 
     bool isPassable() const;
-    sf::FloatRect getBounds() const;
-
-    bool operator==(const Bush& other) const;
 
 private:
     bool m_isPassable{ true }; // Bushurile sunt traversabile
