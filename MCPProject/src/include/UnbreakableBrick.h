@@ -11,12 +11,6 @@ public:
 
     bool isPassable() const;
 
-    void hit() override;
-
-    bool isDestroyed() const override;
-
-    sf::FloatRect getBounds() const;
-
 private:
     bool m_isPassable{ false };
 };

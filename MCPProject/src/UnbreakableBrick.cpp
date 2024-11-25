@@ -10,18 +10,3 @@ bool UnbreakableBrick::isPassable() const
 {
     return m_isPassable;
 }
-
-void UnbreakableBrick::hit()
-{
-    // empty
-}
-
-bool UnbreakableBrick::isDestroyed() const
-{
-    return false;
-}
-
-sf::FloatRect UnbreakableBrick::getBounds() const
-{
-    return getSprite().getGlobalBounds();
-}
