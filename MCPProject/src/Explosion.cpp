@@ -1,46 +1,61 @@
 #include "Explosion.h"
+#include <iostream>
 
-Explosion::Explosion(float x, float y, const std::vector<sf::Texture>& textures)
-    : frames(textures), currentFrame(0), frameTime(0.1f), elapsedTime(0.0f), finished(false)
+Explosion::Explosion(sf::Vector2f position, const sf::Texture& explosionSheet)
+    : m_currentFrame{ 0 }, m_frameTime{ 0.05f }
+    , m_elapsedTime{ 0.0f }, m_finished{ false }
 {
-    sprite.setTexture(frames[currentFrame]);
-    sprite.setPosition(x, y);
-    sprite.setOrigin(sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height / 2);
+    m_explosionSheet.setTexture(explosionSheet);
+
+    m_explosionSheet.setTextureRect(sf::IntRect(0, 0, 32, 32));
+
+    m_explosionSheet.setOrigin(16.0f, 16.0f);
+    m_explosionSheet.setPosition(position);
 }
 
 void Explosion::update(float deltaTime) 
 {
-    elapsedTime += deltaTime;
-    if (elapsedTime >= frameTime)
+    m_elapsedTime += deltaTime;
+    if (m_elapsedTime >= m_frameTime)
     {
-        elapsedTime = 0.0f;
-        currentFrame++;
+        if (m_currentFrame < 16)
+        {
+            updateExplosionFrame();
+        }
+        else
+        {
+            m_finished = true;
 
-        if (currentFrame < frames.size()) 
-        {
-            sprite.setTexture(frames[currentFrame]);
+            sf::IntRect finishedFrame = sf::IntRect(0, 0, 0, 0);
+            m_explosionSheet.setTextureRect(finishedFrame);
         }
-        else 
-        {
-            finished = true;
-        }
+
+
+        m_elapsedTime = 0.0f;
+        m_currentFrame++;
     }
 }
 
-void Explosion::draw(sf::RenderWindow& window) const 
+void Explosion::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (!finished) 
-    {
-        window.draw(sprite);
-    }
+    target.draw(m_explosionSheet, states);
 }
 
 bool Explosion::hasFinished() const 
 {
-    return finished;
+    return m_finished;
 }
 
-sf::Vector2f Explosion::getPosition() const
+void Explosion::updateExplosionFrame()
 {
-    return sprite.getPosition();
+    int row = m_currentFrame / 4;
+    int col = m_currentFrame % 4;
+
+    sf::IntRect currentFrame = sf::IntRect(col * 32, row * 32, 32, 32);
+
+    std::cout << "TextureRect(" << currentFrame.left << ", "
+        << currentFrame.top << ", " << currentFrame.width << ", "
+        << currentFrame.height << ")" << std::endl;
+
+    m_explosionSheet.setTextureRect(currentFrame);
 }

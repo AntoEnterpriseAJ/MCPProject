@@ -2,22 +2,24 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class Explosion 
+class Explosion : public sf::Drawable
 {
 public:
-    Explosion(float x, float y, const std::vector<sf::Texture>& textures);
+    Explosion(sf::Vector2f position, const sf::Texture& explosionSheet);
 
     void update(float deltaTime);
-    void draw(sf::RenderWindow& window) const;
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
     bool hasFinished() const;
-    sf::Vector2f getPosition() const;
 
 private:
-    std::vector<sf::Texture> frames;
-    sf::Sprite sprite;
+    void updateExplosionFrame();
+private:
+    sf::Sprite m_explosionSheet;
 
-    int   currentFrame;
-    float frameTime;
-    float elapsedTime;
-    bool  finished;
+    int   m_currentFrame;
+    float m_frameTime;
+    float m_elapsedTime;
+    bool  m_finished;
 };
