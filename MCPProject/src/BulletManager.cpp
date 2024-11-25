@@ -50,7 +50,7 @@ void BulletManager::handleCollisions(Level& level)
                     {
                         bullet.setState(Bullet::State::Inactive);
 
-                        addExplosion(bullet);
+                        addExplosion(bullet); // TODO: fix, it can add 2 explosions at once if bullet hits 2 bricks
                         obj.hit();
                     }
                 }
@@ -61,7 +61,7 @@ void BulletManager::handleCollisions(Level& level)
                         bullet.setState(Bullet::State::Inactive);
                     }
                 }
-                }, object);
+            }, object);
         }
     }
 
@@ -126,6 +126,10 @@ void BulletManager::removeInactive(Level& level)
 
     std::erase_if(m_bullets, [](const Bullet& bullet){
         return bullet.getState() == Bullet::State::Inactive;
+    });
+
+    std::erase_if(m_explosions, [](const Explosion& explosion) {
+        return explosion.hasFinished();
     });
 }
 
