@@ -1,6 +1,7 @@
 ﻿#include "BulletManager.h"
 #include "Game.h"
 #include "BrickManager.h"
+#include "ResourceManager.h"
 #include <iostream>
 
 void BulletManager::addBullet(const Bullet& bullet)
@@ -24,6 +25,11 @@ void BulletManager::update(Level& level, float deltaTime)
             bullet.setState(Bullet::State::Inactive);
         }
     }
+
+    for (auto& explosion : m_explosions)
+    {
+        explosion.update(deltaTime);
+    }
 }
 
 //TODO: check if this is actually this painful to write
@@ -40,15 +46,17 @@ void BulletManager::handleCollisions(Level& level)
 
                 if constexpr (std::is_same_v<objType, Brick>)
                 {
-                    if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
+                    if (bullet.getBounds().intersects(obj.getBounds()))
                     {
                         bullet.setState(Bullet::State::Inactive);
+
+                        addExplosion(bullet);
                         obj.hit();
                     }
                 }
                 else if constexpr (std::is_same_v<objType, UnbreakableBrick>)
                 {
-                    if (bullet.getSprite().getGlobalBounds().intersects(obj.getSprite().getGlobalBounds()))
+                    if (bullet.getBounds().intersects(obj.getBounds()))
                     {
                         bullet.setState(Bullet::State::Inactive);
                     }
@@ -58,6 +66,38 @@ void BulletManager::handleCollisions(Level& level)
     }
 
     removeInactive(level);
+}
+
+void BulletManager::addExplosion(const Bullet& bullet)
+{
+    Direction direction = bullet.getDirection();
+
+    switch (direction)
+    {
+    case Direction::Right:
+        m_explosions.push_back(
+            Explosion(bullet.getPosition() + sf::Vector2f(bullet.getSize().x / 2.0f, 0),
+                ResourceManager::getInstance().getTexture("explosionSheet"))
+        );
+        break;
+    case Direction::Left:
+        m_explosions.push_back(
+            Explosion(bullet.getPosition() - sf::Vector2f(bullet.getSize().x / 2.0f, 0),
+                ResourceManager::getInstance().getTexture("explosionSheet"))
+        );
+        break;
+    case Direction::Up:
+        m_explosions.push_back(
+            Explosion(bullet.getPosition() - sf::Vector2f(0, bullet.getSize().y / 2.0f),
+                ResourceManager::getInstance().getTexture("explosionSheet"))
+        );
+        break;
+    case Direction::Down:
+        m_explosions.push_back(
+            Explosion(bullet.getPosition() + sf::Vector2f(0, bullet.getSize().y / 2.0f),
+                ResourceManager::getInstance().getTexture("explosionSheet"))
+        );
+    }
 }
 
 //TODO: check if this is actually this painful to write
@@ -94,5 +134,10 @@ void BulletManager::draw(sf::RenderWindow& window) const
     for (auto& bullet : m_bullets)
     {
         window.draw(bullet);
+    }
+
+    for (auto& explosion : m_explosions)
+    {
+        window.draw(explosion);
     }
 }

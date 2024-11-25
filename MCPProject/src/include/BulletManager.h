@@ -2,6 +2,7 @@
 #include "Bullet.h"
 #include "Brick.h"
 #include "Player.h"
+#include "Explosion.h"
 #include <variant>
 
 class BulletManager
@@ -14,7 +15,9 @@ public:
 
 private:
     void handleCollisions(Level& level);
+    void addExplosion(const Bullet& bullet);
     void removeInactive(Level& level);
 private:
-    std::vector<Bullet> m_bullets;
+    std::vector<Bullet>    m_bullets;
+    std::vector<Explosion> m_explosions; // TODO: if it doesn't make sense, move it later
 };
