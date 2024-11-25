@@ -11,6 +11,7 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/missile.png", "bullet");
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
+    instance.loadTextureFromFile("res/textures/background.png", "background");
 
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 
@@ -154,6 +155,7 @@ void Game::render()
 
         m_window.clear();
 
+        m_level.drawBackground(m_window);
         m_bulletManager.draw(m_window);
 
         for (auto& player : m_players)
