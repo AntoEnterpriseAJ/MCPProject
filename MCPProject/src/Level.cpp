@@ -37,24 +37,37 @@ void Level::load()
             fin >> textureType;
 
             sf::Vector2f position(j * Brick::getSize(), i * Brick::getSize());
-            if (textureType == 0)
+
+            switch (textureType)
             {
-                m_levelLayout.push_back(std::monostate{});
-            }
-            else if (textureType == 1)
-            {
-                Brick brick{position, ResourceManager::getInstance().getTexture("brick"), true};
-                m_levelLayout.push_back(brick);
-            }
-            else if (textureType == 2)
-            {
-                Bush bush{position, ResourceManager::getInstance().getTexture("bush")};
-                m_levelLayout.push_back(bush);
-            }
-            else if (textureType == 3)
-            {
-                UnbreakableBrick unbreakableBrick{position, ResourceManager::getInstance().getTexture("unbreakableBrick")};
-                m_levelLayout.push_back(unbreakableBrick);
+                case 0:
+                {
+                    m_levelLayout.emplace_back(std::monostate{});
+                    break;
+                }
+                case 1:
+                {
+                    m_levelLayout.emplace_back(
+                        Brick{ position, ResourceManager::getInstance().getTexture("brick"), true });
+                    break;
+                }
+                case 2:
+                {
+                    m_levelLayout.emplace_back(
+                        Bush{ position, ResourceManager::getInstance().getTexture("bush") });
+                    break;
+                }
+                case 3:
+                {
+                    m_levelLayout.emplace_back(
+                        UnbreakableBrick{ position, ResourceManager::getInstance().getTexture("unbreakableBrick") });
+                    break;
+                }
+                default:
+                {
+                    std::cerr << "Error! Invalid texture!\n";
+                    break;
+                }
             }
         }
     }
