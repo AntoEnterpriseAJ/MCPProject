@@ -54,7 +54,7 @@
     <ClCompile Include="src\UnbreakableBrick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
+    <ClCompile Include="src\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,7 +98,7 @@
     <ClInclude Include="src\include\UnbreakableBrick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.h">
+    <ClInclude Include="src\include\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

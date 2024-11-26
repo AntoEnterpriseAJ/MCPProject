@@ -135,7 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Bush.cpp" />
@@ -144,6 +143,7 @@
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\BrickManager.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -151,7 +151,6 @@
     <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="src\include\BrickManager.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
@@ -162,6 +161,7 @@
     <ClInclude Include="src\include\Game.h" />
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Level.h" />
+    <ClInclude Include="src\include\Menu.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
     <ClInclude Include="src\include\UnbreakableBrick.h" />
