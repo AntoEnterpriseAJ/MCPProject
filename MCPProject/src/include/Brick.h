@@ -23,5 +23,4 @@ private:
 private:
     bool m_isDestroyable   { false };
     int  m_brickHealth     { 3 };
-    int  m_explosionRadius { 3 };
 };

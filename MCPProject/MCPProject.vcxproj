@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Bush.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\BrickManager.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
