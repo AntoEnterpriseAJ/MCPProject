@@ -16,4 +16,7 @@ private:
     sf::Text startButton;
     sf::Text exitButton;
     bool startGame = false;
+
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
 };

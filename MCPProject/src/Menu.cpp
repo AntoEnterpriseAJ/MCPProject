@@ -1,10 +1,23 @@
-#include "Menu.h"
+﻿#include "Menu.h"
+#include <iostream>
 
 Menu::Menu(float width, float height) 
 {
+    if (!backgroundTexture.loadFromFile("res/textures/background_menu.png")) 
+    {
+        std::cerr << "Nu s-a putut incarca imaginea de fundal!" << std::endl;
+    }
+
+    backgroundSprite.setTexture(backgroundTexture);
+
+    backgroundSprite.setScale(
+        static_cast<float>(width) / backgroundTexture.getSize().x,
+        static_cast<float>(height) / backgroundTexture.getSize().y
+    );
+
     if (!font.loadFromFile("res/Jaro/Jaro-Regular-VariableFont_opsz.ttf"))
     {
-        // ERROR
+        std::cerr << "Nu s-a putut incarca font-ul!" << std::endl;
     }
 
     startButton.setFont(font);
@@ -20,6 +33,8 @@ Menu::Menu(float width, float height)
 
 void Menu::draw(sf::RenderWindow& window) 
 {
+    window.draw(backgroundSprite);
+
     window.draw(startButton);
     window.draw(exitButton);
 }
