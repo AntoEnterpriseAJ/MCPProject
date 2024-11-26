@@ -18,7 +18,7 @@ Game::Game()
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f }, 
         ResourceManager::getInstance().getTexture("player"), 
-        sf::Vector2f{ 39.5f, 39.5f }
+        sf::Vector2f{ 39.9f, 39.9f }
     );
 
     //insertPlayer(

@@ -93,8 +93,20 @@ void Player::movePlayer(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
 
+    auto alignToGrid = [](float value, int gridSize) -> float {
+        return std::round(value / gridSize) * gridSize;
+        };
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
+        if (m_direction != Direction::Up)
+        {
+            m_sprite.setPosition(
+                alignToGrid(m_sprite.getPosition().x, 10),
+                m_sprite.getPosition().y
+            );
+        }
+
         m_direction = Direction::Up;
         m_sprite.setRotation(0.0f);
 
@@ -105,6 +117,14 @@ void Player::movePlayer(const Level& level, float deltaTime)
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
+        if (m_direction != Direction::Down)
+        {
+            m_sprite.setPosition(
+                alignToGrid(m_sprite.getPosition().x, 10),
+                m_sprite.getPosition().y
+            );
+        }
+
         m_direction = Direction::Down;
         m_sprite.setRotation(180.0f);
 
@@ -115,6 +135,14 @@ void Player::movePlayer(const Level& level, float deltaTime)
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
+        if (m_direction != Direction::Left)
+        {
+            m_sprite.setPosition(
+                m_sprite.getPosition().x,
+                alignToGrid(m_sprite.getPosition().y, 10)
+            );
+        }
+
         m_direction = Direction::Left;
         m_sprite.setRotation(270.0f);
 
@@ -125,6 +153,14 @@ void Player::movePlayer(const Level& level, float deltaTime)
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
+        if (m_direction != Direction::Right)
+        {
+            m_sprite.setPosition(
+                m_sprite.getPosition().x,
+                alignToGrid(m_sprite.getPosition().y, 10)
+            );
+        }
+
         m_direction = Direction::Right;
         m_sprite.setRotation(90.0f);
 
@@ -134,6 +170,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         }
     }
 }
+
 Direction Player::getDirection() const
 {
     return m_direction;
