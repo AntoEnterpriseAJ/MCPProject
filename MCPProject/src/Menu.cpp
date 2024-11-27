@@ -15,7 +15,7 @@ Menu::Menu(float width, float height)
         static_cast<float>(height) / backgroundTexture.getSize().y
     );
 
-    if (!font.loadFromFile("res/Jaro/Jaro-Regular-VariableFont_opsz.ttf"))
+    if (!font.loadFromFile("res/font_text/Jaro-Regular-VariableFont_opsz.ttf"))
     {
         std::cerr << "Nu s-a putut incarca font-ul!" << std::endl;
     }
