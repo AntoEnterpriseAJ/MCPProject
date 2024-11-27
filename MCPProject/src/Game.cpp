@@ -3,8 +3,8 @@
 #include "Explosion.h"
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}
-{
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}, m_menu{ kWindowWidth,kWindowHeight }, m_gameState{ GameState::Menu }
+{//TODO:Integrate menu initialization here
     ResourceManager& instance = ResourceManager::getInstance();
 
     instance.loadTextureFromFile("res/textures/plane.png", "player");
@@ -16,8 +16,8 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
 
     insertPlayer(
-        sf::Vector2f{ 100.0f, 80.0f }, 
-        ResourceManager::getInstance().getTexture("player"), 
+        sf::Vector2f{ 100.0f, 80.0f },
+        ResourceManager::getInstance().getTexture("player"),
         sf::Vector2f{ 39.9f, 39.9f }
     );
 
@@ -101,7 +101,7 @@ void Game::handleInputs(float deltaTime)
 
 void Game::insertPlayer(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
 {
-    m_players.emplace_back( pos, texture, size );
+    m_players.emplace_back(pos, texture, size);
 }
 
 uint16_t Game::getWindowWidth()
@@ -145,29 +145,53 @@ void Game::render()
     {
         float deltaTime = m_lastFrameTimeClock.restart().asSeconds();
 
-        handleInputs(deltaTime);
-
-        for (auto& player : m_players)
+        if (m_gameState == GameState::Menu)
         {
-            player.movePlayer(m_level, deltaTime);
+            sf::Event event;
+            while (m_window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                {
+                    m_window.close();
+                }
+            }
 
+            m_menu.handleInput(m_window);
+
+            if (m_menu.isStartGameSelected())
+            {
+                m_gameState = GameState::Playing;
+            }
+
+            m_window.clear();
+            m_menu.draw(m_window);
+            m_window.display();
         }
-        m_bulletManager.update(m_level, deltaTime);
-
-        m_window.clear();
-
-        m_level.drawBackground(m_window);
-        m_bulletManager.draw(m_window);
-
-        for (auto& player : m_players)
+        else if (m_gameState == GameState::Playing)
         {
-            m_window.draw(player);
+            handleInputs(deltaTime);
+
+            for (auto& player : m_players)
+            {
+                player.movePlayer(m_level, deltaTime);
+            }
+
+            m_bulletManager.update(m_level, deltaTime);
+
+            m_window.clear();
+
+            m_level.drawBackground(m_window);
+            m_bulletManager.draw(m_window);
+
+            for (auto& player : m_players)
+            {
+                m_window.draw(player);
+            }
+
+            m_window.draw(m_level);
+            // drawGrid(); // Uncomment for debugging
+
+            m_window.display();
         }
-
-        m_window.draw(m_level);
-
-        //drawGrid(); // Debugging purpose
-
-        m_window.display();
     }
 }

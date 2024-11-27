@@ -5,11 +5,18 @@
 #include "Level.h"
 #include "BulletManager.h"
 #include "BrickManager.h"
+#include "Menu.h"
 
 
 class Game
 {
 public:
+    enum class GameState
+    {
+        Menu,
+        Playing
+    };
+
     Game();
 
     void render();
@@ -22,12 +29,14 @@ public:
 private:
     void drawGrid();
 private:
-    static constexpr uint16_t kWindowWidth  { 1200 };
-    static constexpr uint16_t kWindowHeight { 800  };
+    static constexpr uint16_t kWindowWidth{ 1200 };
+    static constexpr uint16_t kWindowHeight{ 800 };
 private:
+    GameState              m_gameState;
     sf::Clock              m_lastFrameTimeClock;
-    std::vector<Player>    m_players; 
+    std::vector<Player>    m_players;
     sf::RenderWindow       m_window;
+    Menu                   m_menu;
     Level                  m_level;
     BulletManager          m_bulletManager;
 };
