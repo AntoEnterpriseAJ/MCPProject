@@ -3,7 +3,7 @@
 
 int main() 
 {
-    sf::RenderWindow window(sf::VideoMode(1200, 800), "Joc");
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "Game");
 
     Menu menu(window.getSize().x, window.getSize().y);
 

@@ -102,7 +102,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         if (m_direction != Direction::Up)
         {
             m_sprite.setPosition(
-                alignToGrid(m_sprite.getPosition().x, 10),
+                alignToGrid(m_sprite.getPosition().x, 20),
                 m_sprite.getPosition().y
             );
         }
@@ -120,7 +120,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         if (m_direction != Direction::Down)
         {
             m_sprite.setPosition(
-                alignToGrid(m_sprite.getPosition().x, 10),
+                alignToGrid(m_sprite.getPosition().x, 20),
                 m_sprite.getPosition().y
             );
         }
@@ -139,7 +139,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         {
             m_sprite.setPosition(
                 m_sprite.getPosition().x,
-                alignToGrid(m_sprite.getPosition().y, 10)
+                alignToGrid(m_sprite.getPosition().y, 20)
             );
         }
 
@@ -157,7 +157,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         {
             m_sprite.setPosition(
                 m_sprite.getPosition().x,
-                alignToGrid(m_sprite.getPosition().y, 10)
+                alignToGrid(m_sprite.getPosition().y, 20)
             );
         }
 
