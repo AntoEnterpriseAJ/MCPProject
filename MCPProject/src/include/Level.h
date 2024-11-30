@@ -2,6 +2,7 @@
 #include "Brick.h"
 #include "Bush.h"
 #include "UnbreakableBrick.h"
+#include "BombBrick.h"
 
 #include <vector>
 #include <variant>

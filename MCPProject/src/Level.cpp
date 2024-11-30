@@ -7,19 +7,22 @@
 
 void Level::load()
 {
-    /*auto getRandomIndex = []() -> int {
+    auto getRandomIndex = [](int lowerBound, int higherBound) -> int {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dist(1, 5);
+        std::uniform_int_distribution<> dist(lowerBound, higherBound);
         return dist(gen);
-        };*/
+        };
 
     loadBackground();
 
-    /*int randomIndex = getRandomIndex();
-    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";*/
+    int lowerBound = 1;
+    int higherBound = 10;
 
-    std::ifstream fin("res/levels/level1.txt");
+    int randomIndex = getRandomIndex(lowerBound, higherBound);
+    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";
+
+    std::ifstream fin(levelFileName);
     if (!fin)
     {
         std::cerr << "ERROR: Cannot open the file!\n";
@@ -47,8 +50,19 @@ void Level::load()
                 }
                 case 1:
                 {
-                    m_levelLayout.emplace_back(
-                        Brick{ position, ResourceManager::getInstance().getTexture("brick"), true });
+                    int bombBrickChange = getRandomIndex(1, 10);
+
+                    if (bombBrickChange == 1)
+                    {
+                        m_levelLayout.emplace_back(
+                            BombBrick{ position, ResourceManager::getInstance().getTexture("bombBrick"), true });
+                    }
+                    else
+                    {
+                        m_levelLayout.emplace_back(
+                            Brick{ position, ResourceManager::getInstance().getTexture("brick"), true });
+                    }
+
                     break;
                 }
                 case 2:
