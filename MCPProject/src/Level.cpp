@@ -7,19 +7,19 @@
 
 void Level::load()
 {
-    auto getRandomIndex = []() -> int {
+    /*auto getRandomIndex = []() -> int {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(1, 5);
         return dist(gen);
-        };
+        };*/
 
     loadBackground();
 
-    int randomIndex = getRandomIndex();
-    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";
+    /*int randomIndex = getRandomIndex();
+    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";*/
 
-    std::ifstream fin(levelFileName);
+    std::ifstream fin("res/levels/level1.txt");
     if (!fin)
     {
         std::cerr << "ERROR: Cannot open the file!\n";

@@ -143,7 +143,6 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Brick.cpp" />
-    <ClCompile Include="src\BrickManager.cpp" />
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Level.cpp" />
@@ -153,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\BombBrick.h" />
-    <ClInclude Include="src\include\BrickManager.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
     <ClInclude Include="src\include\BulletManager.h" />
