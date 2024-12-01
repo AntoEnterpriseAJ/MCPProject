@@ -41,7 +41,6 @@ void BulletManager::destroyInArea(const sf::Vector2f& bombPosition, Level& level
 
             if constexpr (
                 std::is_same_v<objType, Brick> ||
-                std::is_same_v<objType, UnbreakableBrick> ||
                 std::is_same_v<objType, BombBrick> || 
                 std::is_same_v<objType, Bush>)
             {
