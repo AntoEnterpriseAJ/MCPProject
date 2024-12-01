@@ -109,4 +109,7 @@
     <Text Include="res\levels\level4.txt" />
     <Text Include="res\levels\level5.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="D:\beaturi\playershootexample.m_sfx\playershootexample.m_sfx.mp3" />
+  </ItemGroup>
 </Project>

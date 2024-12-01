@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <cstdint>
 #include "Player.h"
 #include "Level.h"
@@ -38,4 +39,5 @@ private:
     Menu                   m_menu;
     Level                  m_level;
     BulletManager          m_bulletManager;
+    sf::Music              m_backgroundMusic;
 };

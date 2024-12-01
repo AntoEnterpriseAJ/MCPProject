@@ -3,10 +3,12 @@
 #include "Explosion.h"
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_level{}, m_menu{ kWindowWidth,kWindowHeight }, m_gameState{ GameState::Menu }
-{//TODO:Integrate menu initialization here
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
+    m_level{},
+    m_menu{ kWindowWidth, kWindowHeight },
+    m_gameState{ GameState::Menu }
+{
     ResourceManager& instance = ResourceManager::getInstance();
-
     instance.loadTextureFromFile("res/textures/plane.png", "player");
     instance.loadTextureFromFile("res/textures/albedo.png", "brick");
     instance.loadTextureFromFile("res/textures/missile.png", "bullet");
@@ -15,29 +17,17 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/background.png", "background");
     instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
-
+    instance.loadMusicFromFile("res/sfx/playershootexample.m_sfx.wav", m_backgroundMusic);
+    m_backgroundMusic.setLoop(true);
+    m_backgroundMusic.play();
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f },
         ResourceManager::getInstance().getTexture("player"),
         sf::Vector2f{ 39.9f, 39.9f }
     );
 
-    //insertPlayer(
-    //    sf::Vector2f{ 50.0f, 30.0f }, 
-    //    ResourceManager::getInstance().getTexture("player"), 
-    //    sf::Vector2f{ 20.5f, 20.5f }
-    //);//testing
-    //
-    //insertPlayer(
-    //    sf::Vector2f{ 150.0f, 30.0f }, 
-    //    ResourceManager::getInstance().getTexture("player"), 
-    //    sf::Vector2f{ 20.5f, 20.5f }
-    //);//testing
-
-
     m_level.load();
 }
-
 
 void Game::handleInputs(float deltaTime)
 {

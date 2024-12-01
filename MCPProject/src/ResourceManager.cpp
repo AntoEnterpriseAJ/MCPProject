@@ -35,3 +35,12 @@ const sf::Texture& ResourceManager::getTexture(std::string_view name) const
 
     return m_textures.at(name);
 }
+
+void ResourceManager::loadMusicFromFile(std::string_view path, sf::Music& music)
+{
+    if (!music.openFromFile(path.data()))
+    {
+        std::cerr << "ERROR::ResourceManager::loadMusic: Failed to load music file from " << path << std::endl;
+        exit(-1);
+    }
+}
