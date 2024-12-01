@@ -35,14 +35,15 @@ void BulletManager::destroyInArea(const sf::Vector2f& bombPosition, Level& level
 {
     std::vector<LevelObject>& levelLayout = level.getBricks();
 
-    // Use a lambda to filter objects to remove
     auto isWithinRadius = [&](const LevelObject& object) -> bool {
         return std::visit([&](auto& obj) -> bool {
             using objType = std::decay_t<decltype(obj)>;
 
-            if constexpr (std::is_same_v<objType, Brick> ||
+            if constexpr (
+                std::is_same_v<objType, Brick> ||
                 std::is_same_v<objType, UnbreakableBrick> ||
-                std::is_same_v<objType, BombBrick>)
+                std::is_same_v<objType, BombBrick> || 
+                std::is_same_v<objType, Bush>)
             {
                 float distance = std::sqrt(std::pow(obj.getPosition().x - bombPosition.x, 2) +
                     std::pow(obj.getPosition().y - bombPosition.y, 2));
@@ -52,7 +53,6 @@ void BulletManager::destroyInArea(const sf::Vector2f& bombPosition, Level& level
             }, object);
         };
 
-    // Remove objects within the radius
     levelLayout.erase(std::remove_if(levelLayout.begin(), levelLayout.end(), isWithinRadius), levelLayout.end());
 }
 
@@ -87,8 +87,7 @@ void BulletManager::handleCollisions(Level& level)
                         addExplosion(bullet);
                         obj.hit();
 
-                        // Call destroyInArea with bomb position and radius
-                        this->destroyInArea(obj.getPosition(), level, 200.0f);
+                        this->destroyInArea(obj.getPosition(), level, obj.GetExplosionRadius() * Brick::getSize());
                     }
                 }
                 }, object);
