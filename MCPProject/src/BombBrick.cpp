@@ -1,11 +1,12 @@
 #include "BombBrick.h"
+#include <variant>
 
 BombBrick::BombBrick(sf::Vector2f pos, const sf::Texture& texture, bool isDestroyable, sf::Vector2f size)
 	: Brick(pos, texture, isDestroyable, size)
 {
 }
 
-void BombBrick::destroyInArea(const sf::Vector2f& centerExplosionArea)
+int BombBrick::GetExplosionRadius()
 {
-	// TODO: Implement explosions in area
+	return m_explosionRadius;
 }

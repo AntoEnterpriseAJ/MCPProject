@@ -31,6 +31,33 @@ void BulletManager::update(Level& level, float deltaTime)
     }
 }
 
+void BulletManager::destroyInArea(const sf::Vector2f& bombPosition, Level& level, float radius)
+{
+    std::vector<LevelObject>& levelLayout = level.getBricks();
+
+    // Use a lambda to filter objects to remove
+    auto isWithinRadius = [&](const LevelObject& object) -> bool {
+        return std::visit([&](auto& obj) -> bool {
+            using objType = std::decay_t<decltype(obj)>;
+
+            if constexpr (std::is_same_v<objType, Brick> ||
+                std::is_same_v<objType, UnbreakableBrick> ||
+                std::is_same_v<objType, BombBrick>)
+            {
+                float distance = std::sqrt(std::pow(obj.getPosition().x - bombPosition.x, 2) +
+                    std::pow(obj.getPosition().y - bombPosition.y, 2));
+                return distance <= radius;
+            }
+            return false;
+            }, object);
+        };
+
+    // Remove objects within the radius
+    levelLayout.erase(std::remove_if(levelLayout.begin(), levelLayout.end(), isWithinRadius), levelLayout.end());
+}
+
+
+
 //TODO: check if this is actually this painful to write
 void BulletManager::handleCollisions(Level& level)
 {
@@ -48,17 +75,29 @@ void BulletManager::handleCollisions(Level& level)
                     if (bullet.getBounds().intersects(obj.getBounds()))
                     {
                         bullet.setState(Bullet::State::Inactive);
-
-                        addExplosion(bullet); // TODO: fix, it can add 2 explosions at once if bullet hits 2 bricks
+                        addExplosion(bullet);
                         obj.hit();
                     }
                 }
-            }, object);
+                else if constexpr (std::is_same_v<objType, BombBrick>)
+                {
+                    if (bullet.getBounds().intersects(obj.getBounds()))
+                    {
+                        bullet.setState(Bullet::State::Inactive);
+                        addExplosion(bullet);
+                        obj.hit();
+
+                        // Call destroyInArea with bomb position and radius
+                        this->destroyInArea(obj.getPosition(), level, 200.0f);
+                    }
+                }
+                }, object);
         }
     }
 
     removeInactive(level);
 }
+
 
 void BulletManager::addExplosion(const Bullet& bullet)
 {

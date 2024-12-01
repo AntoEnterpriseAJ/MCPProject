@@ -7,7 +7,7 @@
 #include <vector>
 #include <variant>
 
-using LevelObject = std::variant<std::monostate, Brick, Bush, UnbreakableBrick>;
+using LevelObject = std::variant<std::monostate, Brick, Bush, UnbreakableBrick, BombBrick>;
 
 class Level : public sf::Drawable
 {

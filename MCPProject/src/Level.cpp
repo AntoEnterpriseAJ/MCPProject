@@ -17,7 +17,7 @@ void Level::load()
     loadBackground();
 
     int lowerBound = 1;
-    int higherBound = 10;
+    int higherBound = 5;
 
     int randomIndex = getRandomIndex(lowerBound, higherBound);
     std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";

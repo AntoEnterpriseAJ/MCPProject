@@ -12,7 +12,7 @@ public:
         sf::Vector2f       size = sf::Vector2f(Brick::getSize(), Brick::getSize())
     );
 
-	void destroyInArea(const sf::Vector2f& centerExplosionPosition);
+    int GetExplosionRadius();
 
 private:
     int  m_explosionRadius{ 3 };

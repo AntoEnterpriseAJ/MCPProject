@@ -17,6 +17,8 @@ private:
     void handleCollisions(Level& level);
     void addExplosion(const Bullet& bullet);
     void removeInactive(Level& level);
+    void destroyInArea(const sf::Vector2f& bombPosition, Level& level, float radius);
+
 private:
     std::vector<Bullet>    m_bullets;
     std::vector<Explosion> m_explosions; // TODO: if it doesn't make sense, move it later
