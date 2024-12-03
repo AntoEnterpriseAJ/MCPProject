@@ -132,95 +132,96 @@ void Game::drawGrid()
     }
 }
 
-void Game::render()
-{
-    while (m_window.isOpen())
-    {
+void Game::render() {
+    LoginWindow loginWindow(kWindowWidth, kWindowHeight);
+    RegisterWindow registerWindow(kWindowWidth, kWindowHeight);
+
+    while (m_window.isOpen()) {
         float deltaTime = m_lastFrameTimeClock.restart().asSeconds();
 
-        if (m_gameState == GameState::Menu)
-        {
-            sf::Event event;
-            while (m_window.pollEvent(event))
-            {
-                if (event.type == sf::Event::Closed)
-                {
-                    m_window.close();
-                }
+        sf::Event event;
+        while (m_window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                m_window.close();
             }
-
-            m_menu.handleInput(m_window);
-
-            if (m_menu.isStartGameSelected())
-            {
-                m_gameState = GameState::Playing;
-            }
-            else if (m_menu.isLoginSelected())
-            {
-                m_gameState = GameState::Login;
-            }
-            else if (m_menu.isRegisterSelected())
-            {
-                m_gameState = GameState::Register;
-            }
-
-            m_window.clear();
-            m_menu.draw(m_window);
-            m_window.display();
         }
-        else if (m_gameState == GameState::Login)
-        {
-            LoginWindow loginWindow(kWindowWidth, kWindowHeight);
-            loginWindow.handleInput(m_window);
 
-            if (loginWindow.isLoginSuccessful())
-            {
-                // Handle login logic
-                m_gameState = GameState::Playing;
-            }
-
-            m_window.clear();
-            loginWindow.draw(m_window);
-            m_window.display();
-        }
-        else if (m_gameState == GameState::Register)
-        {
-            RegisterWindow registerWindow(kWindowWidth, kWindowHeight);
-            registerWindow.handleInput(m_window);
-
-            if (registerWindow.isRegisterSuccessful())
-            {
-                // Handle registration logic
-                m_gameState = GameState::Playing;
-            }
-
-            m_window.clear();
-            registerWindow.draw(m_window);
-            m_window.display();
-        }
-        else if (m_gameState == GameState::Playing)
-        {
-            handleInputs(deltaTime);
-
-            for (auto& player : m_players)
-            {
-                player.movePlayer(m_level, deltaTime);
-            }
-
-            m_bulletManager.update(m_level, deltaTime);
-
-            m_window.clear();
-
-            m_level.drawBackground(m_window);
-            m_bulletManager.draw(m_window);
-
-            for (auto& player : m_players)
-            {
-                m_window.draw(player);
-            }
-
-            m_window.draw(m_level);
-            m_window.display();
+        switch (m_gameState) {
+        case GameState::Menu:
+            renderMenu();
+            break;
+        case GameState::Login:
+            renderLogin(loginWindow);
+            break;
+        case GameState::Register:
+            renderRegister(registerWindow);
+            break;
+        case GameState::Playing:
+            renderGame(deltaTime);
+            break;
         }
     }
+}
+
+void Game::renderMenu() {
+    m_menu.handleInput(m_window);
+
+    if (m_menu.isStartGameSelected()) {
+        m_gameState = GameState::Playing;
+    }
+    else if (m_menu.isLoginSelected()) {
+        m_gameState = GameState::Login;
+    }
+    else if (m_menu.isRegisterSelected()) {
+        m_gameState = GameState::Register;
+    }
+
+    m_window.clear();
+    m_menu.draw(m_window);
+    m_window.display();
+}
+
+void Game::renderLogin(LoginWindow& loginWindow) {
+    loginWindow.handleInput(m_window);
+
+    if (loginWindow.isLoginSuccessful()) {
+        m_gameState = GameState::Playing;
+    }
+
+    m_window.clear();
+    loginWindow.draw(m_window);
+    m_window.display();
+}
+
+void Game::renderRegister(RegisterWindow& registerWindow) {
+    registerWindow.handleInput(m_window);
+
+    if (registerWindow.isRegisterSuccessful()) {
+        m_gameState = GameState::Playing;
+    }
+
+    m_window.clear();
+    registerWindow.draw(m_window);
+    m_window.display();
+}
+
+void Game::renderGame(float deltaTime) {
+    handleInputs(deltaTime);
+
+    for (auto& player : m_players) {
+        player.movePlayer(m_level, deltaTime);
+    }
+
+    m_bulletManager.update(m_level, deltaTime);
+
+    m_window.clear();
+    m_level.drawBackground(m_window);
+    m_bulletManager.draw(m_window);
+
+    for (auto& player : m_players) {
+        m_window.draw(player);
+    }
+
+    m_window.draw(m_level);
+    m_window.display();
 }

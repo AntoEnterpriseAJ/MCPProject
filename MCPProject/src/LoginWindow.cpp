@@ -109,9 +109,6 @@ void LoginWindow::handleInput(sf::RenderWindow& window) {
     }
 }
 
-/**
- * Verifică dacă autentificarea este completă.
- */
 bool LoginWindow::isLoginSuccessful() const {
     return !m_username.getString().isEmpty() && !m_passwordValue.empty();
 }

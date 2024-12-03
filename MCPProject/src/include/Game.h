@@ -6,6 +6,8 @@
 #include "Level.h"
 #include "BulletManager.h"
 #include "Menu.h"
+#include "LoginWindow.h"
+#include "RegisterWindow.h"
 
 
 class Game
@@ -42,4 +44,9 @@ private:
     Level                  m_level;
     BulletManager          m_bulletManager;
     sf::Music              m_backgroundMusic;
+private:
+    void renderMenu();
+    void renderLogin(LoginWindow& loginWindow);
+    void renderRegister(RegisterWindow& registerWindow);
+    void renderGame(float deltaTime);
 };
