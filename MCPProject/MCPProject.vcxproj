@@ -135,6 +135,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LoginWindow.cpp" />
+    <ClCompile Include="src\RegisterWindow.cpp" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
@@ -151,6 +153,8 @@
     <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\LoginWindow.h" />
+    <ClInclude Include="src\include\RegisterWindow.h" />
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />

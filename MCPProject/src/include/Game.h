@@ -14,7 +14,9 @@ public:
     enum class GameState
     {
         Menu,
-        Playing
+        Playing,
+        Login,
+        Register
     };
 
     Game();

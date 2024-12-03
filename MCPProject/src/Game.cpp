@@ -1,6 +1,8 @@
 ﻿#include "Game.h"
 #include "ResourceManager.h"
 #include "Explosion.h"
+#include "LoginWindow.h"
+#include "RegisterWindow.h"
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
@@ -153,9 +155,47 @@ void Game::render()
             {
                 m_gameState = GameState::Playing;
             }
+            else if (m_menu.isLoginSelected())
+            {
+                m_gameState = GameState::Login;
+            }
+            else if (m_menu.isRegisterSelected())
+            {
+                m_gameState = GameState::Register;
+            }
 
             m_window.clear();
             m_menu.draw(m_window);
+            m_window.display();
+        }
+        else if (m_gameState == GameState::Login)
+        {
+            LoginWindow loginWindow(kWindowWidth, kWindowHeight);
+            loginWindow.handleInput(m_window);
+
+            if (loginWindow.isLoginSuccessful())
+            {
+                // Handle login logic
+                m_gameState = GameState::Playing;
+            }
+
+            m_window.clear();
+            loginWindow.draw(m_window);
+            m_window.display();
+        }
+        else if (m_gameState == GameState::Register)
+        {
+            RegisterWindow registerWindow(kWindowWidth, kWindowHeight);
+            registerWindow.handleInput(m_window);
+
+            if (registerWindow.isRegisterSuccessful())
+            {
+                // Handle registration logic
+                m_gameState = GameState::Playing;
+            }
+
+            m_window.clear();
+            registerWindow.draw(m_window);
             m_window.display();
         }
         else if (m_gameState == GameState::Playing)
@@ -180,8 +220,6 @@ void Game::render()
             }
 
             m_window.draw(m_level);
-            // drawGrid(); // Uncomment for debugging
-
             m_window.display();
         }
     }
