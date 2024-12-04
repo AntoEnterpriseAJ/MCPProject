@@ -50,7 +50,7 @@ void Level::load()
                 }
                 case 1:
                 {
-                    int bombBrickChange = getRandomIndex(1, 20);
+                    int bombBrickChange = getRandomIndex(1, 10);
 
                     if (bombBrickChange == 1)
                     {

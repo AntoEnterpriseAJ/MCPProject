@@ -71,23 +71,6 @@ bool Player::canMove(const Level& level, float deltaTime)
             }
         }
         
-        if (auto unbreakableBrick = std::get_if<UnbreakableBrick>(&obj))
-        {
-            if (playerBounds.intersects(unbreakableBrick->getBounds()))
-            {
-                std::cout << "Collides with unbreakableBrick\n";
-                return false;
-            }
-        }
-
-        if (auto bombBrick = std::get_if<BombBrick>(&obj))
-        {
-            if (playerBounds.intersects(bombBrick->getBounds()))
-            {
-                std::cout << "Collides with bombBrick\n";
-                return false;
-            }
-        }
     }
 
     for (const auto& obj : levelLayout)
