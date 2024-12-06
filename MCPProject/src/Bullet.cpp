@@ -19,13 +19,13 @@ Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::
 void Bullet::update(float deltaTime)
 {
     if (m_direction == Direction::Up)
-        this->move(0, -Bullet::kBulletSpeed * deltaTime);
+        this->move(0, -kBulletSpeed * deltaTime);
     else if (m_direction == Direction::Down)
-        this->move(0, Bullet::kBulletSpeed * deltaTime);
+        this->move(0, kBulletSpeed * deltaTime);
     else if (m_direction == Direction::Left)
-        this->move(-Bullet::kBulletSpeed * deltaTime, 0);
+        this->move(-kBulletSpeed * deltaTime, 0);
     else if (m_direction == Direction::Right)
-        this->move(Bullet::kBulletSpeed * deltaTime, 0);
+        this->move(kBulletSpeed * deltaTime, 0);
 }
 
 void Bullet::setState(Bullet::State state)
