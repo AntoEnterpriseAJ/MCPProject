@@ -21,9 +21,15 @@
     <ClCompile Include="src\Routing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\include\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Routing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
