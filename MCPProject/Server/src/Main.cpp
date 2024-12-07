@@ -1,10 +1,11 @@
 #include <iostream>
+#include <crow.h>
+#include "Routing.h"
 
 int main()
 {
-    std::cout << "Server\n";
-
-    while (true){}
+    Routing routing;
+    routing.run();
 
     return 0;
 }
