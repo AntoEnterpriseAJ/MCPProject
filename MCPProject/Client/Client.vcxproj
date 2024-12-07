@@ -18,11 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83e9a594-0cab-4641-a52f-d18080099441}</ProjectGuid>
-    <RootNamespace>MCPProject</RootNamespace>
+    <ProjectGuid>{a807d86a-114f-48dd-856b-9bb8e493c625}</ProjectGuid>
+    <RootNamespace>Client</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,14 +107,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\include;$(SolutionDir)src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -120,66 +122,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\include;$(SolutionDir)src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;sfml-audio-s.lib;freetype.lib;gdi32.lib;opengl32.lib;winmm.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\LoginWindow.cpp" />
-    <ClCompile Include="src\RegisterWindow.cpp" />
-    <ClCompile Include="src\BombBrick.cpp" />
-    <ClCompile Include="src\Bullet.cpp" />
-    <ClCompile Include="src\BulletManager.cpp" />
-    <ClCompile Include="src\Bush.cpp" />
-    <ClCompile Include="src\Explosion.cpp" />
-    <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\Brick.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\ResourceManager.cpp" />
-    <ClCompile Include="src\Level.cpp" />
-    <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\UnbreakableBrick.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\include\LoginWindow.h" />
-    <ClInclude Include="src\include\RegisterWindow.h" />
-    <ClInclude Include="src\include\BombBrick.h" />
-    <ClInclude Include="src\include\Brick.h" />
-    <ClInclude Include="src\include\Bullet.h" />
-    <ClInclude Include="src\include\BulletManager.h" />
-    <ClInclude Include="src\include\Bush.h" />
-    <ClInclude Include="src\include\Direction.h" />
-    <ClInclude Include="src\include\Explosion.h" />
-    <ClInclude Include="src\include\Game.h" />
-    <ClInclude Include="src\include\GameObject.h" />
-    <ClInclude Include="src\include\Level.h" />
-    <ClInclude Include="src\include\Menu.h" />
-    <ClInclude Include="src\include\Player.h" />
-    <ClInclude Include="src\include\ResourceManager.h" />
-    <ClInclude Include="src\include\UnbreakableBrick.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="res\levels\level1.txt" />
-    <Text Include="res\levels\level2.txt" />
-    <Text Include="res\levels\level3.txt" />
-    <Text Include="res\levels\level4.txt" />
-    <Text Include="res\levels\level5.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="D:\beaturi\playershootexample.m_sfx\playershootexample.m_sfx.mp3" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
