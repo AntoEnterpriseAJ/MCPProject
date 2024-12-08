@@ -6,6 +6,8 @@
 #include "Level.h"
 #include "BulletManager.h"
 #include "Menu.h"
+#include "RegisterWindow.h"
+#include "LoginWindow.h"
 
 
 class Game
@@ -14,7 +16,9 @@ public:
     enum class GameState
     {
         Menu,
-        Playing
+        Playing,
+        Login,
+        Register
     };
 
     Game();
