@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\include\Player.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
