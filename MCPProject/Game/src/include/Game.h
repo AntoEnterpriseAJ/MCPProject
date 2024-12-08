@@ -6,8 +6,6 @@
 #include "Level.h"
 #include "BulletManager.h"
 #include "Menu.h"
-#include "LoginWindow.h"
-#include "RegisterWindow.h"
 
 
 class Game
@@ -16,9 +14,7 @@ public:
     enum class GameState
     {
         Menu,
-        Playing,
-        Login,
-        Register
+        Playing
     };
 
     Game();
@@ -44,9 +40,4 @@ private:
     Level                  m_level;
     BulletManager          m_bulletManager;
     sf::Music              m_backgroundMusic;
-private:
-    void renderMenu();
-    void renderLogin(LoginWindow& loginWindow);
-    void renderRegister(RegisterWindow& registerWindow);
-    void renderGame(float deltaTime);
 };
