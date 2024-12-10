@@ -46,35 +46,35 @@ void Level::load()
 
             switch (textureType)
             {
-            case 0:
-                m_levelLayout.emplace_back(nullptr); // Empty space
-                break;
-            case 1:
-            {
-                int bombBrickChance = getRandomIndex(1, 10);
-                if (bombBrickChance == 1)
+                case 0:
+                    m_levelLayout.emplace_back(nullptr); // Empty space
+                    break;
+                case 1:
                 {
-                    m_levelLayout.emplace_back(std::make_unique<BombBrick>(
-                        position, ResourceManager::getInstance().getTexture("bombBrick"), true));
+                    int bombBrickChance = getRandomIndex(1, 10);
+                    if (bombBrickChance == 1)
+                    {
+                        m_levelLayout.emplace_back(std::make_unique<BombBrick>(
+                            position, ResourceManager::getInstance().getTexture("bombBrick"), true));
+                    }
+                    else
+                    {
+                        m_levelLayout.emplace_back(std::make_unique<Brick>(
+                            position, ResourceManager::getInstance().getTexture("brick"), true));
+                    }
+                    break;
                 }
-                else
-                {
-                    m_levelLayout.emplace_back(std::make_unique<Brick>(
-                        position, ResourceManager::getInstance().getTexture("brick"), true));
-                }
-                break;
-            }
-            case 2:
-                m_levelLayout.emplace_back(std::make_unique<Bush>(
-                    position, ResourceManager::getInstance().getTexture("bush")));
-                break;
-            case 3:
-                m_levelLayout.emplace_back(std::make_unique<UnbreakableBrick>(
-                    position, ResourceManager::getInstance().getTexture("unbreakableBrick")));
-                break;
-            default:
-                std::cerr << "Error! Invalid texture!\n";
-                break;
+                case 2:
+                    m_levelLayout.emplace_back(std::make_unique<Bush>(
+                        position, ResourceManager::getInstance().getTexture("bush")));
+                    break;
+                case 3:
+                    m_levelLayout.emplace_back(std::make_unique<UnbreakableBrick>(
+                        position, ResourceManager::getInstance().getTexture("unbreakableBrick")));
+                    break;
+                default:
+                    std::cerr << "Error! Invalid texture!\n";
+                    break;
             }
         }
     }
@@ -100,4 +100,14 @@ void Level::loadBackground()
 {
     m_background.setTexture(ResourceManager::getInstance().getTexture("background"));
     m_background.setPosition(sf::Vector2{ 0.0f, 0.0f });
+}
+
+std::vector<std::unique_ptr<GameObject>>& Level::getBricks()
+{
+    return m_levelLayout;
+}
+
+const std::vector<std::unique_ptr<GameObject>>& Level::getBricks() const
+{
+    return m_levelLayout;
 }
