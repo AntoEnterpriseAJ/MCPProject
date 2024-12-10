@@ -5,6 +5,8 @@
 #include "BombBrick.h"
 #include "ResourceManager.h"
 
+#include "Obstacle.h"
+
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -42,25 +44,23 @@ void Level::load()
             int textureType;
             fin >> textureType;
 
-            sf::Vector2f position(j * Brick::getSize(), i * Brick::getSize());
+            sf::Vector2f position(j * Obstacle::getObstacleSize(), i * Obstacle::getObstacleSize());
 
             switch (textureType)
             {
-                case 0:
-                    m_levelLayout.emplace_back(nullptr); // Empty space
-                    break;
+                case 0: break;
                 case 1:
                 {
                     int bombBrickChance = getRandomIndex(1, 10);
                     if (bombBrickChance == 1)
                     {
                         m_levelLayout.emplace_back(std::make_unique<BombBrick>(
-                            position, ResourceManager::getInstance().getTexture("bombBrick"), true));
+                            position, ResourceManager::getInstance().getTexture("bombBrick")));
                     }
                     else
                     {
                         m_levelLayout.emplace_back(std::make_unique<Brick>(
-                            position, ResourceManager::getInstance().getTexture("brick"), true));
+                            position, ResourceManager::getInstance().getTexture("brick")));
                     }
                     break;
                 }
@@ -102,12 +102,12 @@ void Level::loadBackground()
     m_background.setPosition(sf::Vector2{ 0.0f, 0.0f });
 }
 
-std::vector<std::unique_ptr<GameObject>>& Level::getBricks()
+std::vector<std::unique_ptr<Obstacle>>& Level::getBricks()
 {
     return m_levelLayout;
 }
 
-const std::vector<std::unique_ptr<GameObject>>& Level::getBricks() const
+const std::vector<std::unique_ptr<Obstacle>>& Level::getBricks() const
 {
     return m_levelLayout;
 }

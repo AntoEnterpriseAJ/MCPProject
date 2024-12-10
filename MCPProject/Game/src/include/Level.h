@@ -3,6 +3,7 @@
 #include "Bush.h"
 #include "UnbreakableBrick.h"
 #include "BombBrick.h"
+#include "Obstacle.h"
 
 #include <vector>
 
@@ -15,17 +16,17 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void drawBackground(sf::RenderWindow& window) const;
 
-    std::unique_ptr<GameObject>& operator[](const Position& position);
-    const std::unique_ptr<GameObject>& operator[](const Position& position) const;
+    std::unique_ptr<Obstacle>& operator[](const Position& position);
+    const std::unique_ptr<Obstacle>& operator[](const Position& position) const;
 
-    std::vector<std::unique_ptr<GameObject>>& getBricks();
-    const std::vector<std::unique_ptr<GameObject>>& getBricks() const;
+    std::vector<std::unique_ptr<Obstacle>>& getBricks();
+    const std::vector<std::unique_ptr<Obstacle>>& getBricks() const;
 private:
     void loadBackground();
 private:
     static constexpr uint16_t kLevelWidth{ 30 };
     static constexpr uint16_t kLevelHeight{ 20 };
 private:
-    std::vector<std::unique_ptr<GameObject>> m_levelLayout;
+    std::vector<std::unique_ptr<Obstacle>> m_levelLayout;
     sf::Sprite m_background;
 };

@@ -49,7 +49,7 @@ bool Player::canMove(const Level& level, float deltaTime)
     const auto& levelLayout = level.getBricks();
     for (const auto& obj : levelLayout)
     {
-        if (obj && playerBounds.intersects(obj->getBounds()))
+        if (obj && !obj->isPassable() && playerBounds.intersects(obj->getBounds()))
         {
             return false;
         }

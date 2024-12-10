@@ -53,15 +53,8 @@ void BulletManager::handleCollisions(Level& level)
                     bulletPtr->setState(Bullet::State::Inactive);
                     addExplosion(*bulletPtr);
                     brick->hit();
-                }
-            }
-            else if (auto* unbreakableBrick = dynamic_cast<UnbreakableBrick*>(object.get()))
-            {
-                if (bulletPtr->getBounds().intersects(unbreakableBrick->getBounds()))
-                {
-                    bulletPtr->setState(Bullet::State::Inactive);
-                    addExplosion(*bulletPtr);
-                    unbreakableBrick->hit();
+
+                    std::cout << "BRICK\n";
                 }
             }
             else if (auto* bombBrick = dynamic_cast<BombBrick*>(object.get()))
@@ -70,7 +63,26 @@ void BulletManager::handleCollisions(Level& level)
                 {
                     bulletPtr->setState(Bullet::State::Inactive);
                     addExplosion(*bulletPtr);
-                    bombBrick->hit();
+                    detonate(bombBrick->getPosition(), level, bombBrick->GetExplosionRadius() * Obstacle::getObstacleSize());
+
+                    std::cout << "BOMB\n";
+                }
+            }
+            else if (auto* unbreakableBrick = dynamic_cast<UnbreakableBrick*>(object.get()))
+            {
+                if (bulletPtr->getBounds().intersects(unbreakableBrick->getBounds()))
+                {
+                    bulletPtr->setState(Bullet::State::Inactive);
+                    addExplosion(*bulletPtr);
+
+                    std::cout << "UNBREAKABLE BRICK\n";
+                }
+            }
+            else if (auto* bush = dynamic_cast<Bush*>(object.get()))
+            {
+                if (bulletPtr->getBounds().intersects(bush->getBounds()))
+                {
+                    std::cout << "BUSH\n";
                 }
             }
         }
@@ -79,6 +91,29 @@ void BulletManager::handleCollisions(Level& level)
     removeInactive(level);
 }
 
+void BulletManager::detonate(const sf::Vector2f& bombPosition, Level& level, int radius)
+{
+    auto& levelLayout = level.getBricks();
+
+    for (int index = 0; index < levelLayout.size(); ++index)
+    {
+        if (levelLayout[index])
+        {
+            sf::Vector2f brickPosition = levelLayout[index]->getPosition();
+
+            float distance = std::sqrt(
+                std::pow(brickPosition.x - bombPosition.x, 2) +
+                std::pow(brickPosition.y - bombPosition.y, 2)
+            );
+
+            if (distance <= radius)
+            {
+                levelLayout.erase(levelLayout.begin() + index);
+                index--;
+            }
+        }
+    }
+}
 
 void BulletManager::addExplosion(const Bullet& bullet)
 {
@@ -135,7 +170,6 @@ void BulletManager::removeInactive(Level& level)
             }),
         m_explosions.end());
 }
-
 
 void BulletManager::draw(sf::RenderWindow& window) const
 {

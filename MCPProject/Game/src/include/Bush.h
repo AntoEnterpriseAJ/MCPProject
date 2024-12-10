@@ -1,15 +1,11 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "GameObject.h"
+#include "Obstacle.h"
 
-class Bush : public GameObject
+class Bush : public Obstacle
 {
 public:
-    Bush(
-        sf::Vector2f pos,
-        const sf::Texture& texture,
-        sf::Vector2f size = sf::Vector2f(40.0f, 40.0f)
-    );
+    Bush(sf::Vector2f pos, const sf::Texture& texture);
 
     bool isPassable() const;
 

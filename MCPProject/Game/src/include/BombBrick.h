@@ -1,16 +1,11 @@
 #pragma once
 
-#include "Brick.h"
+#include "Obstacle.h"
 
-class BombBrick : public Brick
+class BombBrick : public Obstacle
 {
 public:
-    BombBrick(
-        sf::Vector2f       pos,
-        const sf::Texture& texture,
-        bool               isDestroyable,
-        sf::Vector2f       size = sf::Vector2f(Brick::getSize(), Brick::getSize())
-    );
+    BombBrick(sf::Vector2f pos, const sf::Texture& texture);
 
     int GetExplosionRadius();
 

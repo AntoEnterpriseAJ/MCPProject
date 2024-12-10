@@ -1,16 +1,11 @@
 ﻿#pragma once
-#include "Brick.h"
+#include "Obstacle.h"
 
-class UnbreakableBrick : public Brick {
+class UnbreakableBrick : public Obstacle 
+{
 public:
     UnbreakableBrick(
-        sf::Vector2f pos,
-        const sf::Texture& texture,
-        sf::Vector2f size = sf::Vector2f(40.0f, 40.0f)
+        sf::Vector2f       pos,
+        const sf::Texture& texture
     );
-
-    bool isPassable() const;
-
-private:
-    bool m_isPassable;
 };

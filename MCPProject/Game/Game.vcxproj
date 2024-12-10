@@ -148,6 +148,7 @@
     <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\LoginWindow.h" />
     <ClInclude Include="src\include\Menu.h" />
+    <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\RegisterWindow.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
