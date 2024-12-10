@@ -68,7 +68,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
     sf::Vector2f newPosition = m_sprite.getPosition();
     float rotation = 0;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         if (m_direction != Direction::Up)
         {
@@ -83,7 +83,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
             newPosition.y -= kPlayerSpeed * deltaTime;
         }
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
         if (m_direction != Direction::Down)
         {
@@ -98,7 +98,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
             newPosition.y += kPlayerSpeed * deltaTime;
         }
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
         if (m_direction != Direction::Left)
         {
@@ -113,7 +113,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
             newPosition.x -= kPlayerSpeed * deltaTime;
         }
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         if (m_direction != Direction::Right)
         {

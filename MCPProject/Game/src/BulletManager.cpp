@@ -97,7 +97,7 @@ void BulletManager::detonate(const sf::Vector2f& bombPosition, Level& level, int
 
     for (int index = 0; index < levelLayout.size(); ++index)
     {
-        if (levelLayout[index])
+        if (levelLayout[index] && levelLayout[index]->isDestroyable())
         {
             sf::Vector2f brickPosition = levelLayout[index]->getPosition();
 
