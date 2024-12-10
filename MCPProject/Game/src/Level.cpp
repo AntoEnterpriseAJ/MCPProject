@@ -1,4 +1,8 @@
 ﻿#include "Level.h"
+#include "Brick.h"
+#include "UnbreakableBrick.h"
+#include "Bush.h"
+#include "BombBrick.h"
 #include "ResourceManager.h"
 
 #include <fstream>
@@ -31,7 +35,6 @@ void Level::load()
 
     m_levelLayout.reserve(kLevelHeight * kLevelWidth);
 
-    // TODO std::emplace_back not explicit enough, maybe std::push_back(std::move());
     for (int i = 0; i < kLevelHeight; ++i)
     {
         for (int j = 0; j < kLevelWidth; ++j)
@@ -43,45 +46,35 @@ void Level::load()
 
             switch (textureType)
             {
-                case 0:
+            case 0:
+                m_levelLayout.emplace_back(nullptr); // Empty space
+                break;
+            case 1:
+            {
+                int bombBrickChance = getRandomIndex(1, 10);
+                if (bombBrickChance == 1)
                 {
-                    m_levelLayout.emplace_back(std::monostate{});
-                    break;
+                    m_levelLayout.emplace_back(std::make_unique<BombBrick>(
+                        position, ResourceManager::getInstance().getTexture("bombBrick"), true));
                 }
-                case 1:
+                else
                 {
-                    int bombBrickChange = getRandomIndex(1, 10);
-
-                    if (bombBrickChange == 1)
-                    {
-                        m_levelLayout.emplace_back(
-                            BombBrick{ position, ResourceManager::getInstance().getTexture("bombBrick"), true });
-                    }
-                    else
-                    {
-                        m_levelLayout.emplace_back(
-                            Brick{ position, ResourceManager::getInstance().getTexture("brick"), true });
-                    }
-
-                    break;
+                    m_levelLayout.emplace_back(std::make_unique<Brick>(
+                        position, ResourceManager::getInstance().getTexture("brick"), true));
                 }
-                case 2:
-                {
-                    m_levelLayout.emplace_back(
-                        Bush{ position, ResourceManager::getInstance().getTexture("bush") });
-                    break;
-                }
-                case 3:
-                {
-                    m_levelLayout.emplace_back(
-                        UnbreakableBrick{ position, ResourceManager::getInstance().getTexture("unbreakableBrick") });
-                    break;
-                }
-                default:
-                {
-                    std::cerr << "Error! Invalid texture!\n";
-                    break;
-                }
+                break;
+            }
+            case 2:
+                m_levelLayout.emplace_back(std::make_unique<Bush>(
+                    position, ResourceManager::getInstance().getTexture("bush")));
+                break;
+            case 3:
+                m_levelLayout.emplace_back(std::make_unique<UnbreakableBrick>(
+                    position, ResourceManager::getInstance().getTexture("unbreakableBrick")));
+                break;
+            default:
+                std::cerr << "Error! Invalid texture!\n";
+                break;
             }
         }
     }
@@ -91,44 +84,16 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for (const auto& obj : m_levelLayout)
     {
-        std::visit([&target, &states](const auto& levelObject)
+        if (obj)
         {
-            using objType = std::decay_t<decltype(levelObject)>;
-
-            if constexpr (!std::is_same_v<objType, std::monostate>)
-            {
-                levelObject.draw(target, states);
-            }
-
-        }, obj);
+            obj->draw(target, states);
+        }
     }
 }
 
 void Level::drawBackground(sf::RenderWindow& window) const
 {
     window.draw(m_background);
-}
-
-LevelObject& Level::operator[](const Position& position)
-{
-    const auto& [row, column] = position;
-    return m_levelLayout[row * kLevelWidth + column];
-}
-
-const LevelObject& Level::operator[](const Position& position) const
-{
-    const auto& [row, column] = position;
-    return m_levelLayout[row * kLevelHeight + column];
-}
-
-std::vector<LevelObject>& Level::getBricks()
-{
-    return m_levelLayout;
-}
-
-const std::vector<LevelObject>& Level::getBricks() const
-{
-    return m_levelLayout;
 }
 
 void Level::loadBackground()

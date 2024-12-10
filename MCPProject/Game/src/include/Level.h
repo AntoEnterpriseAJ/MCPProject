@@ -5,9 +5,6 @@
 #include "BombBrick.h"
 
 #include <vector>
-#include <variant>
-
-using LevelObject = std::variant<std::monostate, Brick, Bush, UnbreakableBrick, BombBrick>;
 
 class Level : public sf::Drawable
 {
@@ -18,17 +15,17 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void drawBackground(sf::RenderWindow& window) const;
 
-    LevelObject& operator[](const Position& position);
-    const LevelObject& operator[](const Position& position) const;
+    std::unique_ptr<GameObject>& operator[](const Position& position);
+    const std::unique_ptr<GameObject>& operator[](const Position& position) const;
 
-    std::vector<LevelObject>& getBricks();
-    const std::vector<LevelObject>& getBricks() const;
+    std::vector<std::unique_ptr<GameObject>>& getBricks();
+    const std::vector<std::unique_ptr<GameObject>>& getBricks() const;
 private:
     void loadBackground();
 private:
     static constexpr uint16_t kLevelWidth{ 30 };
     static constexpr uint16_t kLevelHeight{ 20 };
 private:
-    std::vector<LevelObject> m_levelLayout;
+    std::vector<std::unique_ptr<GameObject>> m_levelLayout;
     sf::Sprite m_background;
 };
