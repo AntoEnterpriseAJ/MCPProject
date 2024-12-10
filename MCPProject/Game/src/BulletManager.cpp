@@ -1,13 +1,14 @@
 ﻿#include "BulletManager.h"
-#include "Game.h"
 #include "ResourceManager.h"
 #include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <Game.h>
 
-void BulletManager::addBullet(const Bullet& bullet)
+void BulletManager::addBullet(std::unique_ptr<Bullet> bullet)
 {
-    m_bullets.push_back(bullet);
+    m_bullets.push_back(std::move(bullet));
     std::cout << m_bullets.size() << "\n";
-    std::cout << bullet.getSize().x << " " << bullet.getSize().y << "\n";
 }
 
 void BulletManager::update(Level& level, float deltaTime)
@@ -16,80 +17,62 @@ void BulletManager::update(Level& level, float deltaTime)
 
     for (auto& bullet : m_bullets)
     {
-        bullet.update(deltaTime);
+        auto* bulletPtr = static_cast<Bullet*>(bullet.get());
+        bulletPtr->update(deltaTime);
 
-        if (bullet.getPosition().x < 0 || bullet.getPosition().x > Game::getWindowWidth() ||
-            bullet.getPosition().y < 0 || bullet.getPosition().y > Game::getWindowHeight())
+        if (bulletPtr->getPosition().x < 0 || bulletPtr->getPosition().x > Game::getWindowWidth() ||
+            bulletPtr->getPosition().y < 0 || bulletPtr->getPosition().y > Game::getWindowHeight())
         {
-            bullet.setState(Bullet::State::Inactive);
+            bulletPtr->setState(Bullet::State::Inactive);
         }
     }
 
     for (auto& explosion : m_explosions)
     {
-        explosion.update(deltaTime);
+        auto* explosionPtr = static_cast<Explosion*>(explosion.get());
+        explosionPtr->update(deltaTime);
     }
 }
 
-void BulletManager::destroyInArea(const sf::Vector2f& bombPosition, Level& level, float radius)
-{
-    std::vector<LevelObject>& levelLayout = level.getBricks();
-
-    auto isWithinRadius = [&](const LevelObject& object) -> bool {
-        return std::visit([&](auto& obj) -> bool {
-            using objType = std::decay_t<decltype(obj)>;
-
-            if constexpr (
-                std::is_same_v<objType, Brick> ||
-                std::is_same_v<objType, BombBrick> || 
-                std::is_same_v<objType, Bush>)
-            {
-                float distance = std::sqrt(std::pow(obj.getPosition().x - bombPosition.x, 2) +
-                    std::pow(obj.getPosition().y - bombPosition.y, 2));
-                return distance <= radius;
-            }
-            return false;
-            }, object);
-        };
-
-    levelLayout.erase(std::remove_if(levelLayout.begin(), levelLayout.end(), isWithinRadius), levelLayout.end());
-}
-
-
-
-//TODO: check if this is actually this painful to write
 void BulletManager::handleCollisions(Level& level)
 {
-    std::vector<LevelObject>& levelLayout = level.getBricks();
+    auto& levelLayout = level.getBricks();
 
     for (auto& bullet : m_bullets)
     {
+        auto* bulletPtr = static_cast<Bullet*>(bullet.get());
+        if (!bulletPtr)
+            continue;
+
         for (auto& object : levelLayout)
         {
-            std::visit([&](auto& obj) {
-                using objType = std::decay_t<decltype(obj)>;
-
-                if constexpr (std::is_same_v<objType, Brick> || std::is_same_v<objType, UnbreakableBrick>)
+            if (auto* brick = dynamic_cast<Brick*>(object.get()))
+            {
+                if (bulletPtr->getBounds().intersects(brick->getBounds()))
                 {
-                    if (bullet.getBounds().intersects(obj.getBounds()))
-                    {
-                        bullet.setState(Bullet::State::Inactive);
-                        addExplosion(bullet);
-                        obj.hit();
-                    }
+                    bulletPtr->setState(Bullet::State::Inactive);
+                    addExplosion(*bulletPtr);
+                    brick->hit();
                 }
-                else if constexpr (std::is_same_v<objType, BombBrick>)
+            }
+            else if (auto* unbreakableBrick = dynamic_cast<UnbreakableBrick*>(object.get()))
+            {
+                if (bulletPtr->getBounds().intersects(unbreakableBrick->getBounds()))
                 {
-                    if (bullet.getBounds().intersects(obj.getBounds()))
-                    {
-                        bullet.setState(Bullet::State::Inactive);
-                        addExplosion(bullet);
-                        obj.hit();
-
-                        this->destroyInArea(obj.getPosition(), level, obj.GetExplosionRadius() * Brick::getSize());
-                    }
+                    bulletPtr->setState(Bullet::State::Inactive);
+                    addExplosion(*bulletPtr);
+                    unbreakableBrick->hit();
                 }
-                }, object);
+            }
+            else if (auto* bombBrick = dynamic_cast<BombBrick*>(object.get()))
+            {
+                if (bulletPtr->getBounds().intersects(bombBrick->getBounds()))
+                {
+                    bulletPtr->setState(Bullet::State::Inactive);
+                    addExplosion(*bulletPtr);
+                    bombBrick->hit();
+                }
+            }
         }
     }
 
@@ -100,77 +83,69 @@ void BulletManager::handleCollisions(Level& level)
 void BulletManager::addExplosion(const Bullet& bullet)
 {
     Direction direction = bullet.getDirection();
+    sf::Vector2f explosionPos;
 
     switch (direction)
     {
-    case Direction::Right:
-        m_explosions.push_back(
-            Explosion(bullet.getPosition() + sf::Vector2f(bullet.getSize().x / 2.0f, 0),
-                ResourceManager::getInstance().getTexture("explosionSheet"))
-        );
-        break;
-    case Direction::Left:
-        m_explosions.push_back(
-            Explosion(bullet.getPosition() - sf::Vector2f(bullet.getSize().x / 2.0f, 0),
-                ResourceManager::getInstance().getTexture("explosionSheet"))
-        );
-        break;
-    case Direction::Up:
-        m_explosions.push_back(
-            Explosion(bullet.getPosition() - sf::Vector2f(0, bullet.getSize().y / 2.0f),
-                ResourceManager::getInstance().getTexture("explosionSheet"))
-        );
-        break;
-    case Direction::Down:
-        m_explosions.push_back(
-            Explosion(bullet.getPosition() + sf::Vector2f(0, bullet.getSize().y / 2.0f),
-                ResourceManager::getInstance().getTexture("explosionSheet"))
-        );
+        case Direction::Right:
+            explosionPos = bullet.getPosition() + sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            break;
+        case Direction::Left:
+            explosionPos = bullet.getPosition() - sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            break;
+        case Direction::Up:
+            explosionPos = bullet.getPosition() - sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            break;
+        case Direction::Down:
+            explosionPos = bullet.getPosition() + sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            break;
     }
+
+    m_explosions.emplace_back(std::make_unique<Explosion>(
+        explosionPos, ResourceManager::getInstance().getTexture("explosionSheet")));
 }
 
-//TODO: check if this is actually this painful to write
 void BulletManager::removeInactive(Level& level)
 {
-    std::vector<LevelObject>& levelLayout = level.getBricks();
-
-    std::erase_if(levelLayout, [](const LevelObject& object){
-        return std::visit([](const auto& obj) -> bool {
-            using objType = std::decay_t<decltype(obj)>;
-            if constexpr (std::is_same_v<objType, Brick>)
-            {
-                if (obj.isDestroyed())
+    auto& levelLayout = level.getBricks();
+    levelLayout.erase(
+        std::remove_if(levelLayout.begin(), levelLayout.end(),
+            [](const auto& obj) {
+                if (auto* brick = dynamic_cast<Brick*>(obj.get()))
                 {
-                    //BrickManager::destroyBlocksInArea(level, 3000, obj.getPosition());
-                    return true;
+                    return brick->isDestroyed();
                 }
-              
-            }
-            else
-            {
                 return false;
-            }
-        }, object);
-    });
+            }),
+        levelLayout.end());
 
-    std::erase_if(m_bullets, [](const Bullet& bullet){
-        return bullet.getState() == Bullet::State::Inactive;
-    });
+    m_bullets.erase(
+        std::remove_if(m_bullets.begin(), m_bullets.end(),
+            [](const auto& bullet) {
+                auto* bulletPtr = dynamic_cast<Bullet*>(bullet.get());
+                return bulletPtr && bulletPtr->getState() == Bullet::State::Inactive;
+            }),
+        m_bullets.end());
 
-    std::erase_if(m_explosions, [](const Explosion& explosion) {
-        return explosion.hasFinished();
-    });
+    m_explosions.erase(
+        std::remove_if(m_explosions.begin(), m_explosions.end(),
+            [](const auto& explosion) {
+                auto* explosionPtr = dynamic_cast<Explosion*>(explosion.get());
+                return explosionPtr && explosionPtr->hasFinished();
+            }),
+        m_explosions.end());
 }
+
 
 void BulletManager::draw(sf::RenderWindow& window) const
 {
-    for (auto& bullet : m_bullets)
+    for (const auto& bullet : m_bullets)
     {
-        window.draw(bullet);
+        bullet->draw(window, {});
     }
 
-    for (auto& explosion : m_explosions)
+    for (const auto& explosion : m_explosions)
     {
-        window.draw(explosion);
+        explosion->draw(window, {});
     }
 }

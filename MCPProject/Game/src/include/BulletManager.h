@@ -1,25 +1,23 @@
 #pragma once
+
+#include "GameObject.h"
 #include "Bullet.h"
-#include "Brick.h"
-#include "Player.h"
 #include "Explosion.h"
-#include <variant>
+#include "Level.h"
+#include <vector>
+#include <memory>
 
-class BulletManager
-{
+class BulletManager {
 public:
-    void addBullet(const Bullet& bullet);
+    void addBullet(std::unique_ptr<Bullet> bullet);
     void update(Level& level, float deltaTime);
-
     void draw(sf::RenderWindow& window) const;
 
 private:
     void handleCollisions(Level& level);
     void addExplosion(const Bullet& bullet);
     void removeInactive(Level& level);
-    void destroyInArea(const sf::Vector2f& bombPosition, Level& level, float radius);
 
-private:
-    std::vector<Bullet>    m_bullets;
-    std::vector<Explosion> m_explosions; 
+    std::vector<std::unique_ptr<Bullet>> m_bullets;
+    std::vector<std::unique_ptr<Explosion>> m_explosions;
 };
