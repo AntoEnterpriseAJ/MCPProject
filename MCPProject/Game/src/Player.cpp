@@ -1,17 +1,14 @@
 ﻿#include "Player.h"
-#include "Bullet.h"
-#include "Brick.h"
 #include "Game.h"
-#include "Bush.h"
-#include <variant>
-#include <vector>
+#include "Brick.h"
 #include <iostream>
+#include <cmath>
+#include <memory>
 
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
-    : GameObject{ pos, texture, size }, m_health{ 100 }, m_direction{Direction::Left} //Health currently unused
+    : GameObject(pos, texture, size), m_health(100), m_cooldownDuration(0), m_direction(Direction::Left)
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
-    m_cooldownDuration = 0.5f;
 }
 
 void Player::update(float deltaTime)
@@ -19,13 +16,13 @@ void Player::update(float deltaTime)
     if (m_cooldownDuration > 0)
     {
         m_cooldownDuration -= deltaTime;
-        if (m_cooldownDuration < 0) m_cooldownDuration = 0; \
+        if (m_cooldownDuration < 0) m_cooldownDuration = 0;
     }
 }
 
 bool Player::canShoot() const
 {
-    return m_cooldownDuration <= 0; 
+    return m_cooldownDuration <= 0;
 }
 
 void Player::restartCooldown()
@@ -33,65 +30,29 @@ void Player::restartCooldown()
     m_cooldownDuration = kCooldownTime;
 }
 
-
 bool Player::canMove(const Level& level, float deltaTime)
 {
-    sf::FloatRect playerBounds = this->getBounds();
-    sf::Vector2f movement = { 0, 0 };
+    sf::FloatRect playerBounds = getBounds();
+    sf::Vector2f movement;
 
     switch (m_direction)
     {
-    case Direction::Up:
-        movement.y = -kPlayerSpeed * deltaTime;
-        break;
-    case Direction::Down:
-        movement.y = kPlayerSpeed * deltaTime;
-        break;
-    case Direction::Left:
-        movement.x = -kPlayerSpeed * deltaTime;
-        break;
-    case Direction::Right:
-        movement.x = kPlayerSpeed * deltaTime;
-        break;
+        case Direction::Up: movement.y = -kPlayerSpeed * deltaTime; break;
+        case Direction::Down: movement.y = kPlayerSpeed * deltaTime; break;
+        case Direction::Left: movement.x = -kPlayerSpeed * deltaTime; break;
+        case Direction::Right: movement.x = kPlayerSpeed * deltaTime; break;
     }
 
     playerBounds.left += movement.x;
     playerBounds.top += movement.y;
 
-    const std::vector<LevelObject>& levelLayout = level.getBricks();
-
+    const auto& levelLayout = level.getBricks();
     for (const auto& obj : levelLayout)
     {
-        if (auto brick = std::get_if<Brick>(&obj))
+        if (obj && playerBounds.intersects(obj->getBounds()))
         {
-            if (playerBounds.intersects(brick->getBounds()))
-            {
-                std::cout << "Collides with brick\n";
-                return false;
-            }
+            return false;
         }
-        
-        if (auto bombBrick = std::get_if<BombBrick>(&obj))
-        {
-            if (playerBounds.intersects(bombBrick->getBounds()))
-            {
-                std::cout << "Collides with bomb brick\n";
-                return false;
-            }
-        }
-    }
-
-    for (const auto& obj : levelLayout)
-    {
-        if (auto unbreakableBrick = std::get_if<UnbreakableBrick>(&obj))
-        {
-            if (playerBounds.intersects(unbreakableBrick->getBounds()))
-            {
-                std::cout << "Collides with unbreakable brick\n";
-                return false;
-            }
-        }
-
     }
 
     return true;
@@ -100,83 +61,76 @@ bool Player::canMove(const Level& level, float deltaTime)
 void Player::movePlayer(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
-
     auto alignToGrid = [](float value, int gridSize) -> float {
         return std::round(value / gridSize) * gridSize;
         };
+
+    sf::Vector2f newPosition = m_sprite.getPosition();
+    float rotation = 0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         if (m_direction != Direction::Up)
         {
-            m_sprite.setPosition(
-                alignToGrid(m_sprite.getPosition().x, 20),
-                m_sprite.getPosition().y
-            );
+            newPosition.x = alignToGrid(newPosition.x, 20);
         }
 
         m_direction = Direction::Up;
-        m_sprite.setRotation(0.0f);
+        rotation = 0;
 
         if (canMove(level, deltaTime) && playerBounds.top > 0)
         {
-            m_sprite.move(0, -kPlayerSpeed * deltaTime);
+            newPosition.y -= kPlayerSpeed * deltaTime;
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         if (m_direction != Direction::Down)
         {
-            m_sprite.setPosition(
-                alignToGrid(m_sprite.getPosition().x, 20),
-                m_sprite.getPosition().y
-            );
+            newPosition.x = alignToGrid(newPosition.x, 20);
         }
 
         m_direction = Direction::Down;
-        m_sprite.setRotation(180.0f);
+        rotation = 180;
 
         if (canMove(level, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
-            m_sprite.move(0, kPlayerSpeed * deltaTime);
+            newPosition.y += kPlayerSpeed * deltaTime;
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         if (m_direction != Direction::Left)
         {
-            m_sprite.setPosition(
-                m_sprite.getPosition().x,
-                alignToGrid(m_sprite.getPosition().y, 20)
-            );
+            newPosition.y = alignToGrid(newPosition.y, 20);
         }
 
         m_direction = Direction::Left;
-        m_sprite.setRotation(270.0f);
+        rotation = 270;
 
         if (canMove(level, deltaTime) && playerBounds.left > 0)
         {
-            m_sprite.move(-kPlayerSpeed * deltaTime, 0);
+            newPosition.x -= kPlayerSpeed * deltaTime;
         }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         if (m_direction != Direction::Right)
         {
-            m_sprite.setPosition(
-                m_sprite.getPosition().x,
-                alignToGrid(m_sprite.getPosition().y, 20)
-            );
+            newPosition.y = alignToGrid(newPosition.y, 20);
         }
 
         m_direction = Direction::Right;
-        m_sprite.setRotation(90.0f);
+        rotation = 90;
 
         if (canMove(level, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
-            m_sprite.move(kPlayerSpeed * deltaTime, 0);
+            newPosition.x += kPlayerSpeed * deltaTime;
         }
     }
+
+    m_sprite.setPosition(newPosition);
+    m_sprite.setRotation(rotation);
 }
 
 Direction Player::getDirection() const
