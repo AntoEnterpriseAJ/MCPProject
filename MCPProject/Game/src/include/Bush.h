@@ -14,5 +14,5 @@ public:
     bool isPassable() const;
 
 private:
-    bool m_isPassable{ true }; // Bushurile sunt traversabile
+    bool m_isPassable;
 };

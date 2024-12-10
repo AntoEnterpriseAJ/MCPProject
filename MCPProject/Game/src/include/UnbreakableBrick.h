@@ -12,5 +12,5 @@ public:
     bool isPassable() const;
 
 private:
-    bool m_isPassable{ false };
+    bool m_isPassable;
 };

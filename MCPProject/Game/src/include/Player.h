@@ -22,6 +22,7 @@ public:
 private:
     static constexpr float kCooldownTime = 0.5f;
     static constexpr float kPlayerSpeed = 150.0f;
+
 private:
     float     m_health;
     float     m_cooldownDuration;

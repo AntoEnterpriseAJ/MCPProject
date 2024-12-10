@@ -15,5 +15,5 @@ public:
     int GetExplosionRadius();
 
 private:
-    int  m_explosionRadius{ 3 };
+    int m_explosionRadius;
 };

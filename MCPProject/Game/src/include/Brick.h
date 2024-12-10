@@ -20,7 +20,8 @@ public:
 
 private:
     static constexpr int kBrickSize = 40;
+
 private:
-    bool m_isDestroyable   { false };
-    int  m_brickHealth     { 3 };
+    int  m_brickHealth;
+    bool m_isDestroyable;
 };

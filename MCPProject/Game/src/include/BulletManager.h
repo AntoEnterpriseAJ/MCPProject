@@ -21,5 +21,5 @@ private:
 
 private:
     std::vector<Bullet>    m_bullets;
-    std::vector<Explosion> m_explosions; // TODO: if it doesn't make sense, move it later
+    std::vector<Explosion> m_explosions; 
 };

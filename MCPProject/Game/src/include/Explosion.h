@@ -15,6 +15,7 @@ public:
 
 private:
     void updateExplosionFrame();
+
 private:
     sf::Sprite m_explosionSheet;
 

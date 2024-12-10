@@ -32,9 +32,11 @@ public:
 
 private:
     void drawGrid();
+
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
     static constexpr uint16_t kWindowHeight{ 800 };
+
 private:
     GameState              m_gameState;
     sf::Clock              m_lastFrameTimeClock;

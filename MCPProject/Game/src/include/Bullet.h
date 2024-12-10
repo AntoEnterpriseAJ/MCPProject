@@ -32,6 +32,7 @@ private:
     static constexpr float kBulletSpeed { 400.0f };
     static constexpr float kBulletSizeX { 20.0f };
     static constexpr float kBulletSizeY { 50.0f };
+
 private:
     Direction m_direction : 2;
     State     m_state     : 1;
