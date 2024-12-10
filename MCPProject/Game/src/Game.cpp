@@ -2,6 +2,8 @@
 #include "ResourceManager.h"
 #include "Explosion.h"
 
+#include <iostream>
+
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
     m_level{},
@@ -70,15 +72,17 @@ void Game::handleInputs(float deltaTime)
                         break;
                     }
 
-                    Bullet bullet{
+                    auto bullet = std::make_unique<Bullet>(
                         player.getPosition() + offset,
                         ResourceManager::getInstance().getTexture("bullet"),
                         player.getDirection()
-                    };
+                    );
 
-                    m_bulletManager.addBullet(bullet);
+                    m_bulletManager.addBullet(std::move(bullet));
+
                     player.restartCooldown();
                 }
+
             }
         }
     }
