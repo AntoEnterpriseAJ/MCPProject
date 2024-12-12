@@ -2,7 +2,6 @@
 #include <crow.h>
 #include <cstdint>
 #include <vector>
-#include <cstdint>
 #include "Player.h"
 
 class Routing
@@ -19,5 +18,5 @@ private:
     uint16_t m_idCounter;
     uint32_t m_version;
     crow::SimpleApp m_server;
-    std::vector<Player> m_players;
+    std::unordered_map<uint16_t, Player> m_players;
 };
