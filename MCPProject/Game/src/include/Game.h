@@ -8,7 +8,7 @@
 #include "Menu.h"
 #include "RegisterWindow.h"
 #include "LoginWindow.h"
-#include "KeyBinds.h"
+//#include "KeyBinds.h"
 
 
 class Game
