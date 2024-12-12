@@ -3,11 +3,13 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include <iostream>
+#include <memory>
+#include <chrono>
 
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/plane.png", "player");
@@ -49,18 +51,73 @@ void Game::join(sf::Vector2f position)
     }
 
     nlohmann::json response = nlohmann::json::parse(joinResponse.text);
-    m_players[response["id"]] = Player{position, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{ 39.9f, 39.9f }};
+
+    m_internalID = response["id"];
+    m_players[m_internalID] = Player{position, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{ 39.9f, 39.9f }};
     std::cout << response["message"] << "\n";
 }
 
+static std::optional<cpr::AsyncResponse> futureMoveResponse;
+void Game::move(Direction direction)
+{
+    if (!futureMoveResponse.has_value())
+    {
+        nlohmann::json data = {
+            {"id", m_internalID},
+            {"direction", direction}
+        };
+
+        futureMoveResponse = cpr::PostAsync(
+            cpr::Url{"http://localhost:18080/move"},
+            cpr::Header{{"Content-Type", "application/json"}},
+            cpr::Body{data.dump()}
+        );
+    }
+
+    if (futureMoveResponse->wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+    {
+        std::cout << "MOVE response ISN'T ready yet\n";
+        return;
+    }
+
+    cpr::Response response = futureMoveResponse->get();
+    futureMoveResponse.reset();
+
+    std::cout << "MOVE response is ready\n";
+
+    if (response.status_code != 200)
+    {
+        std::cout << "There was an error: " << response.status_code << ", " << response.error.message << "\n";
+        return;
+    }
+
+    std::cout << response.text << "\n";
+    return;
+}
+
+static std::optional<cpr::AsyncResponse> futureUpdateResponse;
 void Game::update()
 {
-    cpr::Response response = cpr::Get(
-        cpr::Url{"http://localhost:18080/gameState"},
-        cpr::Parameters{
-            {"clientVersion", std::to_string(clientVersion)}
-        }
-    );
+    if (!futureUpdateResponse.has_value())
+    {
+        futureUpdateResponse = cpr::GetAsync(
+            cpr::Url{"http://localhost:18080/gameState"},
+            cpr::Parameters{
+                {"clientVersion", std::to_string(clientVersion)}
+            }
+        );
+    }
+
+    if (futureUpdateResponse->wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+    {
+        std::cout << "UPDATE response ISN'T ready yet\n";
+        return;
+    }
+
+    cpr::Response response = futureUpdateResponse->get();
+    futureUpdateResponse.reset();
+
+    std::cout << "UPDATE response is ready\n";
 
     if (response.status_code != 200)
     {
@@ -96,7 +153,10 @@ void Game::update()
         }
 
         m_players[playerId].setPosition(newPosition);
+        std::cout << "Player now has pos (" << newPosition.x << ", " << newPosition.y << ")\n";
     }
+
+    return;
 }
 
 void Game::render()
@@ -130,9 +190,28 @@ void Game::render()
                     m_window.close();
                 }
 
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+                if (event.type == sf::Event::KeyPressed)
                 {
-                    m_window.close();
+                    if (event.key.code == sf::Keyboard::Escape)
+                    {
+                        m_window.close();
+                    }
+                    else if (event.key.code == sf::Keyboard::W)
+                    {
+                        move(Direction::Up);
+                    }
+                    else if (event.key.code == sf::Keyboard::S)
+                    {
+                        move(Direction::Down);
+                    }
+                    else if (event.key.code == sf::Keyboard::A)
+                    {
+                        move(Direction::Left);
+                    }
+                    else if (event.key.code == sf::Keyboard::D)
+                    {
+                        move(Direction::Right);
+                    }
                 }
             }
 
