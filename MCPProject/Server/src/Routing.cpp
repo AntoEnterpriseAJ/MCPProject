@@ -1,7 +1,9 @@
 #include "Routing.h"
 #include "nlohmann/json.hpp"
-#include "Player.h"
-#include <vector>
+
+Routing::Routing()
+    : m_idCounter{ 0 }, m_server{}, m_players{}, m_version{0}
+{}
 
 void Routing::run()
 {
@@ -10,33 +12,46 @@ void Routing::run()
         return crow::response("Welcome to the server!");
     });
 
-    static std::vector<Player> players;
-
     CROW_ROUTE(m_server, "/join").methods(crow::HTTPMethod::POST)
-    ([](const crow::request& req){
+    ([this](const crow::request& req){
         auto data = nlohmann::json::parse(req.body);
 
-        if (!data.contains("position") && data["position"].size() != 2)
+        if (!data.contains("position") && data["position"].is_array() && data["position"].size() != 2)
         {
             return crow::response(400, "invalid request body");
         }
 
         Player::Position position{data["position"][0], data["position"][1]};
+        m_players.push_back(Player{position, m_idCounter});
 
-        players.push_back(Player{position});
+        nlohmann::json response = {
+            {"id", m_idCounter},
+            {"message", "Player joined succesfully with ID " + std::to_string(m_idCounter)}
+        };
 
-        return crow::response(200);
+        m_idCounter++;
+        m_version = (m_version + 1) % kMaxVersion;
+        return crow::response(200, response.dump());
     });
 
-    CROW_ROUTE(m_server, "/players").methods(crow::HTTPMethod::GET)
-    ([](){
-        nlohmann::json response = nlohmann::json::array();
+    CROW_ROUTE(m_server, "/gameState").methods(crow::HTTPMethod::GET)
+    ([this](const crow::request& req){
+        uint32_t clientVersion = std::stoi(req.url_params.get("clientVersion"));
 
-        for (const Player& player : players)
+        nlohmann::json response = {
+            {"serverVersion", m_version},
+        };
+
+        if (clientVersion != m_version)
         {
-            response.push_back({
-                {"position", {player.getPosition().first, player.getPosition().second}}
-            });
+            response["players"] = nlohmann::json::array();
+            for (const Player& player : m_players)
+            {
+                response["players"].push_back({
+                    {"id", player.getID()},
+                    {"position", {player.getPosition().first, player.getPosition().second}}
+                });
+            }
         }
 
         return crow::response(response.dump());
