@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
   <ItemGroup>
