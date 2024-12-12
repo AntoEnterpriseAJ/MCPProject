@@ -4,14 +4,14 @@
 class Player
 {
 public:
-    using Position = std::pair<uint16_t, uint16_t>;
+    using Position = std::pair<float, float>;
 
+    Player() = default;
     Player(const Position& position, uint16_t id);
 
-    Position getPosition() const;
-    uint16_t getID() const;
+    void setPosition(const Position& position);
 
+    Position getPosition() const;
 private:
     Position m_position;
-    uint16_t m_id;
 };
