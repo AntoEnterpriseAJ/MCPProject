@@ -12,11 +12,11 @@ Game::Game()
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
-    instance.loadTextureFromFile("res/textures/albedo.png", "brick");
+    instance.loadTextureFromFile("res/textures/ice_block.png", "brick");
     instance.loadTextureFromFile("res/textures/ice.png", "bullet");
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
-    instance.loadTextureFromFile("res/textures/background.png", "background");
+    instance.loadTextureFromFile("res/textures/ice_map.png", "background");
     instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
     instance.loadMusicFromFile("res/sfx/playershootexample.m_sfx.wav", m_backgroundMusic);
