@@ -11,9 +11,9 @@ Game::Game()
     m_gameState{ GameState::Menu }
 {
     ResourceManager& instance = ResourceManager::getInstance();
-    instance.loadTextureFromFile("res/textures/plane.png", "player");
+    instance.loadTextureFromFile("res/textures/penguin1.png", "player");
     instance.loadTextureFromFile("res/textures/albedo.png", "brick");
-    instance.loadTextureFromFile("res/textures/missile.png", "bullet");
+    instance.loadTextureFromFile("res/textures/ice.png", "bullet");
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
     instance.loadTextureFromFile("res/textures/background.png", "background");
