@@ -101,5 +101,6 @@ void Routing::run()
         return crow::response(200, "the move was succesful");
     });
 
-    m_server.port(kPort).multithreaded().run();
+   crow::logger::setLogLevel(crow::LogLevel::Critical);
+   m_server.port(kPort).multithreaded().run();
 }
