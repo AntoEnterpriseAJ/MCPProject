@@ -9,7 +9,7 @@
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}, m_session{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/plane.png", "player");
@@ -57,31 +57,19 @@ void Game::join(sf::Vector2f position)
     std::cout << response["message"] << "\n";
 }
 
-static std::optional<cpr::AsyncResponse> futureMoveResponse;
+// TODO: don't block the main thread
 void Game::move(Direction direction)
 {
-    if (!futureMoveResponse.has_value())
-    {
-        nlohmann::json data = {
-            {"id", m_internalID},
-            {"direction", direction}
-        };
+    nlohmann::json data = {
+        {"id", m_internalID},
+        {"direction", direction}
+    };
 
-        futureMoveResponse = cpr::PostAsync(
-            cpr::Url{"http://localhost:18080/move"},
-            cpr::Header{{"Content-Type", "application/json"}},
-            cpr::Body{data.dump()}
-        );
-    }
+    m_session.SetUrl(cpr::Url{"http://localhost:18080/move"});
+    m_session.SetHeader(cpr::Header{{"Content-Type", "application/json"}});
+    m_session.SetBody(cpr::Body{data.dump()});
 
-    if (futureMoveResponse->wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
-    {
-        std::cout << "MOVE response ISN'T ready yet\n";
-        return;
-    }
-
-    cpr::Response response = futureMoveResponse->get();
-    futureMoveResponse.reset();
+    cpr::Response response = m_session.Post();
 
     std::cout << "MOVE response is ready\n";
 
@@ -95,27 +83,12 @@ void Game::move(Direction direction)
     return;
 }
 
-static std::optional<cpr::AsyncResponse> futureUpdateResponse;
 void Game::update()
 {
-    if (!futureUpdateResponse.has_value())
-    {
-        futureUpdateResponse = cpr::GetAsync(
-            cpr::Url{"http://localhost:18080/gameState"},
-            cpr::Parameters{
-                {"clientVersion", std::to_string(clientVersion)}
-            }
-        );
-    }
+    m_session.SetUrl(cpr::Url{"http://localhost:18080/gameState"});
+    m_session.SetParameters(cpr::Parameters{{"clientVersion", std::to_string(clientVersion)}});
 
-    if (futureUpdateResponse->wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
-    {
-        std::cout << "UPDATE response ISN'T ready yet\n";
-        return;
-    }
-
-    cpr::Response response = futureUpdateResponse->get();
-    futureUpdateResponse.reset();
+    cpr::Response response = m_session.Get();
 
     std::cout << "UPDATE response is ready\n";
 

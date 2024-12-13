@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <string_view>
+#include <cpr/cpr.h>
 
 class Game
 {
@@ -32,6 +33,7 @@ private:
     static constexpr uint16_t kWindowHeight{ 800 };
 private:
     std::unordered_map<uint16_t, Player> m_players;
+    cpr::Session           m_session;
     uint16_t               m_internalID;
     GameState              m_gameState;
     sf::RenderWindow       m_window;
