@@ -1,6 +1,9 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
+#include "ResourceManager.h"
 #include <string>
+#include <list>
 
 class GameObject : public sf::Drawable
 {
@@ -32,9 +35,13 @@ public:
 	sf::Vector2f  getVelocity() const noexcept;
 	sf::Sprite    getSprite()   const noexcept;
 
+	static void playSound(std::string_view path);
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 protected:
 	sf::Vector2f m_velocity;
 	sf::Sprite	 m_sprite;
+	static std::list<sf::Sound> m_activeSounds;
+
 };
