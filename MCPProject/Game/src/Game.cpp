@@ -1,14 +1,14 @@
 ﻿#include "Game.h"
 #include "ResourceManager.h"
 #include "Explosion.h"
-
 #include <iostream>
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
     m_level{},
     m_menu{ kWindowWidth, kWindowHeight },
-    m_gameState{ GameState::Menu }
+    m_loginWindow{ kWindowWidth, kWindowHeight },
+    m_gameState{ GameState::Menu } 
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
@@ -22,6 +22,7 @@ Game::Game()
     instance.loadMusicFromFile("res/sfx/playershootexample.m_sfx.wav", m_backgroundMusic);
     m_backgroundMusic.setLoop(true);
     m_backgroundMusic.play();
+
     insertPlayer(
         sf::Vector2f{ 100.0f, 80.0f },
         ResourceManager::getInstance().getTexture("player"),
@@ -31,12 +32,12 @@ Game::Game()
     m_level.load();
 }
 
-void Game::handleInputs(float deltaTime)
+void Game::handleInputs(float deltaTime) 
 {
     sf::Event event;
-    while (m_window.pollEvent(event))
+    while (m_window.pollEvent(event)) 
     {
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed) 
         {
             m_window.close();
         }
@@ -46,17 +47,17 @@ void Game::handleInputs(float deltaTime)
             m_window.close();
         }
 
-        for (auto& player : m_players)
+        for (auto& player : m_players) 
         {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) 
             {
-                if (player.canShoot())
+                if (player.canShoot()) 
                 {
                     Direction dir = player.getDirection();
                     sf::Vector2f offset{ 0.0f, 0.0f };
                     float bulletOffsetDistance = 20.0f;
 
-                    switch (player.getDirection())
+                    switch (player.getDirection()) 
                     {
                     case Direction::Up:
                         offset.y = -bulletOffsetDistance;
@@ -82,70 +83,43 @@ void Game::handleInputs(float deltaTime)
 
                     player.restartCooldown();
                 }
-
             }
         }
     }
 
-    for (auto& player : m_players)
+    for (auto& player : m_players) 
     {
         player.update(deltaTime);
     }
 }
 
-
-void Game::insertPlayer(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
+void Game::insertPlayer(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size) 
 {
     m_players.emplace_back(pos, texture, size);
 }
 
-uint16_t Game::getWindowWidth()
+uint16_t Game::getWindowWidth() 
 {
     return kWindowWidth;
 }
 
-uint16_t Game::getWindowHeight()
+uint16_t Game::getWindowHeight() 
 {
     return kWindowHeight;
 }
 
-void Game::drawGrid()
+void Game::render() 
 {
-    constexpr int cellSize = 40;
-
-    for (int i = 0; i < kWindowWidth; i += cellSize)
-    {
-        sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(i, 0)),
-            sf::Vertex(sf::Vector2f(i, kWindowHeight))
-        };
-
-        m_window.draw(line, 2, sf::Lines);
-    }
-
-    for (int i = 0; i < kWindowHeight; i += cellSize)
-    {
-        sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(0, i)),
-            sf::Vertex(sf::Vector2f(kWindowWidth, i))
-        };
-
-        m_window.draw(line, 2, sf::Lines);
-    }
-}
-
-void Game::render()
-{
-    while (m_window.isOpen())
+    while (m_window.isOpen()) 
     {
         float deltaTime = m_lastFrameTimeClock.restart().asSeconds();
 
         if (m_gameState == GameState::Menu)
         {
             sf::Event event;
-            while (m_window.pollEvent(event))
+            while (m_window.pollEvent(event)) 
             {
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed) 
                 {
                     m_window.close();
                 }
@@ -153,20 +127,33 @@ void Game::render()
 
             m_menu.handleInput(m_window);
 
-            if (m_menu.isStartGameSelected())
+            if (m_menu.isStartGameSelected()) 
             {
-                m_gameState = GameState::Playing;
+                m_gameState = GameState::Login;
             }
 
             m_window.clear();
             m_menu.draw(m_window);
             m_window.display();
         }
-        else if (m_gameState == GameState::Playing)
+        else if (m_gameState == GameState::Login) 
+        {
+            m_loginWindow.handleInput(m_window);
+
+            if (m_loginWindow.isLoginSuccessful()) 
+            {
+                m_gameState = GameState::Playing;
+            }
+
+            m_window.clear();
+            m_loginWindow.draw(m_window);
+            m_window.display();
+        }
+        else if (m_gameState == GameState::Playing) 
         {
             handleInputs(deltaTime);
 
-            for (auto& player : m_players)
+            for (auto& player : m_players) 
             {
                 player.movePlayer(m_level, deltaTime);
             }
@@ -178,13 +165,12 @@ void Game::render()
             m_level.drawBackground(m_window);
             m_bulletManager.draw(m_window);
 
-            for (auto& player : m_players)
+            for (auto& player : m_players) 
             {
                 m_window.draw(player);
             }
 
             m_window.draw(m_level);
-            // drawGrid(); // Uncomment for debugging
 
             m_window.display();
         }
