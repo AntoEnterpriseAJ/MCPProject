@@ -39,14 +39,16 @@ void Game::join(sf::Vector2f position)
     };
 
     cpr::Response joinResponse = cpr::Post(
-        cpr::Url{"http://localhost:18080/join"},
+        cpr::Url{"http://127.0.0.1:18080/join"},
         cpr::Header{{"Content-Type", "application/json"}},
         cpr::Body{data.dump()}
     );
 
     if (joinResponse.status_code != 200)
     {
-        std::cout << "There was an error: " << joinResponse.status_code << ", " << joinResponse.error.message << "\n";
+        std::cout << std::format("There was an error joining. HTTP status: {}, Error: {}\n"
+                                , joinResponse.status_code
+                                , joinResponse.error.message);
         return;
     }
 
@@ -65,17 +67,18 @@ void Game::move(Direction direction)
         {"direction", direction}
     };
 
-    m_session.SetUrl(cpr::Url{"http://localhost:18080/move"});
+    m_session.SetUrl(cpr::Url{"http://127.0.0.1:18080/move"});
     m_session.SetHeader(cpr::Header{{"Content-Type", "application/json"}});
     m_session.SetBody(cpr::Body{data.dump()});
 
     cpr::Response response = m_session.Post();
-
-    std::cout << "MOVE response is ready\n";
+    std::cout << "Move response is ready\n";
 
     if (response.status_code != 200)
     {
-        std::cout << "There was an error: " << response.status_code << ", " << response.error.message << "\n";
+        std::cout << std::format("There was an error moving: HTTP status: {}, Error: {}\n"
+                                , response.status_code
+                                , response.error.message);
         return;
     }
 
@@ -85,49 +88,39 @@ void Game::move(Direction direction)
 
 void Game::update()
 {
-    m_session.SetUrl(cpr::Url{"http://localhost:18080/gameState"});
+    m_session.SetUrl(cpr::Url{"http://127.0.0.1:18080/gameState"});
     m_session.SetParameters(cpr::Parameters{{"clientVersion", std::to_string(clientVersion)}});
 
     cpr::Response response = m_session.Get();
+    std::cout << "Update response is ready\n";
 
-    std::cout << "UPDATE response is ready\n";
-
-    if (response.status_code != 200)
+    if (response.status_code != cpr::status::HTTP_OK)
     {
-        std::cout << "Couldn't retrieve the players data, error: "
-                    << response.status_code << ", "
-                    << response.error.message << "\n";
+        std::cout << std::format("Couldn't retrieve the gamestate. HTTP Status: {}, Error: {}\n"
+                                , response.status_code
+                                , response.error.message);
         return;
     }
-
-    std::cout << "UpdateResponse: " << response.text << "\n";
 
     nlohmann::json updateResponse = nlohmann::json::parse(response.text);
-
     if (updateResponse["serverVersion"] == clientVersion)
     {
-        std::cout << "NO update needed, client version: " + std::to_string(clientVersion)
-            + " server version: " << updateResponse["serverVersion"] << "\n";
+        std::cout << "No update needed\n";
         return;
     }
 
-    std::cout << "Update needed, client version: " + std::to_string(clientVersion)
-                + " server version: " << updateResponse["serverVersion"] << "\n";
+    std::cout << "Update needed\n";
+    std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
+        sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
+        uint16_t playerId = playerData["id"];
 
-    clientVersion = updateResponse["serverVersion"];
-    for (const auto& playerJson : updateResponse["players"])
-    {
-        sf::Vector2f newPosition = {playerJson["position"][0], playerJson["position"][1]};
-        uint16_t playerId = playerJson["id"];
-
-        if (!m_players.contains(playerJson["id"]))
+        if (!m_players.contains(playerData["id"]))
         {
             m_players[playerId] = {newPosition, ResourceManager::getInstance().getTexture("player"), {39.9f, 39.9f}};
         }
 
         m_players[playerId].setPosition(newPosition);
-        std::cout << "Player now has pos (" << newPosition.x << ", " << newPosition.y << ")\n";
-    }
+    });
 
     return;
 }
@@ -191,10 +184,10 @@ void Game::render()
             m_window.clear();
             update();
 
-            for (const auto& [id, player] : m_players)
-            {
+            std::ranges::for_each(m_players, [this](const auto& entry){
+                const auto& [id, player] = entry;
                 m_window.draw(player);
-            }
+            });
 
             m_window.display();
         }
