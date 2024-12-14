@@ -17,7 +17,7 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
     instance.loadTextureFromFile("res/textures/ice_map.png", "background");
-    instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
+    instance.loadTextureFromFile("res/textures/explosion.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
     instance.loadMusicFromFile("res/sfx/playershootexample.m_sfx.wav", m_backgroundMusic);
     m_backgroundMusic.setLoop(true);
