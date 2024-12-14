@@ -19,7 +19,10 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/ice_map.png", "background");
     instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
-    instance.loadMusicFromFile("res/sfx/playershootexample.m_sfx.wav", m_backgroundMusic);
+    instance.loadMusicFromFile("res/sfx/mainLoop.wav", m_backgroundMusic);
+  /*  instance.loadMusicFromFile("res/sfx/brick.wav", m_brickSFX);
+    instance.loadMusicFromFile("res/sfx/bombBrick.wav", m_bombBrickSFX);
+    instance.loadMusicFromFile("res/sfx/shooting.wav", m_shootingSFX);*/
     m_backgroundMusic.setLoop(true);
     m_backgroundMusic.play();
     insertPlayer(
@@ -79,8 +82,9 @@ void Game::handleInputs(float deltaTime)
                     );
 
                     m_bulletManager.addBullet(std::move(bullet));
-
+                    GameObject::playSound("res/sfx/shooting.wav");
                     player.restartCooldown();
+                    
                 }
 
             }

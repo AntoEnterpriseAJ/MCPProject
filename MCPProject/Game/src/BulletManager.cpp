@@ -54,6 +54,11 @@ void BulletManager::handleCollisions(Level& level)
                     addExplosion(*bulletPtr);
                     brick->hit();
 
+                    if (brick->isDestroyed())
+
+                        GameObject::playSound("res/sfx/brick.wav");
+                    
+
                     std::cout << "BRICK\n";
                 }
             }
@@ -110,6 +115,7 @@ void BulletManager::detonate(const sf::Vector2f& bombPosition, Level& level, int
             {
                 levelLayout.erase(levelLayout.begin() + index);
                 index--;
+                GameObject::playSound("res/sfx/bombBrick.wav");
             }
         }
     }

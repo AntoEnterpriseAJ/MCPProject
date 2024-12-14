@@ -44,3 +44,11 @@ void ResourceManager::loadMusicFromFile(std::string_view path, sf::Music& music)
         exit(-1);
     }
 }
+
+void ResourceManager::loadSoundFromFile(std::string_view path, sf::SoundBuffer& buffer, sf::Sound& sound) {
+    if (!buffer.loadFromFile(path.data())) {
+        std::cerr << "ERROR::ResourceManager::loadSound: Failed to load sound file from " << path << std::endl;
+        exit(-1);
+    }
+    sound.setBuffer(buffer);
+}

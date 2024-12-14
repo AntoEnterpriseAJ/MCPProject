@@ -14,6 +14,7 @@ public:
     [[nodiscard]] const sf::Texture& getTexture(std::string_view name) const;
 
     void loadMusicFromFile(std::string_view path, sf::Music& music);
+    static void loadSoundFromFile(std::string_view path, sf::SoundBuffer& buffer, sf::Sound& sound);
 
 private:
     ResourceManager() = default;
