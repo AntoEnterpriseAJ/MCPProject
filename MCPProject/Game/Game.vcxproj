@@ -154,7 +154,6 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\RegisterWindow.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
@@ -173,7 +172,6 @@
     <ClInclude Include="src\include\Menu.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
-    <ClInclude Include="src\include\RegisterWindow.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
     <ClInclude Include="src\include\UnbreakableBrick.h" />
   </ItemGroup>
