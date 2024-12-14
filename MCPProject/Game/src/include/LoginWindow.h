@@ -1,10 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
 #include <string>
 
-class LoginWindow
+class LoginWindow 
 {
 public:
     LoginWindow(float width, float height);
@@ -14,23 +13,19 @@ public:
 
     bool isLoginSuccessful() const;
 
+    std::string getUsername();
+
 private:
     sf::Font m_font;
     sf::Text m_title;
     sf::Text m_usernameText;
-    sf::Text m_passwordText;
     sf::RectangleShape m_usernameBox;
-    sf::RectangleShape m_passwordBox;
 
     sf::Text m_username;
-    sf::Text m_password;
+    std::string m_usernameString;
 
     bool m_isUsernameActive;
-    bool m_isPasswordActive;
+    bool m_isLoginSuccessful;
 
-    std::string m_passwordValue;
-
-    void handleTextInput(const sf::Event& event, sf::Text& target);
-
-    void handlePasswordInput(const sf::Event& event);
+    void handleTextInput(const sf::Event& event);
 };
