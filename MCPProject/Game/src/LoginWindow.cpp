@@ -109,15 +109,15 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
 
 void LoginWindow::handleTextInput(const sf::Event& event)
 {
-    if (event.text.unicode >= 32 && event.text.unicode < 128) // Caractere vizibile
+    if (event.text.unicode >= 32 && event.text.unicode < 128)
     {
-        if (m_usernameString.size() < 14) // Verifică dacă șirul are mai puțin de 14 caractere
+        if (m_usernameString.size() < 14)
         {
             m_usernameString.insert(m_cursorPosition, 1, static_cast<char>(event.text.unicode));
             m_cursorPosition++;
         }
     }
-    else if (event.text.unicode == 8 && m_cursorPosition > 0) // Backspace
+    else if (event.text.unicode == 8 && m_cursorPosition > 0)
     {
         m_usernameString.erase(m_cursorPosition - 1, 1);
         m_cursorPosition--;
