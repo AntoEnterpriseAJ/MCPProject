@@ -9,47 +9,61 @@ LoginWindow::LoginWindow(float width, float height)
         std::cerr << "Failed to load font!" << std::endl;
     }
 
-    m_title.setFont(m_font);
-    m_title.setCharacterSize(50);
-    m_title.setString("Login");
-    m_title.setPosition(width / 2 - m_title.getLocalBounds().width / 2, height / 2 - 150);
+    if (!m_backgroundTexture.loadFromFile("res/textures/background_login.png"))
+    {
+        std::cerr << "Failed to load background texture!" << std::endl;
+    }
+    m_backgroundSprite.setTexture(m_backgroundTexture);
 
-    m_usernameBox.setSize(sf::Vector2f(300.0f, 50.0f));
+    m_usernameBox.setSize(sf::Vector2f(300.0f, 70.0f));
     m_usernameBox.setFillColor(sf::Color::White);
-    m_usernameBox.setPosition(width / 2 - 150.0f, height / 2 - 50.0f);
-
-    m_usernameText.setFont(m_font);
-    m_usernameText.setCharacterSize(25);
-    m_usernameText.setString("Username:");
-    m_usernameText.setPosition(width / 2 - 150.0f, height / 2 - 100.0f);
+    m_usernameBox.setPosition(width / 2 - 150.0f, height / 2 + 0.5f);
 
     m_username.setFont(m_font);
-    m_username.setCharacterSize(25);
-    m_username.setFillColor(sf::Color::Black);
-    m_username.setPosition(m_usernameBox.getPosition().x + 5, m_usernameBox.getPosition().y + 10);
+    m_username.setCharacterSize(34);
+    m_username.setFillColor(sf::Color::Magenta);
+    m_username.setPosition(m_usernameBox.getPosition().x + 10, m_usernameBox.getPosition().y + 10);
 
     m_usernameString = "";
+
+    m_cursorClock.restart();
 }
 
 void LoginWindow::draw(sf::RenderWindow& window)
 {
-    window.draw(m_title);
-    window.draw(m_usernameBox);
-    window.draw(m_usernameText);
+    window.draw(m_backgroundSprite);
     window.draw(m_username);
+
+    if (m_isUsernameActive && m_showCursor)
+    {
+        float cursorX = m_username.findCharacterPos(m_cursorPosition).x;
+        float cursorY = m_username.getPosition().y + 6.0f;
+
+        sf::RectangleShape cursor(sf::Vector2f(2, m_username.getCharacterSize()));
+        cursor.setFillColor(sf::Color::Black);
+        cursor.setPosition(cursorX, cursorY);
+
+        window.draw(cursor);
+    }
+
+    if (m_cursorClock.getElapsedTime().asSeconds() > 0.5f)
+    {
+        m_showCursor = !m_showCursor;
+        m_cursorClock.restart();
+    }
 }
 
-void LoginWindow::handleInput(sf::RenderWindow& window) 
+void LoginWindow::handleInput(sf::RenderWindow& window)
 {
     sf::Event event;
-    while (window.pollEvent(event)) 
+    while (window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed) 
+        if (event.type == sf::Event::Closed)
         {
             window.close();
         }
 
-        if (event.type == sf::Event::MouseButtonPressed) 
+        if (event.type == sf::Event::MouseButtonPressed)
         {
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             if (m_usernameBox.getGlobalBounds().contains(mousePos))
@@ -57,14 +71,14 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
                 m_isUsernameActive = true;
                 m_usernameBox.setFillColor(sf::Color::Green);
             }
-            else 
+            else
             {
                 m_isUsernameActive = false;
                 m_usernameBox.setFillColor(sf::Color::White);
             }
         }
 
-        if (event.type == sf::Event::TextEntered && m_isUsernameActive) 
+        if (event.type == sf::Event::TextEntered && m_isUsernameActive)
         {
             if (event.text.unicode == 13)
             {
@@ -73,23 +87,40 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
                     m_isLoginSuccessful = true;
                 }
             }
-            else 
+            else
             {
                 handleTextInput(event);
+            }
+        }
+
+        if (event.type == sf::Event::KeyPressed && m_isUsernameActive)
+        {
+            if (event.key.code == sf::Keyboard::Left && m_cursorPosition > 0)
+            {
+                m_cursorPosition--;
+            }
+            else if (event.key.code == sf::Keyboard::Right && m_cursorPosition < m_usernameString.size())
+            {
+                m_cursorPosition++;
             }
         }
     }
 }
 
-void LoginWindow::handleTextInput(const sf::Event& event) 
+void LoginWindow::handleTextInput(const sf::Event& event)
 {
-    if (event.text.unicode >= 32 && event.text.unicode < 128) 
+    if (event.text.unicode >= 32 && event.text.unicode < 128) // Caractere vizibile
     {
-        m_usernameString += static_cast<char>(event.text.unicode);
+        if (m_usernameString.size() < 14) // Verifică dacă șirul are mai puțin de 14 caractere
+        {
+            m_usernameString.insert(m_cursorPosition, 1, static_cast<char>(event.text.unicode));
+            m_cursorPosition++;
+        }
     }
-    else if (event.text.unicode == 8 && !m_usernameString.empty())
+    else if (event.text.unicode == 8 && m_cursorPosition > 0) // Backspace
     {
-        m_usernameString.pop_back();
+        m_usernameString.erase(m_cursorPosition - 1, 1);
+        m_cursorPosition--;
     }
 
     m_username.setString(m_usernameString);

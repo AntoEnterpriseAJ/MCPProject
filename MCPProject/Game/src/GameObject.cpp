@@ -1,6 +1,5 @@
 #include "GameObject.h"
 
-std::list<sf::Sound> GameObject::m_activeSounds;
 
 GameObject::GameObject(
 	sf::Vector2f       pos, 
@@ -81,17 +80,3 @@ void GameObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_sprite, states);
 }
 
-void GameObject::playSound(std::string_view path) 
-{
-	static sf::SoundBuffer buffer;
-	sf::Sound sound;
-	ResourceManager::loadSoundFromFile(path, buffer, sound);
-	sound.setVolume(20.f);
-	sound.setBuffer(buffer);
-	m_activeSounds.push_back(sound);
-	m_activeSounds.back().play();
-	m_activeSounds.remove_if([](const sf::Sound& s) 
-		{
-		return s.getStatus() == sf::Sound::Stopped;
-	});
-}

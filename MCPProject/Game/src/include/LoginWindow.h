@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <string>
@@ -26,6 +26,13 @@ private:
 
     bool m_isUsernameActive;
     bool m_isLoginSuccessful;
+
+    sf::Texture m_backgroundTexture;
+    sf::Sprite m_backgroundSprite;
+
+    size_t m_cursorPosition;
+    sf::Clock m_cursorClock;
+    bool m_showCursor;
 
     void handleTextInput(const sf::Event& event);
 };

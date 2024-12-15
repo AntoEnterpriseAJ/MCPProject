@@ -1,5 +1,4 @@
 ﻿#include "BulletManager.h"
-#include "ResourceManager.h"
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -56,7 +55,7 @@ void BulletManager::handleCollisions(Level& level)
 
                     if (brick->isDestroyed())
 
-                        GameObject::playSound("res/sfx/brick.wav");
+                        ResourceManager::playSound("res/sfx/brick.wav");
                     
 
                     std::cout << "BRICK\n";
@@ -115,7 +114,7 @@ void BulletManager::detonate(const sf::Vector2f& bombPosition, Level& level, int
             {
                 levelLayout.erase(levelLayout.begin() + index);
                 index--;
-                GameObject::playSound("res/sfx/bombBrick.wav");
+                ResourceManager::playSound("res/sfx/bombBrick.wav");
             }
         }
     }
