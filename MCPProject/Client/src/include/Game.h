@@ -27,6 +27,7 @@ public:
     static uint16_t getWindowWidth();
     static uint16_t getWindowHeight();
 private:
+    void handleInputs();
     void join(const Player& player);
     void update();
     void move(Direction direction);

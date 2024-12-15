@@ -34,6 +34,42 @@ uint16_t Game::getWindowHeight()
     return kWindowHeight;
 }
 
+void Game::handleInputs()
+{
+    sf::Event event;
+    while (m_window.pollEvent(event))
+    {
+        if (event.type == sf::Event::Closed)
+        {
+            m_window.close();
+        }
+
+        if (event.type == sf::Event::KeyPressed)
+        {
+            if (event.key.code == sf::Keyboard::Escape)
+            {
+                m_window.close();
+            }
+            else if (event.key.code == sf::Keyboard::W)
+            {
+                move(Direction::Up);
+            }
+            else if (event.key.code == sf::Keyboard::S)
+            {
+                move(Direction::Down);
+            }
+            else if (event.key.code == sf::Keyboard::A)
+            {
+                move(Direction::Left);
+            }
+            else if (event.key.code == sf::Keyboard::D)
+            {
+                move(Direction::Right);
+            }
+        }
+    }
+}
+
 void Game::join(const Player& player)
 {
     nlohmann::json response = m_networkManager.join(player);
@@ -97,40 +133,8 @@ void Game::render()
 
         if (m_gameState == GameState::Playing)
         {
-            sf::Event event;
-            while (m_window.pollEvent(event))
-            {
-                if (event.type == sf::Event::Closed)
-                {
-                    m_window.close();
-                }
-
-                if (event.type == sf::Event::KeyPressed)
-                {
-                    if (event.key.code == sf::Keyboard::Escape)
-                    {
-                        m_window.close();
-                    }
-                    else if (event.key.code == sf::Keyboard::W)
-                    {
-                        move(Direction::Up);
-                    }
-                    else if (event.key.code == sf::Keyboard::S)
-                    {
-                        move(Direction::Down);
-                    }
-                    else if (event.key.code == sf::Keyboard::A)
-                    {
-                        move(Direction::Left);
-                    }
-                    else if (event.key.code == sf::Keyboard::D)
-                    {
-                        move(Direction::Right);
-                    }
-                }
-            }
-
             m_window.clear();
+            handleInputs();
             update();
 
             m_window.draw(m_level);
