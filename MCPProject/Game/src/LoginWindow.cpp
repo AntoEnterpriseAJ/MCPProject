@@ -25,25 +25,45 @@ LoginWindow::LoginWindow(float width, float height)
     m_username.setPosition(m_usernameBox.getPosition().x + 5, m_usernameBox.getPosition().y + 10);
 
     m_usernameString = "";
+
+    m_cursorClock.restart();
 }
 
 void LoginWindow::draw(sf::RenderWindow& window)
 {
     window.draw(m_backgroundSprite);
     window.draw(m_username);
+
+    if (m_isUsernameActive && m_showCursor)
+    {
+        float cursorX = m_username.findCharacterPos(m_cursorPosition).x;
+        float cursorY = m_username.getPosition().y + 6.0f;
+
+        sf::RectangleShape cursor(sf::Vector2f(2, m_username.getCharacterSize()));
+        cursor.setFillColor(sf::Color::Black);
+        cursor.setPosition(cursorX, cursorY);
+
+        window.draw(cursor);
+    }
+
+    if (m_cursorClock.getElapsedTime().asSeconds() > 0.5f)
+    {
+        m_showCursor = !m_showCursor;
+        m_cursorClock.restart();
+    }
 }
 
-void LoginWindow::handleInput(sf::RenderWindow& window) 
+void LoginWindow::handleInput(sf::RenderWindow& window)
 {
     sf::Event event;
-    while (window.pollEvent(event)) 
+    while (window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed) 
+        if (event.type == sf::Event::Closed)
         {
             window.close();
         }
 
-        if (event.type == sf::Event::MouseButtonPressed) 
+        if (event.type == sf::Event::MouseButtonPressed)
         {
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             if (m_usernameBox.getGlobalBounds().contains(mousePos))
@@ -51,14 +71,14 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
                 m_isUsernameActive = true;
                 m_usernameBox.setFillColor(sf::Color::Green);
             }
-            else 
+            else
             {
                 m_isUsernameActive = false;
                 m_usernameBox.setFillColor(sf::Color::White);
             }
         }
 
-        if (event.type == sf::Event::TextEntered && m_isUsernameActive) 
+        if (event.type == sf::Event::TextEntered && m_isUsernameActive)
         {
             if (event.text.unicode == 13)
             {
@@ -67,23 +87,37 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
                     m_isLoginSuccessful = true;
                 }
             }
-            else 
+            else
             {
                 handleTextInput(event);
+            }
+        }
+
+        if (event.type == sf::Event::KeyPressed && m_isUsernameActive)
+        {
+            if (event.key.code == sf::Keyboard::Left && m_cursorPosition > 0)
+            {
+                m_cursorPosition--;
+            }
+            else if (event.key.code == sf::Keyboard::Right && m_cursorPosition < m_usernameString.size())
+            {
+                m_cursorPosition++;
             }
         }
     }
 }
 
-void LoginWindow::handleTextInput(const sf::Event& event) 
+void LoginWindow::handleTextInput(const sf::Event& event)
 {
-    if (event.text.unicode >= 32 && event.text.unicode < 128) 
+    if (event.text.unicode >= 32 && event.text.unicode < 128)
     {
-        m_usernameString += static_cast<char>(event.text.unicode);
+        m_usernameString.insert(m_cursorPosition, 1, static_cast<char>(event.text.unicode));
+        m_cursorPosition++;
     }
-    else if (event.text.unicode == 8 && !m_usernameString.empty())
+    else if (event.text.unicode == 8 && m_cursorPosition > 0)
     {
-        m_usernameString.pop_back();
+        m_usernameString.erase(m_cursorPosition - 1, 1);
+        m_cursorPosition--;
     }
 
     m_username.setString(m_usernameString);
