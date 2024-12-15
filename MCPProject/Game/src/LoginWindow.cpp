@@ -9,23 +9,19 @@ LoginWindow::LoginWindow(float width, float height)
         std::cerr << "Failed to load font!" << std::endl;
     }
 
-    m_title.setFont(m_font);
-    m_title.setCharacterSize(50);
-    m_title.setString("Login");
-    m_title.setPosition(width / 2 - m_title.getLocalBounds().width / 2, height / 2 - 150);
+    if (!m_backgroundTexture.loadFromFile("res/textures/background_login.png"))
+    {
+        std::cerr << "Failed to load background texture!" << std::endl;
+    }
+    m_backgroundSprite.setTexture(m_backgroundTexture);
 
-    m_usernameBox.setSize(sf::Vector2f(300.0f, 50.0f));
+    m_usernameBox.setSize(sf::Vector2f(300.0f, 70.0f));
     m_usernameBox.setFillColor(sf::Color::White);
-    m_usernameBox.setPosition(width / 2 - 150.0f, height / 2 - 50.0f);
-
-    m_usernameText.setFont(m_font);
-    m_usernameText.setCharacterSize(25);
-    m_usernameText.setString("Username:");
-    m_usernameText.setPosition(width / 2 - 150.0f, height / 2 - 100.0f);
+    m_usernameBox.setPosition(width / 2 - 150.0f, height / 2 + 0.5f);
 
     m_username.setFont(m_font);
-    m_username.setCharacterSize(25);
-    m_username.setFillColor(sf::Color::Black);
+    m_username.setCharacterSize(34);
+    m_username.setFillColor(sf::Color::Magenta);
     m_username.setPosition(m_usernameBox.getPosition().x + 5, m_usernameBox.getPosition().y + 10);
 
     m_usernameString = "";
@@ -33,9 +29,7 @@ LoginWindow::LoginWindow(float width, float height)
 
 void LoginWindow::draw(sf::RenderWindow& window)
 {
-    window.draw(m_title);
-    window.draw(m_usernameBox);
-    window.draw(m_usernameText);
+    window.draw(m_backgroundSprite);
     window.draw(m_username);
 }
 

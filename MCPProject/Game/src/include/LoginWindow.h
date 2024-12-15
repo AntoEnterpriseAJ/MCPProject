@@ -27,5 +27,8 @@ private:
     bool m_isUsernameActive;
     bool m_isLoginSuccessful;
 
+    sf::Texture m_backgroundTexture;
+    sf::Sprite m_backgroundSprite;
+
     void handleTextInput(const sf::Event& event);
 };
