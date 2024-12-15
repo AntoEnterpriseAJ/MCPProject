@@ -6,6 +6,7 @@
 #include <string>
 #include <string_view>
 #include <cpr/cpr.h>
+#include "NetworkManager.h"
 
 class Game
 {
@@ -25,7 +26,7 @@ public:
     static uint16_t getWindowWidth();
     static uint16_t getWindowHeight();
 private:
-    void join(sf::Vector2f position);
+    void join(const Player& player);
     void update();
     void move(Direction direction);
 private:
@@ -33,7 +34,7 @@ private:
     static constexpr uint16_t kWindowHeight{ 800 };
 private:
     std::unordered_map<uint16_t, Player> m_players;
-    cpr::Session           m_session;
+    NetworkManager         m_networkManager;
     uint16_t               m_internalID;
     GameState              m_gameState;
     sf::RenderWindow       m_window;

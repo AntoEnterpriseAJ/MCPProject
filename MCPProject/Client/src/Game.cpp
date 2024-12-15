@@ -9,7 +9,7 @@
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}, m_session{}
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/plane.png", "player");
@@ -32,91 +32,36 @@ uint16_t Game::getWindowHeight()
     return kWindowHeight;
 }
 
-void Game::join(sf::Vector2f position)
+void Game::join(const Player& player)
 {
-    nlohmann::json data = {
-        {"position", {position.x, position.y}}
-    };
-
-    cpr::Response joinResponse = cpr::Post(
-        cpr::Url{"http://127.0.0.1:18080/join"},
-        cpr::Header{{"Content-Type", "application/json"}},
-        cpr::Body{data.dump()}
-    );
-
-    if (joinResponse.status_code != 200)
-    {
-        std::cout << std::format("There was an error joining. HTTP status: {}, Error: {}\n"
-                                , joinResponse.status_code
-                                , joinResponse.error.message);
-        return;
-    }
-
-    nlohmann::json response = nlohmann::json::parse(joinResponse.text);
+    nlohmann::json response = m_networkManager.join(player);
 
     m_internalID = response["id"];
-    m_players[m_internalID] = Player{position, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{ 39.9f, 39.9f }};
-    std::cout << response["message"] << "\n";
+    m_players[m_internalID] = player;
 }
 
-// TODO: don't block the main thread
 void Game::move(Direction direction)
 {
-    nlohmann::json data = {
-        {"id", m_internalID},
-        {"direction", direction}
-    };
-
-    m_session.SetUrl(cpr::Url{"http://127.0.0.1:18080/move"});
-    m_session.SetHeader(cpr::Header{{"Content-Type", "application/json"}});
-    m_session.SetBody(cpr::Body{data.dump()});
-
-    cpr::Response response = m_session.Post();
-    std::cout << "Move response is ready\n";
-
-    if (response.status_code != 200)
-    {
-        std::cout << std::format("There was an error moving: HTTP status: {}, Error: {}\n"
-                                , response.status_code
-                                , response.error.message);
-        return;
-    }
-
-    std::cout << response.text << "\n";
+    m_networkManager.movePlayer(m_internalID, direction);
     return;
 }
 
 void Game::update()
 {
-    m_session.SetUrl(cpr::Url{"http://127.0.0.1:18080/gameState"});
-    m_session.SetParameters(cpr::Parameters{{"clientVersion", std::to_string(clientVersion)}});
+    nlohmann::json updateResponse = m_networkManager.update();
 
-    cpr::Response response = m_session.Get();
-    std::cout << "Update response is ready\n";
-
-    if (response.status_code != cpr::status::HTTP_OK)
+    if (updateResponse.empty())
     {
-        std::cout << std::format("Couldn't retrieve the gamestate. HTTP Status: {}, Error: {}\n"
-                                , response.status_code
-                                , response.error.message);
         return;
     }
 
-    nlohmann::json updateResponse = nlohmann::json::parse(response.text);
-    if (updateResponse["serverVersion"] == clientVersion)
-    {
-        std::cout << "No update needed\n";
-        return;
-    }
-
-    std::cout << "Update needed\n";
     std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
         sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
         uint16_t playerId = playerData["id"];
 
         if (!m_players.contains(playerData["id"]))
         {
-            m_players[playerId] = {newPosition, ResourceManager::getInstance().getTexture("player"), {39.9f, 39.9f}};
+            m_players[playerId] = {newPosition, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
         }
 
         m_players[playerId].setPosition(newPosition);
@@ -141,7 +86,9 @@ void Game::render()
                 float x, y;
                 std::cin >> x >> y;
 
-                this->join(sf::Vector2f{x, y});
+                Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
+
+                this->join(player);
                 m_gameState = GameState::Playing;
             }
         }
