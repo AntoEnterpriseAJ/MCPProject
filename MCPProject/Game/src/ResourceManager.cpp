@@ -1,6 +1,9 @@
 #include "ResourceManager.h"
 #include <iostream>
 
+
+std::list<sf::Sound> ResourceManager::m_activeSounds;
+
 ResourceManager& ResourceManager::getInstance()
 {
     static ResourceManager resourceManager;
@@ -52,3 +55,20 @@ void ResourceManager::loadSoundFromFile(std::string_view path, sf::SoundBuffer& 
     }
     sound.setBuffer(buffer);
 }
+
+void ResourceManager::playSound(std::string_view path)
+{
+    static sf::SoundBuffer buffer;
+    sf::Sound sound;
+    loadSoundFromFile(path, buffer, sound);
+    sound.setVolume(20.f);
+    sound.setBuffer(buffer);
+    m_activeSounds.push_back(sound);
+    m_activeSounds.back().play();
+    m_activeSounds.remove_if([](const sf::Sound& s)
+        {
+            return s.getStatus() == sf::Sound::Stopped;
+        });
+}
+
+

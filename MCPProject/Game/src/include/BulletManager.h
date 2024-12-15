@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "ResourceManager.h"
 #include "Bullet.h"
 #include "Explosion.h"
 #include "Level.h"
