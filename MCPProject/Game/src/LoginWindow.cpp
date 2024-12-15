@@ -22,7 +22,7 @@ LoginWindow::LoginWindow(float width, float height)
     m_username.setFont(m_font);
     m_username.setCharacterSize(34);
     m_username.setFillColor(sf::Color::Magenta);
-    m_username.setPosition(m_usernameBox.getPosition().x + 5, m_usernameBox.getPosition().y + 10);
+    m_username.setPosition(m_usernameBox.getPosition().x + 10, m_usernameBox.getPosition().y + 10);
 
     m_usernameString = "";
 
@@ -109,12 +109,15 @@ void LoginWindow::handleInput(sf::RenderWindow& window)
 
 void LoginWindow::handleTextInput(const sf::Event& event)
 {
-    if (event.text.unicode >= 32 && event.text.unicode < 128)
+    if (event.text.unicode >= 32 && event.text.unicode < 128) // Caractere vizibile
     {
-        m_usernameString.insert(m_cursorPosition, 1, static_cast<char>(event.text.unicode));
-        m_cursorPosition++;
+        if (m_usernameString.size() < 14) // Verifică dacă șirul are mai puțin de 14 caractere
+        {
+            m_usernameString.insert(m_cursorPosition, 1, static_cast<char>(event.text.unicode));
+            m_cursorPosition++;
+        }
     }
-    else if (event.text.unicode == 8 && m_cursorPosition > 0)
+    else if (event.text.unicode == 8 && m_cursorPosition > 0) // Backspace
     {
         m_usernameString.erase(m_cursorPosition - 1, 1);
         m_cursorPosition--;
