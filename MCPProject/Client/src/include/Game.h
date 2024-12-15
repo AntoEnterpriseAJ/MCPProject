@@ -7,6 +7,7 @@
 #include <string_view>
 #include <cpr/cpr.h>
 #include "NetworkManager.h"
+#include "Level.h"
 
 class Game
 {
@@ -34,6 +35,7 @@ private:
     static constexpr uint16_t kWindowHeight{ 800 };
 private:
     std::unordered_map<uint16_t, Player> m_players;
+    Level                  m_level;
     NetworkManager         m_networkManager;
     uint16_t               m_internalID;
     GameState              m_gameState;

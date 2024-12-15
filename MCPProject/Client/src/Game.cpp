@@ -12,14 +12,16 @@ Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}
 {
     ResourceManager& instance = ResourceManager::getInstance();
-    instance.loadTextureFromFile("res/textures/plane.png", "player");
-    instance.loadTextureFromFile("res/textures/albedo.png", "brick");
-    instance.loadTextureFromFile("res/textures/missile.png", "bullet");
+    instance.loadTextureFromFile("res/textures/penguin1.png", "player");
+    instance.loadTextureFromFile("res/textures/ice_block.png", "brick");
+    instance.loadTextureFromFile("res/textures/ice.png", "bullet");
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
     instance.loadTextureFromFile("res/textures/unbreakable.png", "unbreakableBrick");
-    instance.loadTextureFromFile("res/textures/background.png", "background");
-    instance.loadTextureFromFile("res/textures/explosionSheet.png", "explosionSheet");
+    instance.loadTextureFromFile("res/textures/ice_map.png", "background");
+    instance.loadTextureFromFile("res/textures/explosion.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
+
+    m_level.load();
 }
 
 uint16_t Game::getWindowWidth()
@@ -131,6 +133,7 @@ void Game::render()
             m_window.clear();
             update();
 
+            m_window.draw(m_level);
             std::ranges::for_each(m_players, [this](const auto& entry){
                 const auto& [id, player] = entry;
                 m_window.draw(player);

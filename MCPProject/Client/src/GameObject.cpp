@@ -1,6 +1,11 @@
 #include "GameObject.h"
 
-GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size, sf::Vector2f vel)
+GameObject::GameObject(
+    const sf::Vector2f& pos,
+    const sf::Texture& texture,
+    const sf::Vector2f& size,
+    const sf::Vector2f& vel
+)
 	: m_velocity(vel)
 {
 	if (texture.getSize().x == 0 || texture.getSize().y == 0)
@@ -13,17 +18,17 @@ GameObject::GameObject(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2
 	setSize(size);
 }
 
-void GameObject::setPosition(sf::Vector2f pos)
+void GameObject::setPosition(const sf::Vector2f& pos)
 {
 	m_sprite.setPosition(pos);
 }
 
-void GameObject::setSize(sf::Vector2f size)
+void GameObject::setSize(const sf::Vector2f& size)
 {
 	m_sprite.setScale(size.x / m_sprite.getTexture()->getSize().x, size.y / m_sprite.getTexture()->getSize().y);
 }
 
-void GameObject::setVelocity(sf::Vector2f vel)
+void GameObject::setVelocity(const sf::Vector2f& vel)
 {
 	m_velocity = vel;
 }
@@ -31,17 +36,6 @@ void GameObject::setVelocity(sf::Vector2f vel)
 void GameObject::setTexture(const sf::Texture& texture)
 {
 	m_sprite.setTexture(texture);
-}
-
-bool GameObject::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
-{
-	// TODO: Find a way to convert from getPosition().x type to int 
-		//       to be able to use list initialization
-	int x = this->getPosition().x;
-	int y = this->getPosition().y;
-
-	return x >= upLeft.x && x <= downRight.x &&
-		y <= upLeft.y && y >= downRight.y;
 }
 
 sf::FloatRect GameObject::getBounds() const noexcept
