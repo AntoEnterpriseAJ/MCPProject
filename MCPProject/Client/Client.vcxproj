@@ -19,18 +19,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BombBrick.cpp" />
+    <ClCompile Include="src\Brick.cpp" />
+    <ClCompile Include="src\Bush.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\NetworkManager.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\BombBrick.h" />
+    <ClInclude Include="src\include\Brick.h" />
+    <ClInclude Include="src\include\Bush.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Game.h" />
     <ClInclude Include="src\include\GameObject.h" />
+    <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\NetworkManager.h" />
+    <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
   </ItemGroup>
