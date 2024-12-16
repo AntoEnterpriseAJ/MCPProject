@@ -34,7 +34,7 @@ uint16_t Game::getWindowHeight()
     return kWindowHeight;
 }
 
-void Game::handleInputs()
+void Game::handleInputs(float deltaTime)
 {
     sf::Event event;
     while (m_window.pollEvent(event))
@@ -43,30 +43,27 @@ void Game::handleInputs()
         {
             m_window.close();
         }
-
-        if (event.type == sf::Event::KeyPressed)
+        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
         {
-            if (event.key.code == sf::Keyboard::Escape)
-            {
-                m_window.close();
-            }
-            else if (event.key.code == sf::Keyboard::W)
-            {
-                move(Direction::Up);
-            }
-            else if (event.key.code == sf::Keyboard::S)
-            {
-                move(Direction::Down);
-            }
-            else if (event.key.code == sf::Keyboard::A)
-            {
-                move(Direction::Left);
-            }
-            else if (event.key.code == sf::Keyboard::D)
-            {
-                move(Direction::Right);
-            }
+            m_window.close();
         }
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
+        move(Direction::Up, deltaTime);
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        move(Direction::Down, deltaTime);
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
+        move(Direction::Left, deltaTime);
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
+        move(Direction::Right, deltaTime);
     }
 }
 
@@ -78,9 +75,9 @@ void Game::join(const Player& player)
     m_players[m_internalID] = player;
 }
 
-void Game::move(Direction direction)
+void Game::move(Direction direction, float deltaTime)
 {
-    m_networkManager.movePlayer(m_internalID, direction);
+    m_networkManager.movePlayer(m_internalID, direction, deltaTime);
     return;
 }
 
@@ -96,13 +93,15 @@ void Game::update()
     std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
         sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
         uint16_t playerId = playerData["id"];
+        Direction direction = playerData["direction"];
 
-        if (!m_players.contains(playerData["id"]))
+        if (!m_players.contains(playerId))
         {
             m_players[playerId] = {newPosition, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
         }
 
         m_players[playerId].setPosition(newPosition);
+        m_players[playerId].setDirection(direction);
     });
 
     return;
@@ -112,6 +111,8 @@ void Game::render()
 {
     while (m_window.isOpen())
     {
+        float deltaTime = m_lastFrametimeClock.restart().asSeconds();
+
         if (m_gameState == GameState::Menu)
         {
             std::cout << "Join the game? 1-Yes 0-No\n";
@@ -134,7 +135,7 @@ void Game::render()
         if (m_gameState == GameState::Playing)
         {
             m_window.clear();
-            handleInputs();
+            handleInputs(deltaTime);
             update();
 
             m_window.draw(m_level);
