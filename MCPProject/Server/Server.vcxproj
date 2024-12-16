@@ -24,6 +24,7 @@
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Routing.h" />
   </ItemGroup>
