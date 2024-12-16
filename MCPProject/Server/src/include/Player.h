@@ -1,17 +1,28 @@
 #pragma once
 #include <utility>
+#include "Direction.h"
 
 class Player
 {
 public:
-    using Position = std::pair<float, float>;
+    struct Position
+    {
+        float x;
+        float y;
+    };
+public:
 
     Player() = default;
     Player(const Position& position, uint16_t id);
 
-    void setPosition(const Position& position);
+    void move(Direction direction, float deltaTime);
 
+    Direction getDirection() const;
     Position getPosition() const;
 private:
-    Position m_position;
+    static constexpr float kCooldownTime = 0.5f;
+    static constexpr float kPlayerSpeed = 150.0f;
+private:
+    Position  m_position;
+    Direction m_direction;
 };
