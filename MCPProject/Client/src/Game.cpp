@@ -49,6 +49,8 @@ void Game::handleInputs(float deltaTime)
         }
     }
 
+    if (!m_window.hasFocus()) return;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         move(Direction::Up, deltaTime);
