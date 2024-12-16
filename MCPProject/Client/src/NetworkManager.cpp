@@ -94,11 +94,12 @@ nlohmann::json NetworkManager::update()
     }
 }
 
-void NetworkManager::movePlayer(uint16_t clientID, Direction direction)
+void NetworkManager::movePlayer(uint16_t clientID, Direction direction, float deltaTime)
 {
     nlohmann::json data = {
         {"id", clientID},
-        {"direction", direction}
+        {"direction", direction},
+        {"deltaTime", deltaTime}
     };
 
     m_session.SetUrl(cpr::Url{kServerUrl + "/move"});

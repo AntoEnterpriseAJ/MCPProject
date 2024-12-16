@@ -12,7 +12,7 @@ public:
 
     nlohmann::json join(const Player& player);
     nlohmann::json update();
-    void movePlayer(uint16_t clientID, Direction direction);
+    void movePlayer(uint16_t clientID, Direction direction, float deltaTime);
 
 private:
     static const std::string kServerUrl;
