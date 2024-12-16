@@ -49,7 +49,8 @@ void Routing::run()
             {
                 response["players"].push_back({
                     {"id", id},
-                    {"position", {player.getPosition().first, player.getPosition().second}}
+                    {"position", {player.getPosition().x, player.getPosition().y}}, // TODO: custom serialization
+                    {"direction", player.getDirection()}
                 });
             }
         }
@@ -61,36 +62,17 @@ void Routing::run()
     ([this](const crow::request& req){
         auto data = nlohmann::json::parse(req.body);
 
-        if (!data.contains("id") || !data.contains("direction"))
+        if (!data.contains("id") || !data.contains("direction") || !data.contains("deltaTime"))
         {
             return crow::response(400, "invalid request body");
         }
 
-        std::string direction{data["direction"]};
-        float xOffset{0}, yOffset{0};
-        if (direction == "up")
-        {
-            yOffset -= 10.0f;
-        }
-        else if (direction == "down")
-        {
-            yOffset += 10.0f;
-        }
-        else if (direction == "left")
-        {
-            xOffset -= 10.0f;
-        }
-        else if (direction == "right")
-        {
-            xOffset += 10.0f;
-        }
-
-        Player::Position oldPos = m_players[data["id"]].getPosition();
-        Player::Position newPosition = {oldPos.first + xOffset, oldPos.second + yOffset};
-
         if (m_players.contains(data["id"]))
         {
-            m_players[data["id"]].setPosition(newPosition);
+            float deltaTime = data["deltaTime"];
+            Direction direction = data["direction"].get<Direction>();
+
+            m_players[data["id"]].move(direction, deltaTime);
         }
         else
         {
