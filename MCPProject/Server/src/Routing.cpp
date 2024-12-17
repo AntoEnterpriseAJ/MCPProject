@@ -1,8 +1,11 @@
 #include "Routing.h"
 #include "nlohmann/json.hpp"
+#include <format>
+#include <algorithm>
+#include <ranges>
 
 Routing::Routing()
-    : m_idCounter{ 0 }, m_server{}, m_players{}, m_version{0}
+    : m_roomIDCounter{ 0 }, m_server{}
 {}
 
 void Routing::run()
@@ -12,75 +15,87 @@ void Routing::run()
         return crow::response("Welcome to the server!");
     });
 
-    CROW_ROUTE(m_server, "/join").methods(crow::HTTPMethod::POST)
-    ([this](const crow::request& req){
-        auto data = nlohmann::json::parse(req.body);
+    CROW_ROUTE(m_server, "/getRooms").methods(crow::HTTPMethod::GET)
+    ([this]() {
+        nlohmann::json response;
+        response["rooms"] = nlohmann::json::array();
 
-        if (!data.contains("position") && data["position"].is_array() && data["position"].size() != 2)
-        {
-            return crow::response(400, "invalid request body");
-        }
+        std::ranges::for_each(m_rooms | std::ranges::views::values, [&response](const auto& room) {
+            response["rooms"].emplace_back(nlohmann::json{
+                {"roomID", room.getID()}
+            });
+        });
 
-        Player::Position position{data["position"][0], data["position"][1]};
-        m_players[m_idCounter] = Player{position, m_idCounter};
-
-        nlohmann::json response = {
-            {"id", m_idCounter},
-            {"message", "Player joined succesfully with ID " + std::to_string(m_idCounter)}
-        };
-
-        m_idCounter++;
-        m_version = (m_version + 1) % kMaxVersion;
         return crow::response(200, response.dump());
     });
 
-    CROW_ROUTE(m_server, "/gameState").methods(crow::HTTPMethod::GET)
-    ([this](const crow::request& req){
-        uint32_t clientVersion = std::stoi(req.url_params.get("clientVersion"));
+    CROW_ROUTE(m_server, "/createRoom").methods(crow::HTTPMethod::Post)
+    ([this](){
+        m_rooms.emplace(m_roomIDCounter, m_roomIDCounter);
 
-        nlohmann::json response = {
-            {"serverVersion", m_version},
+        nlohmann::json response{
+            {"roomID", m_roomIDCounter},
         };
 
-        if (clientVersion != m_version)
-        {
-            response["players"] = nlohmann::json::array();
-            for (const auto& [id, player]: m_players)
-            {
-                response["players"].push_back({
-                    {"id", id},
-                    {"position", {player.getPosition().x, player.getPosition().y}}, // TODO: custom serialization
-                    {"direction", player.getDirection()}
-                });
-            }
-        }
-
-        return crow::response(response.dump());
+        m_roomIDCounter++;
+        return crow::response(200, response.dump());
     });
 
-    CROW_ROUTE(m_server, "/move").methods(crow::HTTPMethod::POST)
-    ([this](const crow::request& req){
-        auto data = nlohmann::json::parse(req.body);
+    CROW_ROUTE(m_server, "/joinRoom/<int>").methods(crow::HTTPMethod::Post)
+    ([this](const crow::request& req, uint8_t roomID){
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "Room not found");
+        }
 
+        auto data = nlohmann::json::parse(req.body);
+        if (!data.contains("position") || !data["position"].is_array() || data["position"].size() != 2)
+        {
+            return crow::response(400, "invalid request body");
+        }
+        
+        Player::Position position{data["position"][0], data["position"][1]};
+        uint8_t playerID = m_rooms[roomID].addPlayer(position); 
+
+        nlohmann::json response = {
+            {"playerID", playerID},
+            {"message", std::format("Player {} joined room {}", playerID, roomID)}
+        };
+
+        return crow::response(200, response.dump());
+    });
+
+    CROW_ROUTE(m_server, "/room/<int>/gameState").methods(crow::HTTPMethod::Get)
+    ([this](const crow::request& req, uint8_t roomID){
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "room not found");
+        }
+
+        if (!req.url_params.get("clientVersion"))
+        {
+            return crow::response(400, "clientVersion parameter missing");
+        }
+
+        uint32_t clientVersion = std::stoi(req.url_params.get("clientVersion"));
+        return crow::response(200, m_rooms.at(roomID).getStateResponse(clientVersion).dump());
+    });
+
+    CROW_ROUTE(m_server, "/room/<int>/move").methods(crow::HTTPMethod::Post)
+    ([this](const crow::request& req, uint8_t roomID){
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "room not found");
+        }
+
+        auto data = nlohmann::json::parse(req.body);
         if (!data.contains("id") || !data.contains("direction") || !data.contains("deltaTime"))
         {
             return crow::response(400, "invalid request body");
         }
 
-        if (m_players.contains(data["id"]))
-        {
-            float deltaTime = data["deltaTime"];
-            Direction direction = data["direction"].get<Direction>();
-
-            m_players[data["id"]].move(direction, deltaTime);
-        }
-        else
-        {
-            return crow::response(400, "the server doesn't have this player");
-        }
-        
-        m_version = (m_version + 1) % kMaxVersion;
-        return crow::response(200, "the move was succesful");
+        m_rooms[roomID].move(data["id"], data["direction"].get<Direction>(), data["deltaTime"]);
+        return crow::response(200, "the move was successful");
     });
 
    crow::logger::setLogLevel(crow::LogLevel::Critical);
