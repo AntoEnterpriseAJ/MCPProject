@@ -13,7 +13,7 @@ public:
 public:
 
     Player() = default;
-    Player(const Position& position, uint16_t id);
+    Player(const Position& position, Direction direcion = Direction::Left);
 
     void move(Direction direction, float deltaTime);
 

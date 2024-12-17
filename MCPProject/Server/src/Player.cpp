@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(const Position& position, uint16_t id)
-    : m_position(position)
+Player::Player(const Position& position, Direction direction)
+    : m_position{position}, m_direction{direction}
 {}
 
 Player::Position Player::getPosition() const
@@ -35,7 +35,6 @@ void Player::move(Direction direction, float deltaTime)
     }
 
     m_direction = direction;
-
     float xOffset{ 0 }, yOffset{ 0 };
     if (direction == Direction::Up)
     {
