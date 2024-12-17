@@ -11,7 +11,7 @@ uint8_t GameRoom::addPlayer(const Player::Position& position)
     return m_idCounter++;
 }
 
-nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const
+nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
 {
     nlohmann::json response = {
         {"serverVersion", m_version},
