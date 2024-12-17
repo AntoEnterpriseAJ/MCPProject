@@ -69,18 +69,67 @@ void Game::handleInputs(float deltaTime)
     }
 }
 
-void Game::join(const Player& player)
+void Game::createRoom()
 {
-    nlohmann::json response = m_networkManager.join(player);
+    m_networkManager.createRoom();
+}
 
-    m_internalID = response["id"];
+void Game::join(const Player& player, uint8_t roomID)
+{
+    nlohmann::json response = m_networkManager.join(player, roomID);
+
+    m_internalID = response["playerID"];
     m_players[m_internalID] = player;
 }
 
 void Game::move(Direction direction, float deltaTime)
 {
     m_networkManager.movePlayer(m_internalID, direction, deltaTime);
-    return;
+}
+
+void Game::displayRooms()
+{
+    std::cout << m_networkManager.getExistingRooms().dump() << "\n";
+}
+
+void Game::handleMenu()
+{
+    std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
+    int option;
+    std::cin >> option;
+
+    if (option == 1)
+    {
+        std::cout << "Spawn pos x, y =";
+        float x, y;
+        std::cin >> x >> y;
+
+        Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
+
+        this->createRoom();
+        this->join(player, m_networkManager.getCurrentRoomID());
+                
+        m_gameState = GameState::Playing;
+    }
+    else if (option == 2)
+    {
+        std::cout << "Spawn pos x, y =";
+        float x, y;
+        std::cin >> x >> y;
+
+        int roomID;
+        std::cout << "room id=";
+        std::cin >> roomID;
+
+        Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
+        this->join(player, roomID);
+
+        m_gameState = GameState::Playing;
+    }
+    else if (option == 3)
+    {
+        displayRooms();
+    }
 }
 
 void Game::update()
@@ -117,21 +166,7 @@ void Game::render()
 
         if (m_gameState == GameState::Menu)
         {
-            std::cout << "Join the game? 1-Yes 0-No\n";
-            int option;
-            std::cin >> option;
-
-            if (option == 1)
-            {
-                std::cout << "Spawn pos x, y =";
-                float x, y;
-                std::cin >> x >> y;
-
-                Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
-
-                this->join(player);
-                m_gameState = GameState::Playing;
-            }
+            handleMenu();
         }
 
         if (m_gameState == GameState::Playing)

@@ -28,9 +28,12 @@ public:
     static uint16_t getWindowHeight();
 private:
     void handleInputs(float deltaTime);
-    void join(const Player& player);
+    void createRoom();
+    void join(const Player& player, uint8_t roomID);
     void update();
     void move(Direction direction, float deltaTime);
+    void displayRooms();
+    void handleMenu();
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
     static constexpr uint16_t kWindowHeight{ 800 };
