@@ -83,5 +83,8 @@
     <ClInclude Include="src\include\BombBrick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\URL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
