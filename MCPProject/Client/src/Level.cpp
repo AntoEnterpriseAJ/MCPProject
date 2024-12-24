@@ -48,6 +48,7 @@ void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
 
 void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    target.draw(m_background);
     std::ranges::for_each(m_levelLayout, [&target](const auto& obj){
         if (!obj) return;
 
