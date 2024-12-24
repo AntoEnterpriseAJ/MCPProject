@@ -36,6 +36,18 @@ const sf::Texture& ResourceManager::getTexture(std::string_view name) const
     return m_textures.at(name);
 }
 
+const sf::Texture& ResourceManager::getTexture(ObstacleType obstacleType) const
+{
+    std::string textureName{toString(obstacleType)};
+    if (!m_textures.contains(textureName))
+    {
+        std::cerr << "ERROR::ResourceManager::getTexture: texture " << textureName << " not found" << std::endl;
+        exit(-1);
+    }
+
+    return m_textures.at(textureName); 
+}
+
 void ResourceManager::loadMusicFromFile(std::string_view path, sf::Music& music)
 {
     if (!music.openFromFile(path.data()))
