@@ -4,73 +4,44 @@
 #include "BombBrick.h"
 #include "ResourceManager.h"
 #include "Obstacle.h"
-#include <fstream>
 #include <iostream>
-#include <random>
 #include <ranges>
 
-void Level::load()
+Level::Level()
+    : m_ID{0}, m_levelLayout{}
+{}
+
+void Level::init()
 {
-    auto getRandomIndex = [](int lowerBound, int upperBound) -> int {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dist(lowerBound, upperBound);
-        return dist(gen);
-    };
-
     loadBackground();
+}
 
-    int lowerBound = 1;
-    int upperBound = 5;
+void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
+{
+    std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
+        std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
+            int index{i * kWidth + j};
+            ObstacleType textureType{static_cast<ObstacleType>(updatedLevel[index])};
 
-    int randomIndex = getRandomIndex(lowerBound, upperBound);
-    std::string levelFileName = "res/levels/level" + std::to_string(randomIndex) + ".txt";
+            auto& current{(*this)[{i, j}]};
+            if (current)
+            {
+                if (textureType == ObstacleType::None)
+                {
+                    current.reset();
+                    return;
+                }
 
-    std::ifstream fin(levelFileName);
-    if (!fin)
-    {
-        std::cerr << "ERROR: Cannot open the file!\n";
-        return;
-    }
-
-    m_levelLayout.reserve(kLevelHeight * kLevelWidth);
-
-    std::ranges::for_each(std::views::iota(0, static_cast<int>(kLevelHeight)), [&](int i) {
-        std::ranges::for_each(std::views::iota(0, static_cast<int>(kLevelWidth)), [&](int j) {
-            int textureType;
-            fin >> textureType;
-
-            if (textureType == 0) return;
+                current->setTexture(ResourceManager::getInstance().getTexture(textureType));
+                return;
+            }
 
             sf::Vector2f position{j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize};
-            if (textureType == 1)
-            {
-                int bombBrickChance = getRandomIndex(1, 10);
-                if (bombBrickChance == 1)
-                {
-                    m_levelLayout.emplace_back(std::make_unique<BombBrick>(
-                        position, ResourceManager::getInstance().getTexture("bombBrick")));
-                }
-                else
-                {
-                    m_levelLayout.emplace_back(std::make_unique<Brick>(
-                        position, ResourceManager::getInstance().getTexture("brick"), 3, false, true));
-                }
-            }
-            else if (textureType == 2)
-            {
-                m_levelLayout.emplace_back(std::make_unique<Bush>(
-                    position, ResourceManager::getInstance().getTexture("bush")));
-            }
-            else if (textureType == 3)
-            {
-                m_levelLayout.emplace_back(std::make_unique<Brick>(
-                    position, ResourceManager::getInstance().getTexture("unbreakableBrick"), 3, false, false));
-            }
-            else
-            {
-                std::cerr << "Error! Invalid texture!\n";
-            }
+
+            auto obstacle = createObstacle(textureType, position);
+            if (!obstacle) return;
+
+            (*this)[{i, j}] = std::move(obstacle);
         });
     });
 }
@@ -78,25 +49,27 @@ void Level::load()
 void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     std::ranges::for_each(m_levelLayout, [&target](const auto& obj){
+        if (!obj) return;
+
         target.draw(*obj);
     });
 }
 
-void Level::drawBackground(sf::RenderWindow& window) const
+uint8_t Level::getID() const noexcept
 {
-    window.draw(m_background);
+    return m_ID;
 }
 
 std::unique_ptr<Obstacle>& Level::operator[](const Position& position)
 {
-    auto [posX, posY] = position;
-    return m_levelLayout[posY * kLevelWidth + posX];
+    auto [posY, posX] = position;
+    return m_levelLayout[posY * kWidth + posX];
 }
 
 const std::unique_ptr<Obstacle>& Level::operator[](const Position& position) const
 {
-    auto [posX, posY] = position;
-    return m_levelLayout[posY * kLevelWidth + posX];
+    auto [posY, posX] = position;
+    return m_levelLayout[posY * kWidth + posX];
 }
 
 void Level::loadBackground()
@@ -105,12 +78,40 @@ void Level::loadBackground()
     m_background.setPosition(sf::Vector2{ 0.0f, 0.0f });
 }
 
-std::vector<std::unique_ptr<Obstacle>>& Level::getBricks()
+std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const sf::Vector2f& position)
+{
+    if (obstacleType == ObstacleType::None)
+    {
+        return {nullptr};
+    }
+    else if (obstacleType == ObstacleType::Brick)
+    {
+        return std::make_unique<Brick>(position, ResourceManager::getInstance().getTexture(obstacleType));
+    }
+    else if (obstacleType == ObstacleType::BombBrick)
+    {
+        return std::make_unique<BombBrick>(position, ResourceManager::getInstance().getTexture(obstacleType));
+    }
+    else if (obstacleType  == ObstacleType::Bush)
+    {
+        return std::make_unique<Bush>(position, ResourceManager::getInstance().getTexture(obstacleType));
+    }
+    else if (obstacleType  == ObstacleType::UnbreakableBrick)
+    {
+        return std::make_unique<Brick>(position, ResourceManager::getInstance().getTexture(obstacleType));
+    }
+    else
+    {
+        std::cerr << std::format("Error! Invalid obstacle type: {}\n", toString(obstacleType));
+    }
+}
+
+Level::levelLayout& Level::getBricks()
 {
     return m_levelLayout;
 }
 
-const std::vector<std::unique_ptr<Obstacle>>& Level::getBricks() const
+const Level::levelLayout& Level::getBricks() const
 {
     return m_levelLayout;
 }
