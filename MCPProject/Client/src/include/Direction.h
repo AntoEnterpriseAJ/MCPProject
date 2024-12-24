@@ -10,7 +10,7 @@ enum class Direction : uint8_t
 };
 
 // TODO: maybe namespace it
-constexpr float getRotation(Direction direction)
+inline constexpr float getRotation(Direction direction)
 {
     switch (direction)
     {
