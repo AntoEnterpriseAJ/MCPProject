@@ -21,7 +21,7 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/explosion.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
 
-    m_level.load();
+    m_level.init();
 }
 
 uint16_t Game::getWindowWidth()
@@ -137,7 +137,7 @@ void Game::update()
     nlohmann::json updateResponse = m_networkManager.update();
 
     if (updateResponse.empty())
-    {
+    {   
         return;
     }
 
@@ -154,6 +154,8 @@ void Game::update()
         m_players[playerId].setPosition(newPosition);
         m_players[playerId].setDirection(direction);
     });
+
+    m_level.update(updateResponse["levelLayout"]);
 
     return;
 }
