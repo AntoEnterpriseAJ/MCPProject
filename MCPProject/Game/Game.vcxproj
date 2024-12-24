@@ -148,6 +148,8 @@
     <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\PowerUpsManager.cpp" />
+    <ClCompile Include="src\PowerUp.cpp" />
     <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\LoginWindow.cpp" />
@@ -172,6 +174,8 @@
     <ClInclude Include="src\include\Menu.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
+    <ClInclude Include="src\include\PowerUp.h" />
+    <ClInclude Include="src\include\PowerUpsManager.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
     <ClInclude Include="src\include\UnbreakableBrick.h" />
   </ItemGroup>
