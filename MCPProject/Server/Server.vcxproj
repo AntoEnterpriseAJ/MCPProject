@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\GameRoom.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -26,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Direction.h" />
+    <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\GameRoom.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\Routing.h" />
