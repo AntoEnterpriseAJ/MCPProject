@@ -4,6 +4,8 @@
 #include <ranges>
 #include <sstream>
 
+//TODO: use convertible to string concept
+//      automatically convert to string what can be converted, to avoid addToPath(std::to_string(...))
 class URL
 {
 public:
@@ -20,7 +22,7 @@ public:
     {
         std::stringstream url;
         url << m_baseURL;
-        std::ranges::for_each(m_parts, [this, &url](const auto& part){
+        std::ranges::for_each(m_parts, [&url](const auto& part){
             url << "/" << part;
         });
 
