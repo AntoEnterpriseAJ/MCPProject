@@ -1,8 +1,14 @@
 #include "GameRoom.h"
 
-GameRoom::GameRoom(uint8_t m_roomID)
-    : m_roomID{m_roomID}, m_idCounter{0}, m_version{0}, m_players{}
+GameRoom::GameRoom()
+    : m_idCounter{0}, m_roomID{0}, m_version{0}, m_players{}
 {}
+
+GameRoom::GameRoom(uint8_t m_roomID)
+    : m_roomID{m_roomID}, m_idCounter{0}, m_version{0}, m_players{}, m_level{}
+{
+    m_level.load();
+}
 
 uint8_t GameRoom::addPlayer(const Player::Position& position)
 {
@@ -19,6 +25,8 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
 
     if (clientVersion != m_version)
     {
+        response["levelLayout"] = m_level.getLayout();
+
         response["players"] = nlohmann::json::array();
         for (const auto& [id, player]: m_players)
         {
@@ -37,6 +45,11 @@ void GameRoom::move(uint8_t playerID, Direction direction, float deltaTime)
 {
     m_players[playerID].move(direction, deltaTime);
     m_version = (m_version + 1) % kMaxVersion;
+}
+
+Level GameRoom::getLevel() const noexcept
+{
+    return m_level;
 }
 
 uint32_t GameRoom::getVersion() const noexcept
