@@ -5,8 +5,8 @@ enum class ObstacleType
 {
     None             = 0,
     Brick            = 1,
-    UnbreakableBrick = 2,
-    Bush             = 3,
+    Bush             = 2,
+    UnbreakableBrick = 3,
     BombBrick        = 4,
 };
 
