@@ -139,8 +139,6 @@ void Player::movePlayer(const Level& level, float deltaTime)
     {
         m_sprite.setRotation(rotation);
     }
-
-    std::cout << std::format("player is at pos ({},{}), rotated at {}\n", newPosition.x, newPosition.y, rotation);
 }
 
 Direction Player::getDirection() const

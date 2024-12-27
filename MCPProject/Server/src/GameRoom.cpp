@@ -28,7 +28,7 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
 
     if (clientVersion != m_version)
     {
-        response["levelLayout"] = m_level.getLayoutTypes();
+        response["levelLayout"] = m_level.getLayout();
 
         response["players"] = nlohmann::json::array();
         for (const auto& [id, player] : m_players)

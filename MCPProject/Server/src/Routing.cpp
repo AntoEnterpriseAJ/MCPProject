@@ -54,7 +54,7 @@ void Routing::run()
             return crow::response(400, "invalid request body");
         }
         
-        Vec2f position{data["position"][0], data["position"][1]};
+        Player::Position position{data["position"][0], data["position"][1]};
         uint8_t playerID = m_rooms[roomID].addPlayer(position); 
 
         nlohmann::json response = {

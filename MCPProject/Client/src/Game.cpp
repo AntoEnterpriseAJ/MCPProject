@@ -177,14 +177,11 @@ void Game::render()
             handleInputs(deltaTime);
             update();
 
-            m_level.drawBackground(m_window);
-
+            m_window.draw(m_level);
             std::ranges::for_each(m_players, [this](const auto& entry){
                 const auto& [id, player] = entry;
                 m_window.draw(player);
             });
-
-            m_window.draw(m_level);
 
             m_window.display();
         }

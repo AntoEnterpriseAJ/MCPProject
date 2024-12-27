@@ -1,7 +1,4 @@
 #include "Level.h"
-#include "Level.h"
-#include "Level.h"
-#include "Level.h"
 #include "Brick.h"
 #include "Bush.h"
 #include "BombBrick.h"
@@ -23,7 +20,8 @@ void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
 {
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            ObstacleType textureType{static_cast<ObstacleType>(updatedLevel[i * kWidth + j])};
+            int index{i * kWidth + j};
+            ObstacleType textureType{static_cast<ObstacleType>(updatedLevel[index])};
 
             auto& current{(*this)[{i, j}]};
             if (current)
@@ -50,16 +48,12 @@ void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
 
 void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    target.draw(m_background);
     std::ranges::for_each(m_levelLayout, [&target](const auto& obj){
         if (!obj) return;
 
         target.draw(*obj);
     });
-}
-
-void Level::drawBackground(sf::RenderWindow& window) const
-{
-    window.draw(m_background);
 }
 
 uint8_t Level::getID() const noexcept
