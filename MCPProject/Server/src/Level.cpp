@@ -4,6 +4,9 @@
 #include <random>
 #include <ranges>
 #include <string>
+#include "Brick.h"
+#include "BombBrick.h"
+#include "Bush.h"
 
 void Level::load()
 {
@@ -30,33 +33,81 @@ void Level::load()
 
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            fin >> (*this)[{i, j}];
+            int tex;
+            fin >> tex;
 
-            //TODO: fix the magic numbers when the LevelGenerator is implemented
-            if ((*this)[{i, j}] == 1)
+            ObstacleType obstacleType{tex};
+            Vec2f position{j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize};
+
+            int bombBrickChance = random(1, 10);
+            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1)
             {
-                int bombBrickChance = random(1, 10);
-                if (bombBrickChance == 4)
-                {
-                    (*this)[{i, j}] = 4;
-                }
+                obstacleType = ObstacleType::BombBrick;
             }
+
+            auto obstacle = createObstacle(obstacleType, position);
+            this->setObstacle({i, j}, obstacle, obstacleType);
         });
     });
 }
 
-const Level::levelLayout& Level::getLayout() const noexcept
+const Level::layoutTypes& Level::getLayoutTypes() const noexcept
 {
-    return m_levelLayout;
+    return m_layoutTypes;
 }
 
-uint16_t& Level::operator[](const Position& position)
+void Level::setObstacle(const Position& position, std::unique_ptr<Obstacle>& obstacle, ObstacleType obstacleType)
+{
+    auto [posY, posX] = position;
+    size_t index = posY * kWidth + posX;
+
+    m_levelLayout[index] = std::move(obstacle);
+
+    if (m_levelLayout[index])
+    {
+        m_layoutTypes[index] = static_cast<uint16_t>(obstacleType);
+    }
+    else
+    {
+        m_layoutTypes[index] = static_cast<uint16_t>(ObstacleType::None);
+    }
+}
+
+std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const Vec2f& position)
+{
+    if (obstacleType == ObstacleType::None)
+    {
+        return {nullptr};
+    }
+    else if (obstacleType == ObstacleType::Brick)
+    {
+        return std::make_unique<Brick>(position);
+    }
+    else if (obstacleType == ObstacleType::BombBrick)
+    {
+        return std::make_unique<BombBrick>(position);
+    }
+    else if (obstacleType  == ObstacleType::Bush)
+    {
+        return std::make_unique<Bush>(position);
+    }
+    else if (obstacleType  == ObstacleType::UnbreakableBrick)
+    {
+        return std::make_unique<Brick>(position);
+    }
+    else
+    {
+        std::cerr << std::format("Error! Invalid obstacle type: {}\n", static_cast<int>(obstacleType));
+    }
+}
+
+std::unique_ptr<Obstacle>& Level::operator[](const Position& position)
 {
     auto [posY, posX] = position;
     return m_levelLayout[posY * kWidth + posX];
 }
 
-const uint16_t& Level::operator[](const Position& position) const
+const std::unique_ptr<Obstacle>& Level::operator[](const Position& position) const
 {
     auto [posY, posX] = position;
     return m_levelLayout[posY * kWidth + posX];
