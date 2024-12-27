@@ -1,28 +1,24 @@
 #pragma once
-#include <utility>
+#include "GameObject.h"
 #include "Direction.h"
 
-class Player
+class Player : public GameObject
 {
 public:
-    struct Position
-    {
-        float x;
-        float y;
-    };
-public:
-
-    Player() = default;
-    Player(const Position& position, Direction direcion = Direction::Left);
-
-    void move(Direction direction, float deltaTime);
-
-    Direction getDirection() const;
-    Position getPosition() const;
-private:
     static constexpr float kCooldownTime = 0.5f;
     static constexpr float kPlayerSpeed = 150.0f;
+public:
+    Player() = default;
+    Player(
+        const Vec2f& position,
+        const Vec2f& size = {39.9f, 39.9f},
+        Direction direcion = Direction::Left
+    );
+    ~Player() override = default;
+
+    void setDirection(Direction direction);
+
+    Direction getDirection() const;
 private:
-    Position  m_position;
-    Direction m_direction;
+    Direction m_direction : 2;
 };
