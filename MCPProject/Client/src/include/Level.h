@@ -17,6 +17,7 @@ public:
     void init();
     void update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void drawBackground(sf::RenderWindow& window) const;
 
     uint8_t getID() const noexcept;
 
