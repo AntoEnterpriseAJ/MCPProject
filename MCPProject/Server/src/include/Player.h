@@ -18,7 +18,7 @@ public:
 
     void setDirection(Direction direction);
 
-    Direction getDirection() const;
+    Direction GetDirection() const;
 private:
     Direction m_direction : 2;
 };

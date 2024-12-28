@@ -11,14 +11,14 @@ public:
     Player() = default;
     Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
 
-    Direction getDirection() const;
+    Direction GetDirection() const;
 
-    void update(float deltaTime);
-    void restartCooldown();
+    void Update(float deltaTime);
+    void RestartCooldown();
     
-    bool canShoot() const;
-    bool canMove(const Level& level, float deltaTime);
-    void movePlayer(const Level& level, float deltaTime);
+    bool CanShoot() const;
+    bool CanMove(const Level& level, float deltaTime);
+    void MovePlayer(const Level& level, float deltaTime);
 
 private:
     static constexpr float kCooldownTime = 0.5f;

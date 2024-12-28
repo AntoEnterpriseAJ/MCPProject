@@ -51,13 +51,13 @@ void Game::handleInputs(float deltaTime)
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) 
             {
-                if (player.canShoot()) 
+                if (player.CanShoot()) 
                 {
-                    Direction dir = player.getDirection();
+                    Direction dir = player.GetDirection();
                     sf::Vector2f offset{ 0.0f, 0.0f };
                     float bulletOffsetDistance = 20.0f;
 
-                    switch (player.getDirection()) 
+                    switch (player.GetDirection()) 
                     {
                     case Direction::Up:
                         offset.y = -bulletOffsetDistance;
@@ -76,12 +76,12 @@ void Game::handleInputs(float deltaTime)
                     auto bullet = std::make_unique<Bullet>(
                         player.GetPosition() + offset,
                         ResourceManager::getInstance().getTexture("bullet"),
-                        player.getDirection()
+                        player.GetDirection()
                     );
 
                     m_bulletManager.addBullet(std::move(bullet));
                     ResourceManager::playSound("res/sfx/shooting.wav");
-                    player.restartCooldown();
+                    player.RestartCooldown();
                     
                 }
             }
@@ -90,7 +90,7 @@ void Game::handleInputs(float deltaTime)
 
     for (auto& player : m_players) 
     {
-        player.update(deltaTime);
+        player.Update(deltaTime);
     }
 }
 
@@ -156,7 +156,7 @@ void Game::render()
 
             for (auto& player : m_players) 
             {
-                player.movePlayer(m_level, deltaTime);
+                player.MovePlayer(m_level, deltaTime);
             }
 
             m_bulletManager.update(m_level, deltaTime);

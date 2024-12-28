@@ -11,7 +11,7 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
 }
 
-void Player::update(float deltaTime)
+void Player::Update(float deltaTime)
 {
     if (m_cooldownDuration > 0)
     {
@@ -20,17 +20,17 @@ void Player::update(float deltaTime)
     }
 }
 
-bool Player::canShoot() const
+bool Player::CanShoot() const
 {
     return m_cooldownDuration <= 0;
 }
 
-void Player::restartCooldown()
+void Player::RestartCooldown()
 {
     m_cooldownDuration = kCooldownTime;
 }
 
-bool Player::canMove(const Level& level, float deltaTime)
+bool Player::CanMove(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = GetBounds();
     sf::Vector2f movement;
@@ -58,7 +58,7 @@ bool Player::canMove(const Level& level, float deltaTime)
     return true;
 }
 
-void Player::movePlayer(const Level& level, float deltaTime)
+void Player::MovePlayer(const Level& level, float deltaTime)
 {
     sf::FloatRect playerBounds = m_sprite.getGlobalBounds();
     auto alignToGrid = [](float value, int gridSize) -> float {
@@ -80,7 +80,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         m_direction = Direction::Up;
         rotation = 0;
 
-        if (canMove(level, deltaTime) && playerBounds.top > 0)
+        if (CanMove(level, deltaTime) && playerBounds.top > 0)
         {
             newPosition.y -= kPlayerSpeed * deltaTime;
         }
@@ -96,7 +96,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         m_direction = Direction::Down;
         rotation = 180;
 
-        if (canMove(level, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
+        if (CanMove(level, deltaTime) && playerBounds.top + playerBounds.height < Game::getWindowHeight())
         {
             newPosition.y += kPlayerSpeed * deltaTime;
         }
@@ -112,7 +112,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         m_direction = Direction::Left;
         rotation = 270;
 
-        if (canMove(level, deltaTime) && playerBounds.left > 0)
+        if (CanMove(level, deltaTime) && playerBounds.left > 0)
         {
             newPosition.x -= kPlayerSpeed * deltaTime;
         }
@@ -128,7 +128,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
         m_direction = Direction::Right;
         rotation = 90;
 
-        if (canMove(level, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
+        if (CanMove(level, deltaTime) && playerBounds.left + playerBounds.width < Game::getWindowWidth())
         {
             newPosition.x += kPlayerSpeed * deltaTime;
         }
@@ -141,7 +141,7 @@ void Player::movePlayer(const Level& level, float deltaTime)
     }
 }
 
-Direction Player::getDirection() const
+Direction Player::GetDirection() const
 {
     return m_direction;
 }

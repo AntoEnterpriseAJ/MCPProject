@@ -6,7 +6,7 @@ Player::Player(const Vec2f& position, const Vec2f& size, Direction direction)
     this->setOrigin(size / 2.0f);
 }
 
-Direction Player::getDirection() const
+Direction Player::GetDirection() const
 {
     return m_direction;
 }
