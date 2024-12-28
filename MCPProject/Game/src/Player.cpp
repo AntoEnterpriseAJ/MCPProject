@@ -32,7 +32,7 @@ void Player::restartCooldown()
 
 bool Player::canMove(const Level& level, float deltaTime)
 {
-    sf::FloatRect playerBounds = getBounds();
+    sf::FloatRect playerBounds = GetBounds();
     sf::Vector2f movement;
 
     switch (m_direction)
@@ -49,7 +49,7 @@ bool Player::canMove(const Level& level, float deltaTime)
     const auto& levelLayout = level.getBricks();
     for (const auto& obj : levelLayout)
     {
-        if (obj && !obj->isPassable() && playerBounds.intersects(obj->getBounds()))
+        if (obj && !obj->isPassable() && playerBounds.intersects(obj->GetBounds()))
         {
             return false;
         }

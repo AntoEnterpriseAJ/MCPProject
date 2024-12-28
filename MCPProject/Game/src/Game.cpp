@@ -74,7 +74,7 @@ void Game::handleInputs(float deltaTime)
                     }
 
                     auto bullet = std::make_unique<Bullet>(
-                        player.getPosition() + offset,
+                        player.GetPosition() + offset,
                         ResourceManager::getInstance().getTexture("bullet"),
                         player.getDirection()
                     );
