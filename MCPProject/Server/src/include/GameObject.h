@@ -16,8 +16,8 @@ public:
     void setPosition(const Vec2f& position);
 
     Vec2f getOrigin()      const noexcept;
-    Vec2f getPosition()    const noexcept;
-    Vec2f getSize()        const noexcept;
+    Vec2f GetPosition()    const noexcept;
+    Vec2f GetSize()        const noexcept;
     Vec2f getTopLeft()     const noexcept;
     Vec2f getBottomRight() const noexcept;
 private:

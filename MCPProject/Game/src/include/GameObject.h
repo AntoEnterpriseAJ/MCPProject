@@ -17,21 +17,21 @@ public:
 
 	~GameObject() override = default;
 
-	void setPosition(sf::Vector2f pos);
-	void setSize    (sf::Vector2f size);
-	void setVelocity(sf::Vector2f vel);
-	void setTexture (const sf::Texture& texture);
+	void SetPosition(sf::Vector2f pos);
+	void SetSize    (sf::Vector2f size);
+	void SetVelocity(sf::Vector2f vel);
+	void SetTexture (const sf::Texture& texture);
 
-	bool isInArea(
+	bool IsInArea(
 		const sf::Vector2f& upLeft,
 		const sf::Vector2f& downRight
 	);
 
-	sf::FloatRect getBounds()   const noexcept;
-	sf::Vector2f  getPosition() const noexcept;
-	sf::Vector2f  getSize()	    const noexcept;
-	sf::Vector2f  getVelocity() const noexcept;
-	sf::Sprite    getSprite()   const noexcept;
+	sf::FloatRect GetBounds()   const noexcept;
+	sf::Vector2f  GetPosition() const noexcept;
+	sf::Vector2f  GetSize()	    const noexcept;
+	sf::Vector2f  GetVelocity() const noexcept;
+	sf::Sprite    GetSprite()   const noexcept;
 
 	
 
