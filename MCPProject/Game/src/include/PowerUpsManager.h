@@ -1,15 +1,20 @@
 #pragma once
 
 #include "PowerUp.h"
+#include "Obstacle.h"
 
 #include <vector>
 
 class PowerUpsManager
 {
 public:
+	PowerUpsManager();
+
 	void spawnRandomPowerUp();
 
 private:
-	std::vector<std::string> possiblePowerUps;
-	std::vector<PowerUp>     activePowerUps;
+	int randomNumberGenerator(int lower, int higher);
+
+private:
+	std::vector<PowerUp> m_activePowerUps;
 };

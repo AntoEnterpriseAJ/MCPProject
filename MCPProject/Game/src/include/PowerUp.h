@@ -7,9 +7,12 @@ public:
 	PowerUp(
 		sf::Vector2f       pos,
 		const sf::Texture& texture,
-		sf::Vector2f       size,
-		std::string        powerUpName
+		std::string        powerUpName,
+		sf::Vector2f       size = sf::Vector2f(kPowerUpSize, kPowerUpSize)
 	);
+
+private:
+	static constexpr int kPowerUpSize = 20;
 
 private:
 	std::string m_powerUpName;
