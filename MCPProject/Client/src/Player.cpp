@@ -10,12 +10,12 @@ Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
 }
 
-Direction Player::getDirection() const
+Direction Player::GetDirection() const
 {
     return m_direction;
 }
 
-void Player::update(float deltaTime)
+void Player::Update(float deltaTime)
 {
     m_timeElapsed += deltaTime;
 }
