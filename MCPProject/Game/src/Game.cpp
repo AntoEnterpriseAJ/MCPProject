@@ -3,12 +3,14 @@
 #include "Explosion.h"
 #include <iostream>
 
+#include "PowerUpsManager.h"
+
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
     m_level{},
     m_menu{ kWindowWidth, kWindowHeight },
     m_loginWindow{ kWindowWidth, kWindowHeight },
-    m_gameState{ GameState::Menu } 
+    m_gameState{ GameState::Menu }
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
@@ -86,6 +88,8 @@ void Game::handleInputs(float deltaTime)
                 }
             }
         }
+
+
     }
 
     for (auto& player : m_players) 
@@ -170,6 +174,8 @@ void Game::render()
             {
                 m_window.draw(player);
             }
+
+            m_powerUpsManager.updatePowerUps();
 
             m_window.draw(m_level);
 

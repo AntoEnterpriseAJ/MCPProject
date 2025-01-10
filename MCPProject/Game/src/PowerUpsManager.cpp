@@ -1,47 +1,47 @@
 #include "PowerUpsManager.h"
-#include <random>
 
-#include "Level.h"
-
+#include <iostream> // Debug purpose
+ 
 PowerUpsManager::PowerUpsManager()
 {
+    m_spawnTimer.restart();
+}
+
+void PowerUpsManager::updatePowerUps()
+{
+    if (m_spawnTimer.getElapsedTime().asSeconds() >= kSpawnInterval)
+    {
+        spawnRandomPowerUp();
+        m_spawnTimer.restart();
+    }
 }
 
 void PowerUpsManager::spawnRandomPowerUp()
 {
-    sf::Vector2f powerUpPosition;
-    sf::Texture  powerUpTexture;
-    std::string  powerUpName;
+    sf::Vector2f randomPosition(
+        static_cast<float>(randomNumberGenerator(0, 800)),
+        static_cast<float>(randomNumberGenerator(0, 600))
+    );
 
-
-    int powerUpLowerBound = 0;
-    int powerUpUpperBound = 2;
-
-    int powerUpRandomIndex = randomNumberGenerator(powerUpLowerBound, powerUpUpperBound);
-
-    switch (powerUpRandomIndex)
-    {
-    case 0:  powerUpName = "Rampage";        break;
-    case 1:  powerUpName = "God";            break;
-    case 2:  powerUpName = "BulletSpreader"; break;
-    default: powerUpName = "NoName";         break;
+    sf::Texture texture;
+    if (!texture.loadFromFile("res/textures/albedo.png")) {
+        std::cout << "POWERUP TEXTURE DON T LOAD!" << std::endl;
+        return;
     }
+    
 
+    std::vector<std::string> powerUpNames = { "SpeedBoost", "Damage", "DoublePoints" };
+    std::string randomName = powerUpNames[randomNumberGenerator(0, powerUpNames.size() - 1)];
 
+    PowerUp newPowerUp(randomPosition, texture, randomName);
+    m_activePowerUps.push_back(newPowerUp);
 
-    bool isValid = true;
-    while (isValid)
-    {
-        isValid = false;
-        int x = randomNumberGenerator(0, 30);
-        int y = randomNumberGenerator(0, 20);
-    }
+    std::cout << "PowerUp spawned!" << std::endl;
+    std::cout << "  Position : " << randomPosition.x << " " << randomPosition.y << std::endl;
+    std::cout << "  Name : " << randomName << std::endl;
 }
 
-int PowerUpsManager::randomNumberGenerator(int lower, int upper)
+int PowerUpsManager::randomNumberGenerator(int lower, int higher)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(lower, upper);
-    return dist(gen);
+    return lower + (std::rand() % (higher - lower + 1));
 }
