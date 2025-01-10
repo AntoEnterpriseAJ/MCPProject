@@ -7,7 +7,7 @@
 #include "BulletManager.h"
 #include "Menu.h"
 #include "LoginWindow.h"
-#include "PowerUpsManager.h"
+#include "PowerUpManager.h"
 
 class Game 
 {
@@ -38,7 +38,7 @@ private:
     LoginWindow         m_loginWindow;
     Level               m_level;
     BulletManager       m_bulletManager;
-    PowerUpsManager     m_powerUpsManager;
+    PowerUpManager      m_powerUpManager;
     sf::Clock           m_lastFrameTimeClock;
     std::vector<Player> m_players;
     sf::RenderWindow    m_window;

@@ -3,7 +3,7 @@
 #include "Explosion.h"
 #include <iostream>
 
-#include "PowerUpsManager.h"
+#include "PowerUpManager.h"
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
@@ -164,20 +164,20 @@ void Game::render()
             }
 
             m_bulletManager.update(m_level, deltaTime);
+            m_powerUpManager.Update(m_level.getBricks());
 
             m_window.clear();
 
             m_level.drawBackground(m_window);
             m_bulletManager.draw(m_window);
 
-            for (auto& player : m_players) 
+            for (auto& player : m_players)
             {
                 m_window.draw(player);
             }
 
-            m_powerUpsManager.updatePowerUps(m_level.getBricks());
-
             m_window.draw(m_level);
+            m_powerUpManager.Draw(m_window);
 
             m_window.display();
         }
