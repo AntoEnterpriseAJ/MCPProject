@@ -48,7 +48,7 @@ nlohmann::json NetworkManager::join(const Player& player, uint8_t roomID)
 {
     std::cout << "Trying to join...\n";
     nlohmann::json data {
-        {"position", {player.GetPosition().x, player.GetPosition().y}}
+        {"position", {player.getPosition().x, player.getPosition().y}}
     };
 
     cpr::Response joinResponse = cpr::Post(
