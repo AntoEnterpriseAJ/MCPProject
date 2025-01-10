@@ -175,7 +175,7 @@ void Game::render()
                 m_window.draw(player);
             }
 
-            m_powerUpsManager.updatePowerUps();
+            m_powerUpsManager.updatePowerUps(m_level.getBricks());
 
             m_window.draw(m_level);
 
