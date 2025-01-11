@@ -19,21 +19,12 @@ void Level::load()
         return dist(gen);
         };
 
-    std::array<int, kHeight* kWidth> map; // Buffer pentru hartă
-    GenerateGameMap(map.data());           // Apelează funcția din DLL pentru a genera harta
-
-    // Afișăm harta în consolă
-    std::cout << "Harta generata:\n";
-    for (int i = 0; i < kHeight; ++i) {
-        for (int j = 0; j < kWidth; ++j) {
-            std::cout << map[i * kWidth + j] << " ";
-        }
-        std::cout << "\n";
-    }
+    std::array<int, kHeight* kWidth> map;
+    GenerateGameMap(map.data());
 
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            int tex = map[i * kWidth + j]; // Obține textura din harta generată
+            int tex = map[i * kWidth + j];
 
             ObstacleType obstacleType{ tex };
             Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
