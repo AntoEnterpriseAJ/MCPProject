@@ -80,6 +80,17 @@ void generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& player
         for (const auto& player : playerPositions) {
             grid[player.x][player.y] = 0;
         }
+
+        // Marcăm colțurile 2x2 ca libere (0)
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                grid[i][j] = 0;                         // Stânga-sus
+                grid[i][COLS - 1 - j] = 0;              // Dreapta-sus
+                grid[ROWS - 1 - i][j] = 0;              // Stânga-jos
+                grid[ROWS - 1 - i][COLS - 1 - j] = 0;   // Dreapta-jos
+            }
+        }
+
     } while (!isMapTraversable(grid, playerPositions)); // Generăm până când harta este validă
 }
 
