@@ -1,12 +1,14 @@
-#include "Level.h"
+﻿#include "Level.h"
 #include <fstream>
 #include <iostream>
 #include <random>
 #include <ranges>
 #include <string>
+#include <array>
 #include "Brick.h"
 #include "BombBrick.h"
 #include "Bush.h"
+#include "../../MapGenerator/MapGenerator.h"
 
 void Level::load()
 {
@@ -15,40 +17,36 @@ void Level::load()
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(lowerBound, upperBound);
         return dist(gen);
-    };
+        };
 
-    uint8_t firstLevel  {1};
-    uint8_t lastLevel   {5};
-    uint8_t randomLevel {static_cast<uint8_t>(random(firstLevel, lastLevel))};
+    std::array<int, kHeight* kWidth> map; // Buffer pentru hartă
+    GenerateGameMap(map.data());           // Apelează funcția din DLL pentru a genera harta
 
-    m_ID = randomLevel;
-    std::string levelFileName{"res/levels/level" + std::to_string(randomLevel) + ".txt"};
-
-    std::ifstream fin(levelFileName);
-    if (!fin)
-    {
-        std::cerr << "ERROR: Cannot open the file!\n";
-        return;
+    // Afișăm harta în consolă
+    std::cout << "Harta generata:\n";
+    for (int i = 0; i < kHeight; ++i) {
+        for (int j = 0; j < kWidth; ++j) {
+            std::cout << map[i * kWidth + j] << " ";
+        }
+        std::cout << "\n";
     }
 
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            int tex;
-            fin >> tex;
+            int tex = map[i * kWidth + j]; // Obține textura din harta generată
 
-            ObstacleType obstacleType{tex};
-            Vec2f position{j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize};
+            ObstacleType obstacleType{ tex };
+            Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
 
             int bombBrickChance = random(1, 10);
-            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1)
-            {
+            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) {
                 obstacleType = ObstacleType::BombBrick;
             }
 
             auto obstacle = createObstacle(obstacleType, position);
-            this->setObstacle({i, j}, obstacle, obstacleType);
+            this->setObstacle({ i, j }, obstacle, obstacleType);
+            });
         });
-    });
 }
 
 const Level::layoutTypes& Level::getLayoutTypes() const noexcept
