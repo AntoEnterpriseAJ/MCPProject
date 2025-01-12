@@ -2,12 +2,14 @@
 #include <array>
 
 
-class MapGenerator {
+class MapGenerator
+{
 public:
     static const int ROWS = 20;
     static const int COLS = 30;
 
-    struct Point {
+    struct Point
+    {
         int x, y;
     };
 
