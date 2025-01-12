@@ -18,13 +18,13 @@ public:
 	void setPosition(const sf::Vector2f& pos);
 	void setSize    (const sf::Vector2f& size);
 	void setVelocity(const sf::Vector2f& vel);
-	void setTexture (const sf::Texture& texture);
+	void SetTexture (const sf::Texture& texture);
 
-	sf::FloatRect getBounds()   const noexcept;
-	sf::Vector2f  getPosition() const noexcept;
-	sf::Vector2f  getSize()	    const noexcept;
-	sf::Vector2f  getVelocity() const noexcept;
-	sf::Sprite    getSprite()   const noexcept;
+	sf::FloatRect GetBounds()   const noexcept;
+	sf::Vector2f  GetPosition() const noexcept;
+	sf::Vector2f  GetSize()	    const noexcept;
+	sf::Vector2f  GetVelocity() const noexcept;
+	sf::Sprite    GetSprite()   const noexcept;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

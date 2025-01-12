@@ -36,8 +36,8 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
         {
             response["players"].push_back({
                 {"id", id},
-                {"position", {player.getPosition().x, player.getPosition().y}}, // TODO: custom serialization
-                {"direction", player.getDirection()}
+                {"position", {player.GetPosition().x, player.GetPosition().y}}, // TODO: custom serialization
+                {"direction", player.GetDirection()}
                 });
         }
 
@@ -64,9 +64,9 @@ void GameRoom::move(uint8_t playerID, Direction direction, float deltaTime)
         };
 
     Player& player{ m_players.at(playerID) };
-    Vec2f newPosition{ player.getPosition() };
+    Vec2f newPosition{ player.GetPosition() };
 
-    if (direction != player.getDirection())
+    if (direction != player.GetDirection())
     {
         if (direction == Direction::Up || direction == Direction::Down)
         {
@@ -170,7 +170,7 @@ const std::unordered_map<uint8_t, Player>& GameRoom::getPlayers() const noexcept
 bool GameRoom::checkCollision(const Player& player, const Vec2f& newPosition)
 {
     Vec2f topLeft     { newPosition - player.getOrigin() };
-    Vec2f bottomRight { topLeft + player.getSize() };
+    Vec2f bottomRight { topLeft + player.GetSize() };
 
     int topLeftX     = static_cast<int>(std::floor(topLeft.x / Level::kGridSize));
     int topLeftY     = static_cast<int>(std::floor(topLeft.y / Level::kGridSize));

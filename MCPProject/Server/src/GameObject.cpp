@@ -55,12 +55,12 @@ Vec2f GameObject::getOrigin() const noexcept
     return m_origin;
 }
 
-Vec2f GameObject::getPosition() const noexcept
+Vec2f GameObject::GetPosition() const noexcept
 {
     return m_position;
 }
 
-Vec2f GameObject::getSize() const noexcept
+Vec2f GameObject::GetSize() const noexcept
 {
     return m_size;
 }

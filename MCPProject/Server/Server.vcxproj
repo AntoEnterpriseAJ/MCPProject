@@ -48,6 +48,11 @@
     <ClInclude Include="src\include\Routing.h" />
     <ClInclude Include="src\include\Vec2f.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapGenerator\MapGenerator.vcxproj">
+      <Project>{90f68f0c-790b-4165-8438-3ff53065458e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

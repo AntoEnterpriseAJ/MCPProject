@@ -3,12 +3,14 @@
 #include "Explosion.h"
 #include <iostream>
 
+#include "PowerUpManager.h"
+
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
     m_level{},
     m_menu{ kWindowWidth, kWindowHeight },
     m_loginWindow{ kWindowWidth, kWindowHeight },
-    m_gameState{ GameState::Menu } 
+    m_gameState{ GameState::Menu }
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
@@ -51,13 +53,13 @@ void Game::handleInputs(float deltaTime)
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) 
             {
-                if (player.canShoot()) 
+                if (player.CanShoot()) 
                 {
-                    Direction dir = player.getDirection();
+                    Direction dir = player.GetDirection();
                     sf::Vector2f offset{ 0.0f, 0.0f };
                     float bulletOffsetDistance = 20.0f;
 
-                    switch (player.getDirection()) 
+                    switch (player.GetDirection()) 
                     {
                     case Direction::Up:
                         offset.y = -bulletOffsetDistance;
@@ -74,23 +76,25 @@ void Game::handleInputs(float deltaTime)
                     }
 
                     auto bullet = std::make_unique<Bullet>(
-                        player.getPosition() + offset,
+                        player.GetPosition() + offset,
                         ResourceManager::getInstance().getTexture("bullet"),
-                        player.getDirection()
+                        player.GetDirection()
                     );
 
                     m_bulletManager.addBullet(std::move(bullet));
                     ResourceManager::playSound("res/sfx/shooting.wav");
-                    player.restartCooldown();
+                    player.RestartCooldown();
                     
                 }
             }
         }
+
+
     }
 
     for (auto& player : m_players) 
     {
-        player.update(deltaTime);
+        player.Update(deltaTime);
     }
 }
 
@@ -156,22 +160,24 @@ void Game::render()
 
             for (auto& player : m_players) 
             {
-                player.movePlayer(m_level, deltaTime);
+                player.MovePlayer(m_level, deltaTime);
             }
 
             m_bulletManager.update(m_level, deltaTime);
+            m_powerUpManager.Update(m_level.getBricks());
 
             m_window.clear();
 
             m_level.drawBackground(m_window);
             m_bulletManager.draw(m_window);
 
-            for (auto& player : m_players) 
+            for (auto& player : m_players)
             {
                 m_window.draw(player);
             }
 
             m_window.draw(m_level);
+            m_powerUpManager.Draw(m_window);
 
             m_window.display();
         }

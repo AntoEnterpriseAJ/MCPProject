@@ -10,7 +10,7 @@ public:
     Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size);
     ~Player() override = default;
 
-    void update(float deltaTime);
+    void Update(float deltaTime);
     void setDirection(Direction direction);
 
     // client side only movement, maybe will use later
@@ -18,7 +18,7 @@ public:
     void restartCooldown();
 
     bool canShoot() const;
-    Direction getDirection() const;
+    Direction GetDirection() const;
 
 private:
     static constexpr float kCooldownTime = 0.5f;

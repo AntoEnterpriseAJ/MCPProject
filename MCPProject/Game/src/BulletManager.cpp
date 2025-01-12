@@ -19,8 +19,8 @@ void BulletManager::update(Level& level, float deltaTime)
         auto* bulletPtr = static_cast<Bullet*>(bullet.get());
         bulletPtr->update(deltaTime);
 
-        if (bulletPtr->getPosition().x < 0 || bulletPtr->getPosition().x > Game::getWindowWidth() ||
-            bulletPtr->getPosition().y < 0 || bulletPtr->getPosition().y > Game::getWindowHeight())
+        if (bulletPtr->GetPosition().x < 0 || bulletPtr->GetPosition().x > Game::getWindowWidth() ||
+            bulletPtr->GetPosition().y < 0 || bulletPtr->GetPosition().y > Game::getWindowHeight())
         {
             bulletPtr->setState(Bullet::State::Inactive);
         }
@@ -47,7 +47,7 @@ void BulletManager::handleCollisions(Level& level)
         {
             if (auto* brick = dynamic_cast<Brick*>(object.get()))
             {
-                if (bulletPtr->getBounds().intersects(brick->getBounds()))
+                if (bulletPtr->GetBounds().intersects(brick->GetBounds()))
                 {
                     bulletPtr->setState(Bullet::State::Inactive);
                     addExplosion(*bulletPtr);
@@ -63,18 +63,18 @@ void BulletManager::handleCollisions(Level& level)
             }
             else if (auto* bombBrick = dynamic_cast<BombBrick*>(object.get()))
             {
-                if (bulletPtr->getBounds().intersects(bombBrick->getBounds()))
+                if (bulletPtr->GetBounds().intersects(bombBrick->GetBounds()))
                 {
                     bulletPtr->setState(Bullet::State::Inactive);
                     addExplosion(*bulletPtr);
-                    detonate(bombBrick->getPosition(), level, bombBrick->GetExplosionRadius() * Obstacle::getObstacleSize());
+                    detonate(bombBrick->GetPosition(), level, bombBrick->GetExplosionRadius() * Obstacle::getObstacleSize());
 
                     std::cout << "BOMB\n";
                 }
             }
             else if (auto* unbreakableBrick = dynamic_cast<UnbreakableBrick*>(object.get()))
             {
-                if (bulletPtr->getBounds().intersects(unbreakableBrick->getBounds()))
+                if (bulletPtr->GetBounds().intersects(unbreakableBrick->GetBounds()))
                 {
                     bulletPtr->setState(Bullet::State::Inactive);
                     addExplosion(*bulletPtr);
@@ -84,7 +84,7 @@ void BulletManager::handleCollisions(Level& level)
             }
             else if (auto* bush = dynamic_cast<Bush*>(object.get()))
             {
-                if (bulletPtr->getBounds().intersects(bush->getBounds()))
+                if (bulletPtr->GetBounds().intersects(bush->GetBounds()))
                 {
                     std::cout << "BUSH\n";
                 }
@@ -103,7 +103,7 @@ void BulletManager::detonate(const sf::Vector2f& bombPosition, Level& level, int
     {
         if (levelLayout[index] && levelLayout[index]->isDestroyable())
         {
-            sf::Vector2f brickPosition = levelLayout[index]->getPosition();
+            sf::Vector2f brickPosition = levelLayout[index]->GetPosition();
 
             float distance = std::sqrt(
                 std::pow(brickPosition.x - bombPosition.x, 2) +
@@ -128,16 +128,16 @@ void BulletManager::addExplosion(const Bullet& bullet)
     switch (direction)
     {
         case Direction::Right:
-            explosionPos = bullet.getPosition() + sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            explosionPos = bullet.GetPosition() + sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
             break;
         case Direction::Left:
-            explosionPos = bullet.getPosition() - sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            explosionPos = bullet.GetPosition() - sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
             break;
         case Direction::Up:
-            explosionPos = bullet.getPosition() - sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            explosionPos = bullet.GetPosition() - sf::Vector2f(0, bullet.GetSize().y / 2.0f);
             break;
         case Direction::Down:
-            explosionPos = bullet.getPosition() + sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            explosionPos = bullet.GetPosition() + sf::Vector2f(0, bullet.GetSize().y / 2.0f);
             break;
     }
 

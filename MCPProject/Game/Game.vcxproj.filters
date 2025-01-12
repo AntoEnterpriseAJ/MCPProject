@@ -63,10 +63,7 @@
     <ClCompile Include="src\Obstacle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PowerUp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PowerUpsManager.cpp">
+    <ClCompile Include="src\PowerUpManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,7 +119,7 @@
     <ClInclude Include="src\include\PowerUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\PowerUpsManager.h">
+    <ClInclude Include="src\include\PowerUpManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

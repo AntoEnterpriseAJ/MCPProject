@@ -34,7 +34,7 @@ void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
                     return;
                 }
 
-                current->setTexture(ResourceManager::getInstance().getTexture(textureType));
+                current->SetTexture(ResourceManager::getInstance().getTexture(textureType));
                 return;
             }
 

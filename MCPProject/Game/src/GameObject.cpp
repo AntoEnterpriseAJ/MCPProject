@@ -15,62 +15,62 @@ GameObject::GameObject(
 
 	m_sprite.setTexture(texture);
 	m_sprite.setPosition(pos);
-	setSize(size);
+	SetSize(size);
 }
 
-void GameObject::setPosition(sf::Vector2f pos)
+void GameObject::SetPosition(sf::Vector2f pos)
 {
 	m_sprite.setPosition(pos);
 }
 
-void GameObject::setSize(sf::Vector2f size)
+void GameObject::SetSize(sf::Vector2f size)
 {
 	m_sprite.setScale(size.x / m_sprite.getTexture()->getSize().x, size.y / m_sprite.getTexture()->getSize().y);
 }
 
-void GameObject::setVelocity(sf::Vector2f vel)
+void GameObject::SetVelocity(sf::Vector2f vel)
 {
 	m_velocity = vel;
 }
 
-void GameObject::setTexture(const sf::Texture& texture)
+void GameObject::SetTexture(const sf::Texture& texture)
 {
 	m_sprite.setTexture(texture);
 }
 
-bool GameObject::isInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
+bool GameObject::IsInArea(const sf::Vector2f& upLeft, const sf::Vector2f& downRight)
 {
 	// TODO: Find a way to convert from getPosition().x type to int 
 		//       to be able to use list initialization
-	int x = this->getPosition().x;
-	int y = this->getPosition().y;
+	int x = this->GetPosition().x;
+	int y = this->GetPosition().y;
 
 	return x >= upLeft.x && x <= downRight.x &&
 		y <= upLeft.y && y >= downRight.y;
 }
 
-sf::FloatRect GameObject::getBounds() const noexcept
+sf::FloatRect GameObject::GetBounds() const noexcept
 {
 	return m_sprite.getGlobalBounds();
 }
 
-sf::Vector2f GameObject::getPosition() const noexcept
+sf::Vector2f GameObject::GetPosition() const noexcept
 {
 	return m_sprite.getPosition();
 }
 
-sf::Vector2f GameObject::getSize() const noexcept
+sf::Vector2f GameObject::GetSize() const noexcept
 {
 	sf::FloatRect bounds = m_sprite.getGlobalBounds();
     return {bounds.width, bounds.height};
 }
 
-sf::Vector2f GameObject::getVelocity() const noexcept
+sf::Vector2f GameObject::GetVelocity() const noexcept
 {
 	return m_velocity;
 }
 
-sf::Sprite GameObject::getSprite() const noexcept
+sf::Sprite GameObject::GetSprite() const noexcept
 {
 	return m_sprite;
 }

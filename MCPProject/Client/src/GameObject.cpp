@@ -33,33 +33,33 @@ void GameObject::setVelocity(const sf::Vector2f& vel)
 	m_velocity = vel;
 }
 
-void GameObject::setTexture(const sf::Texture& texture)
+void GameObject::SetTexture(const sf::Texture& texture)
 {
 	m_sprite.setTexture(texture);
 }
 
-sf::FloatRect GameObject::getBounds() const noexcept
+sf::FloatRect GameObject::GetBounds() const noexcept
 {
 	return m_sprite.getGlobalBounds();
 }
 
-sf::Vector2f GameObject::getPosition() const noexcept
+sf::Vector2f GameObject::GetPosition() const noexcept
 {
 	return m_sprite.getPosition();
 }
 
-sf::Vector2f GameObject::getSize() const noexcept
+sf::Vector2f GameObject::GetSize() const noexcept
 {
 	sf::FloatRect bounds = m_sprite.getGlobalBounds();
     return {bounds.width, bounds.height};
 }
 
-sf::Vector2f GameObject::getVelocity() const noexcept
+sf::Vector2f GameObject::GetVelocity() const noexcept
 {
 	return m_velocity;
 }
 
-sf::Sprite GameObject::getSprite() const noexcept
+sf::Sprite GameObject::GetSprite() const noexcept
 {
 	return m_sprite;
 }

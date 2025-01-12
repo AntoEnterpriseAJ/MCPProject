@@ -7,6 +7,7 @@
 #include "BulletManager.h"
 #include "Menu.h"
 #include "LoginWindow.h"
+#include "PowerUpManager.h"
 
 class Game 
 {
@@ -32,13 +33,14 @@ private:
     static constexpr uint16_t kWindowHeight{ 800 };
 
 private:
-    GameState m_gameState;
-    sf::Clock m_lastFrameTimeClock;
+    GameState           m_gameState;
+    Menu                m_menu;
+    LoginWindow         m_loginWindow;
+    Level               m_level;
+    BulletManager       m_bulletManager;
+    PowerUpManager      m_powerUpManager;
+    sf::Clock           m_lastFrameTimeClock;
     std::vector<Player> m_players;
-    sf::RenderWindow m_window;
-    Menu m_menu;
-    LoginWindow m_loginWindow;
-    Level m_level;
-    BulletManager m_bulletManager;
-    sf::Music m_backgroundMusic;
+    sf::RenderWindow    m_window;
+    sf::Music           m_backgroundMusic;
 };
