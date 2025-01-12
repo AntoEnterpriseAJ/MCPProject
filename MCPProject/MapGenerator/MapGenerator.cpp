@@ -76,19 +76,17 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
     } while (!isMapTraversable(grid, playerPositions));
 }
 
-void GenerateGameMap(int* map) {
-    if (!map) {
-        std::cerr << "Error: Null pointer passed to GenerateGameMap.\n";
-        return;
-    }
-
+void GenerateGameMap(std::array<int, MapGenerator::ROWS * MapGenerator::COLS>& map)
+{
     std::vector<std::vector<int>> grid(MapGenerator::ROWS, std::vector<int>(MapGenerator::COLS, 0));
     std::vector<MapGenerator::Point> playerPositions;
 
     MapGenerator::generateMap(grid, playerPositions);
 
-    for (int i = 0; i < MapGenerator::ROWS; ++i) {
-        for (int j = 0; j < MapGenerator::COLS; ++j) {
+    for (int i = 0; i < MapGenerator::ROWS; ++i) 
+    {
+        for (int j = 0; j < MapGenerator::COLS; ++j) 
+        {
             map[i * MapGenerator::COLS + j] = grid[i][j];
         }
     }

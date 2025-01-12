@@ -20,7 +20,7 @@ void Level::load()
         };
 
     std::array<int, kHeight* kWidth> map;
-    GenerateGameMap(map.data());
+    GenerateGameMap(map);
 
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
