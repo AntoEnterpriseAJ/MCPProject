@@ -4,6 +4,8 @@
 #include <queue>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
+#include <functional>
 
 bool MapGenerator::isValid(int x, int y, const std::vector<std::vector<int>>& grid) 
 {
@@ -55,29 +57,49 @@ bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const s
 void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& playerPositions)
 {
     static bool initialized = false;
-    if (!initialized) 
+    if (!initialized)
     {
         srand(static_cast<unsigned>(time(0)));
         initialized = true;
     }
 
-    auto countNeighbors = [&](int x, int y, int type) -> int 
+    auto countNeighbors = [&grid](int x, int y, int type) -> int
         {
-        const int dx[] = { -1, 1, 0, 0 };
-        const int dy[] = { 0, 0, -1, 1 };
-        int count = 0;
+            const int dx[] = { -1, 1, 0, 0 };
+            const int dy[] = { 0, 0, -1, 1 };
+            int count = 0;
 
-        for (int i = 0; i < 4; ++i) 
-        {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && grid[nx][ny] == type) 
+            for (int i = 0; i < 4; ++i)
             {
-                count++;
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && grid[nx][ny] == type)
+                {
+                    count++;
+                }
             }
-        }
+            return count;
+        };
 
-        return count;
+    const int MAX_CLUSTER_SIZE = 10;
+
+    std::function<int(int, int, int, std::vector<std::vector<bool>>&)> countClusterSize =
+        [&grid, &countClusterSize](int x, int y, int type, std::vector<std::vector<bool>>& visited) -> int
+        {
+            if (x < 0 || x >= ROWS || y < 0 || y >= COLS || visited[x][y] || grid[x][y] != type)
+                return 0;
+
+            visited[x][y] = true;
+            int size = 1;
+
+            const int dx[] = { -1, 1, 0, 0 };
+            const int dy[] = { 0, 0, -1, 1 };
+
+            for (int i = 0; i < 4; ++i)
+            {
+                size += countClusterSize(x + dx[i], y + dy[i], type, visited);
+            }
+            return size;
         };
 
     do {
@@ -85,27 +107,28 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
         {
             for (int j = 0; j < COLS; ++j)
             {
-                int randValue = rand() % 100;
-                if (randValue < 60) 
+                std::vector<std::pair<int, int>> probabilities = { {0, 35}, {1, 30}, {2, 25}, {3, 10} };
+                std::sort(probabilities.begin(), probabilities.end(), [&i, &j, &countNeighbors](const auto& a, const auto& b) {
+                    return countNeighbors(i, j, a.first) > countNeighbors(i, j, b.first);
+                    });
+
+                for (const auto& prob : probabilities)
                 {
-                    grid[i][j] = 0;
-                }
-                else if (randValue < 80) 
-                {
-                    grid[i][j] = 1;
-                }
-                else if (randValue < 95) 
-                {
-                    grid[i][j] = 2;
-                }
-                else 
-                {
-                    grid[i][j] = 3;
+                    int type = prob.first;
+                    int chance = prob.second;
+
+                    int randValue = rand() % 100;
+                    if (randValue < chance)
+                    {
+                        grid[i][j] = type;
+                        break;
+                    }
                 }
 
-                if (grid[i][j] == 3 && countNeighbors(i, j, 3) > 1) 
+                std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
+                if (countClusterSize(i, j, grid[i][j], visited) > MAX_CLUSTER_SIZE)
                 {
-                    grid[i][j] = 0;
+                    grid[i][j] = 0; // Reset to empty if cluster size exceeds limit
                 }
             }
         }
