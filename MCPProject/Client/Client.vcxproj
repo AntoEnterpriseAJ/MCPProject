@@ -21,7 +21,10 @@
   <ItemGroup>
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
+    <ClCompile Include="src\Bullet.cpp" />
+    <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Bush.cpp" />
+    <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Level.cpp" />
@@ -34,8 +37,11 @@
   <ItemGroup>
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />
+    <ClInclude Include="src\include\Bullet.h" />
+    <ClInclude Include="src\include\BulletManager.h" />
     <ClInclude Include="src\include\Bush.h" />
     <ClInclude Include="src\include\Direction.h" />
+    <ClInclude Include="src\include\Explosion.h" />
     <ClInclude Include="src\include\Game.h" />
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Level.h" />
