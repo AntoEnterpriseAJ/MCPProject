@@ -22,22 +22,32 @@ void Level::load()
     std::array<int, kHeight* kWidth> map;
     GenerateGameMap(map);
 
-    std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
-        std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            int tex = map[i * kWidth + j];
+    int maxNumberOfBombBricks = random(0, 3);
+    int numberOfBombBricks = 0;
 
-            ObstacleType obstacleType{ tex };
-            Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
+    if (maxNumberOfBombBricks != 0)
+    {
+        std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) 
+            {
+            std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) 
+                {
+                int tex = map[i * kWidth + j];
 
-            int bombBrickChance = random(1, 10);
-            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) {
-                obstacleType = ObstacleType::BombBrick;
-            }
+                ObstacleType obstacleType{ tex };
+                Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
 
-            auto obstacle = createObstacle(obstacleType, position);
-            this->setObstacle({ i, j }, obstacle, obstacleType);
+                int bombBrickChance = random(1, 10);
+                if (obstacleType == ObstacleType::Brick && bombBrickChance == 1 && maxNumberOfBombBricks != numberOfBombBricks) 
+                {
+                    numberOfBombBricks++;
+                    obstacleType = ObstacleType::BombBrick;
+                }
+
+                auto obstacle = createObstacle(obstacleType, position);
+                this->setObstacle({ i, j }, obstacle, obstacleType);
+                });
             });
-        });
+    }
 }
 
 const Level::layoutTypes& Level::getLayoutTypes() const noexcept

@@ -63,7 +63,7 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
         initialized = true;
     }
 
-    auto countNeighbors = [&grid](int x, int y, int type) -> int
+    auto countNeighbors = [&](int x, int y, int type) -> int
         {
             const int dx[] = { -1, 1, 0, 0 };
             const int dy[] = { 0, 0, -1, 1 };
@@ -84,7 +84,7 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
     const int MAX_CLUSTER_SIZE = 10;
 
     std::function<int(int, int, int, std::vector<std::vector<bool>>&)> countClusterSize =
-        [&grid, &countClusterSize](int x, int y, int type, std::vector<std::vector<bool>>& visited) -> int
+        [&](int x, int y, int type, std::vector<std::vector<bool>>& visited) -> int
         {
             if (x < 0 || x >= ROWS || y < 0 || y >= COLS || visited[x][y] || grid[x][y] != type)
                 return 0;
@@ -108,7 +108,7 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
             for (int j = 0; j < COLS; ++j)
             {
                 std::vector<std::pair<int, int>> probabilities = { {0, 35}, {1, 30}, {2, 25}, {3, 10} };
-                std::sort(probabilities.begin(), probabilities.end(), [&i, &j, &countNeighbors](const auto& a, const auto& b) {
+                std::sort(probabilities.begin(), probabilities.end(), [&](const auto& a, const auto& b) {
                     return countNeighbors(i, j, a.first) > countNeighbors(i, j, b.first);
                     });
 
@@ -128,7 +128,7 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
                 std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
                 if (countClusterSize(i, j, grid[i][j], visited) > MAX_CLUSTER_SIZE)
                 {
-                    grid[i][j] = 0; // Reset to empty if cluster size exceeds limit
+                    grid[i][j] = 0;
                 }
             }
         }
