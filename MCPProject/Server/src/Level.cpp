@@ -8,6 +8,10 @@
 #include "BombBrick.h"
 #include "Bush.h"
 
+Level::Level()
+    : m_ID{ 0 }, m_levelLayout{}, m_layoutTypes{}
+{}
+
 void Level::load()
 {
     auto random = [](int lowerBound, int upperBound) -> int {
@@ -51,9 +55,38 @@ void Level::load()
     });
 }
 
+void Level::updateLayoutTypes()
+{
+    std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
+        std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
+            uint16_t index = i * kWidth + j;
+            auto& obstacle = m_levelLayout[index];
+            if (!obstacle && m_layoutTypes[index])
+            {
+                m_layoutTypes[index] = static_cast<uint16_t>(ObstacleType::None);
+            }
+        });
+    });
+}
+
 const Level::layoutTypes& Level::getLayoutTypes() const noexcept
 {
     return m_layoutTypes;
+}
+
+Level::layoutTypes& Level::getLayoutTypes()
+{
+    return m_layoutTypes;
+}
+
+const Level::levelLayout& Level::getLayout() const noexcept
+{
+    return m_levelLayout;
+}
+
+Level::levelLayout& Level::getLayout()
+{
+    return m_levelLayout;
 }
 
 void Level::setObstacle(const Position& position, std::unique_ptr<Obstacle>& obstacle, ObstacleType obstacleType)
@@ -87,13 +120,13 @@ std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const
     {
         return std::make_unique<BombBrick>(position);
     }
-    else if (obstacleType  == ObstacleType::Bush)
+    else if (obstacleType == ObstacleType::Bush)
     {
         return std::make_unique<Bush>(position);
     }
-    else if (obstacleType  == ObstacleType::UnbreakableBrick)
+    else if (obstacleType == ObstacleType::UnbreakableBrick)
     {
-        return std::make_unique<Brick>(position);
+        return std::make_unique<Brick>(position, 3, false, false);
     }
     else
     {

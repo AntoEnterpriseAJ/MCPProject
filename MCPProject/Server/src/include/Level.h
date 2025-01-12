@@ -2,6 +2,7 @@
 #include <array>
 #include "Obstacle.h"
 #include "ObstacleType.h"
+#include <vector>
 #include <memory>
 
 class Level
@@ -12,13 +13,19 @@ public:
     static constexpr float    kGridSize { 40.0f };
 public:
     using Position = std::pair<uint16_t, uint16_t>;
-    using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight * kWidth>;
+    using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight* kWidth>;
     using layoutTypes = std::array<uint16_t, kHeight * kWidth>;
 public:
+    Level();
+
     void load();
+    void updateLayoutTypes(); // TODO: maybe update ONLY when it's necessary, fine for now
 
     uint8_t getID() const noexcept;
     const layoutTypes& getLayoutTypes() const noexcept; 
+    layoutTypes& getLayoutTypes();
+    const levelLayout& getLayout() const noexcept;
+    levelLayout& getLayout();
 
     void setObstacle(const Position& position, std::unique_ptr<Obstacle>& obstacle, ObstacleType obstacleType);
 
