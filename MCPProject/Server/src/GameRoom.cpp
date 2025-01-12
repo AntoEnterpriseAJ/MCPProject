@@ -20,7 +20,7 @@ uint8_t GameRoom::addPlayer(const Vec2f& position)
     return m_idCounter++;
 }
 
-nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
+nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
 {
     nlohmann::json response = {
         {"serverVersion", m_version},
@@ -28,6 +28,7 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
 
     if (clientVersion != m_version)
     {
+        m_level.updateLayoutTypes();
         response["levelLayout"] = m_level.getLayoutTypes();
 
         response["players"] = nlohmann::json::array();
@@ -39,6 +40,18 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) const noexcept
                 {"direction", player.getDirection()}
                 });
         }
+
+        update();
+        response["bullets"] = nlohmann::json::array();
+        for (const auto& bullet : m_bulletManager.getBullets())
+        {
+            response["bullets"].push_back({
+                {"position", {bullet->getPosition().x, bullet->getPosition().y}},
+                {"direction", bullet->getDirection()}
+                });
+        }
+
+        std::cout << "Currently we have " << m_bulletManager.getBullets().size() << " bullets\n";
     }
 
     return response;
@@ -91,6 +104,44 @@ void GameRoom::move(uint8_t playerID, Direction direction, float deltaTime)
     m_version = (m_version + 1) % kMaxVersion;
 }
 
+void GameRoom::shoot(uint8_t playerID)
+{
+    Player& player{ m_players.at(playerID) };
+
+    if (!player.canShoot()) return;
+
+    player.restartCooldown();
+    Vec2f offset{ 0.0f, 0.0f };
+    switch (player.getDirection())
+    {
+    case Direction::Up:
+        offset = { 0.0f, -Player::kPlayerSizeY };
+        break;
+    case Direction::Down:
+        offset = { 0.0f, Player::kPlayerSizeY };
+        break;
+    case Direction::Left:
+        offset = { -Player::kPlayerSizeX, 0.0f };
+        break;
+    case Direction::Right:
+        offset = { Player::kPlayerSizeX, 0.0f };
+        break;
+    }
+
+    m_bulletManager.addBullet(std::make_unique<Bullet>(player.getPosition() + offset, player.getDirection()));
+    m_version = (m_version + 1) % kMaxVersion;
+}
+
+void GameRoom::update()
+{
+    auto now = std::chrono::steady_clock::now();
+    float deltaTime = std::chrono::duration<float>(now - m_lastUpdated).count();
+    m_lastUpdated = now;
+    m_version = (m_version + 1) % kMaxVersion;
+
+    m_bulletManager.update(m_level, deltaTime);
+}
+
 const Level& GameRoom::getLevel() const noexcept
 {
     return m_level;
@@ -104,6 +155,11 @@ uint32_t GameRoom::getVersion() const noexcept
 uint8_t GameRoom::getID() const noexcept
 {
     return m_roomID;
+}
+
+Player& GameRoom::getPlayer(uint8_t id)
+{
+    return m_players.at(id);
 }
 
 const std::unordered_map<uint8_t, Player>& GameRoom::getPlayers() const noexcept
