@@ -1,23 +1,15 @@
-﻿#include <iostream>
+﻿#include "MapGenerator.h"
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <ctime>
 #include <cstdlib>
 
-#define DLL_EXPORT extern "C" __declspec(dllexport)
-
-const int ROWS = 20;
-const int COLS = 30;
-
-struct Point {
-    int x, y;
-};
-
-bool isValid(int x, int y, const std::vector<std::vector<int>>& grid) {
+bool MapGenerator::isValid(int x, int y, const std::vector<std::vector<int>>& grid) {
     return x >= 0 && x < ROWS && y >= 0 && y < COLS && grid[x][y] != 3;
 }
 
-bool isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Point>& playerPositions) {
+bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Point>& playerPositions) {
     std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
     std::queue<Point> q;
 
@@ -53,7 +45,7 @@ bool isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Poi
     return reachableCells >= ROWS * COLS / 2;
 }
 
-void generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& playerPositions) {
+void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& playerPositions) {
     static bool initialized = false;
     if (!initialized) {
         srand(static_cast<unsigned>(time(0)));
@@ -84,20 +76,20 @@ void generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& player
     } while (!isMapTraversable(grid, playerPositions));
 }
 
-DLL_EXPORT void GenerateGameMap(int* map) {
+void GenerateGameMap(int* map) {
     if (!map) {
         std::cerr << "Error: Null pointer passed to GenerateGameMap.\n";
         return;
     }
 
-    std::vector<std::vector<int>> grid(ROWS, std::vector<int>(COLS, 0));
-    std::vector<Point> playerPositions;
+    std::vector<std::vector<int>> grid(MapGenerator::ROWS, std::vector<int>(MapGenerator::COLS, 0));
+    std::vector<MapGenerator::Point> playerPositions;
 
-    generateMap(grid, playerPositions);
+    MapGenerator::generateMap(grid, playerPositions);
 
-    for (int i = 0; i < ROWS; ++i) {
-        for (int j = 0; j < COLS; ++j) {
-            map[i * COLS + j] = grid[i][j];
+    for (int i = 0; i < MapGenerator::ROWS; ++i) {
+        for (int j = 0; j < MapGenerator::COLS; ++j) {
+            map[i * MapGenerator::COLS + j] = grid[i][j];
         }
     }
 }
