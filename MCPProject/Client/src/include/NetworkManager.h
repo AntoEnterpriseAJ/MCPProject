@@ -15,6 +15,7 @@ public:
     nlohmann::json update();
     nlohmann::json getExistingRooms();
     void movePlayer(uint16_t clientID, Direction direction, float deltaTime);
+    void shoot(uint16_t clientID);
 
     void setRoomID(uint8_t roomID);
     uint8_t getCurrentRoomID() const;
