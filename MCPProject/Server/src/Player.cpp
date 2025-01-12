@@ -11,7 +11,32 @@ Direction Player::getDirection() const
     return m_direction;
 }
 
+void Player::restartCooldown()
+{
+    m_lastUpdated = std::chrono::steady_clock::now();
+}
+
+
+bool Player::canShoot() const
+{
+    auto now = std::chrono::steady_clock::now();
+    float deltaTime = std::chrono::duration<float>(now - m_lastUpdated).count();
+    return deltaTime >= kCooldownTime;
+}
+
 void Player::setDirection(Direction direction)
 {
-    m_direction = direction;
+    if (m_direction != direction)
+    {
+        m_direction = direction;
+
+        if (direction == Direction::Up || direction == Direction::Down)
+        {
+            setSize({getSize().y, getSize().x});
+        }
+        else
+        {
+            setSize({39.9f, 39.9f});
+        }
+    }
 }
