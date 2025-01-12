@@ -7,6 +7,7 @@
 #include <string_view>
 #include <cpr/cpr.h>
 #include "NetworkManager.h"
+#include "BulletManager.h"
 #include "Level.h"
 
 class Game
@@ -42,6 +43,7 @@ private:
     sf::Clock              m_lastFrametimeClock;
     Level                  m_level;
     NetworkManager         m_networkManager;
+    BulletManager          m_bulletManager;
     uint16_t               m_internalID;
     GameState              m_gameState;
     sf::RenderWindow       m_window;
