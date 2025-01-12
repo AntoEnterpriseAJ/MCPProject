@@ -98,6 +98,23 @@ void Routing::run()
         return crow::response(200, "the move was successful");
     });
 
+    CROW_ROUTE(m_server, "/room/<int>/shoot").methods(crow::HTTPMethod::Post)
+        ([this](const crow::request& req, uint8_t roomID) {
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "room not found");
+        }
+
+        auto data = nlohmann::json::parse(req.body);
+        if (!data.contains("id"))
+        {
+            return crow::response(400, "invalid request body");
+        }
+
+        m_rooms[roomID].shoot(data["id"]);
+        return crow::response(200, "the shoot was successful");
+    });
+
    crow::logger::setLogLevel(crow::LogLevel::Critical);
    m_server.port(kPort).multithreaded().run();
 }
