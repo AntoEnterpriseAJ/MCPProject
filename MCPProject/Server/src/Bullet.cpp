@@ -2,7 +2,9 @@
 
 Bullet::Bullet(const Vec2f& pos, Direction dir, const Vec2f& size)
     : GameObject{ pos, size }, m_state{State::Active}, m_direction{dir}
-{}
+{
+    setOrigin(size / 2.0f);
+}
 
 void Bullet::update(float deltaTime)
 {
