@@ -32,7 +32,7 @@ void Player::setDirection(Direction direction)
 
         if (direction == Direction::Up || direction == Direction::Down)
         {
-            setSize({getSize().y, getSize().x});
+            setSize({GetSize().y, GetSize().x});
         }
         else
         {

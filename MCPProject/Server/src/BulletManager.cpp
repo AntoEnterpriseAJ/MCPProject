@@ -66,7 +66,7 @@ void BulletManager::handleCollisions(Level& level)
                     {
                         std::cout << "Hit bomb brick\n";
                         bullet->setState(Bullet::State::Inactive);
-                        detonate(bombBrick->getPosition(), level, bombBrick->getExplosionRadius() * Obstacle::kObstacleSize);
+                        detonate(bombBrick->GetPosition(), level, bombBrick->getExplosionRadius() * Obstacle::kObstacleSize);
                     }
                 }
             }

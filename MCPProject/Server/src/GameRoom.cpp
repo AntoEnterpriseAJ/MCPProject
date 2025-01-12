@@ -46,7 +46,7 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
         for (const auto& bullet : m_bulletManager.getBullets())
         {
             response["bullets"].push_back({
-                {"position", {bullet->getPosition().x, bullet->getPosition().y}},
+                {"position", {bullet->GetPosition().x, bullet->GetPosition().y}},
                 {"direction", bullet->getDirection()}
                 });
         }
@@ -112,7 +112,7 @@ void GameRoom::shoot(uint8_t playerID)
 
     player.restartCooldown();
     Vec2f offset{ 0.0f, 0.0f };
-    switch (player.getDirection())
+    switch (player.GetDirection())
     {
     case Direction::Up:
         offset = { 0.0f, -Player::kPlayerSizeY };
@@ -128,7 +128,7 @@ void GameRoom::shoot(uint8_t playerID)
         break;
     }
 
-    m_bulletManager.addBullet(std::make_unique<Bullet>(player.getPosition() + offset, player.getDirection()));
+    m_bulletManager.addBullet(std::make_unique<Bullet>(player.GetPosition() + offset, player.GetDirection()));
     m_version = (m_version + 1) % kMaxVersion;
 }
 

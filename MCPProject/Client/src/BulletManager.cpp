@@ -12,16 +12,16 @@ void BulletManager::addExplosion(const Bullet& bullet)
     switch (direction)
     {
         case Direction::Right:
-            explosionPos = bullet.getPosition() + sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            explosionPos = bullet.GetPosition() + sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
             break;
         case Direction::Left:
-            explosionPos = bullet.getPosition() - sf::Vector2f(bullet.getSize().x / 2.0f, 0);
+            explosionPos = bullet.GetPosition() - sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
             break;
         case Direction::Up:
-            explosionPos = bullet.getPosition() - sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            explosionPos = bullet.GetPosition() - sf::Vector2f(0, bullet.GetSize().y / 2.0f);
             break;
         case Direction::Down:
-            explosionPos = bullet.getPosition() + sf::Vector2f(0, bullet.getSize().y / 2.0f);
+            explosionPos = bullet.GetPosition() + sf::Vector2f(0, bullet.GetSize().y / 2.0f);
             break;
     }
 

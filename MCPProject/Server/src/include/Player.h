@@ -20,7 +20,7 @@ public:
     void restartCooldown();
 
     bool canShoot() const;
-    Direction getDirection() const;
+    Direction GetDirection() const;
 public:
     static constexpr float kPlayerSizeX = 39.9f;
     static constexpr float kPlayerSizeY = 39.9f;
