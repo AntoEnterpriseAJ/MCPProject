@@ -19,4 +19,14 @@ struct Vec2f
     {
         return {first.x / scalar, first.y / scalar};
     }
+
+    friend Vec2f operator*(const Vec2f& first, float scalar)
+    {
+        return {first.x / scalar, first.y / scalar};
+    }
+
+    Vec2f operator-()
+    {
+        return {-x, -y};
+    }
 };
