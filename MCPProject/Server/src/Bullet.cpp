@@ -28,6 +28,11 @@ void Bullet::move(float offsetX, float offsetY)
     this->setPosition(this->GetPosition() + Vec2f{offsetX, offsetY});
 }
 
+bool Bullet::isActive() const
+{
+    return m_state == State::Active;
+}
+
 Direction Bullet::getDirection() const
 {
     return m_direction;

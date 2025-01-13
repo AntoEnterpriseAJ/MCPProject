@@ -23,6 +23,7 @@ public:
     void setState(State state);
     void move(float offsetX, float offsetY);
 
+    bool isActive() const;
     Direction getDirection() const;
     State getState() const;
 
