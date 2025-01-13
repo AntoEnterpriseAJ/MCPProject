@@ -28,12 +28,10 @@ void BulletManager::handleCollisions(Level& level)
 {
     auto& levelLayout = level.getLayout();
 
-    for (auto& bullet : m_bullets)
+    for (auto& bullet : m_bullets | std::views::filter([](const auto& b) { return b != nullptr; }))
     {
-        int topLeftX     = static_cast<int>(std::floor(bullet->getTopLeft().x / Level::kGridSize));
-        int topLeftY     = static_cast<int>(std::floor(bullet->getTopLeft().y / Level::kGridSize));
-        int bottomRightX = static_cast<int>(std::floor(bullet->getBottomRight().x / Level::kGridSize));
-        int bottomRightY = static_cast<int>(std::floor(bullet->getBottomRight().y / Level::kGridSize));
+        auto [topLeftX, topLeftY]         = bullet->getTopLeft().toGridCoords(Level::kGridSize);
+        auto [bottomRightX, bottomRightY] = bullet->getBottomRight().toGridCoords(Level::kGridSize);
 
         for (int x = topLeftX; x <= bottomRightX; ++x)
         {
@@ -43,7 +41,7 @@ void BulletManager::handleCollisions(Level& level)
                 {
                     bullet->setState(Bullet::State::Inactive);
                     continue;
-                }   
+                }
 
                 auto& currentObstacle{ level[{y, x}] };
                 if (currentObstacle == nullptr)
@@ -77,14 +75,12 @@ void BulletManager::handleCollisions(Level& level)
 }
 
 // TODO: refactor
-void BulletManager::detonate(const Vec2f& bombPosition, Level& level, int radius)
+void BulletManager::detonate(const Vec2f& bombPosition, Level& level, float radius)
 {
     auto& levelLayout = level.getLayout();
 
-    int topLeftX     = static_cast<int>(std::floor((bombPosition.x - radius) / Level::kGridSize));
-    int topLeftY     = static_cast<int>(std::floor((bombPosition.y - radius) / Level::kGridSize));
-    int bottomRightX = static_cast<int>(std::floor((bombPosition.x + radius) / Level::kGridSize));
-    int bottomRightY = static_cast<int>(std::floor((bombPosition.y + radius) / Level::kGridSize));
+    auto [topLeftX, topLeftY]         = (bombPosition - Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
+    auto [bottomRightX, bottomRightY] = (bombPosition + Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
 
     for (int x = topLeftX; x <= bottomRightX; ++x)
     {
@@ -101,12 +97,9 @@ void BulletManager::detonate(const Vec2f& bombPosition, Level& level, int radius
                 continue;
             }
 
-            if (auto brick = dynamic_cast<Brick*>(currentObstacle.get()))
+            if (auto brick = dynamic_cast<Brick*>(currentObstacle.get()); brick && !brick->isDestroyable())
             {
-                if (brick->isDestroyable())
-                {
-                    currentObstacle.reset();
-                }
+                continue;
             }
             else
             {
@@ -119,29 +112,17 @@ void BulletManager::detonate(const Vec2f& bombPosition, Level& level, int radius
 void BulletManager::removeInactive(Level& level)
 {
     auto& levelLayout = level.getLayout();
-    for (auto& obj : levelLayout)
+    for (auto& obj : levelLayout | std::views::filter([](const auto& o) { return o != nullptr; }))
     {
-        if (obj == nullptr)
+        if (auto brick = dynamic_cast<Brick*>(obj.get()); brick && brick->isDestroyed())
         {
-            continue;
-        }
-        if (auto brick = dynamic_cast<Brick*>(obj.get()))
-        {
-            if (brick->isDestroyed())
-            {
-                obj.reset();
-            }
+            obj.reset();
         }
     }
 
-    m_bullets.erase(
-        std::remove_if(m_bullets.begin(), m_bullets.end(),
-            [](const auto& bullet) {
-                auto* bulletPtr = dynamic_cast<Bullet*>(bullet.get());
-                return bulletPtr && bulletPtr->getState() == Bullet::State::Inactive;
-            }),
-        m_bullets.end()
-    );
+    std::erase_if(m_bullets, [](const auto& bullet) {
+        return bullet && bullet->getState() == Bullet::State::Inactive;
+    });
 }
 
 const std::vector<std::unique_ptr<Bullet>>& BulletManager::getBullets() const noexcept

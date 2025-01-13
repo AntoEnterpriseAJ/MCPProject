@@ -17,7 +17,7 @@ private:
     void addExplosion(const Bullet& bullet);
     void removeInactive(Level& level);
 
-    void detonate(const Vec2f& bombPosition, Level& level, int radius);
+    void detonate(const Vec2f& bombPosition, Level& level, float radius);
 private:
     std::vector<std::unique_ptr<Bullet>> m_bullets;
 };
