@@ -30,8 +30,8 @@ void BulletManager::handleCollisions(Level& level)
 
     for (auto& bullet : m_bullets)
     {
-        int topLeftX = static_cast<int>(std::floor(bullet->getTopLeft().x / Level::kGridSize));
-        int topLeftY = static_cast<int>(std::floor(bullet->getTopLeft().y / Level::kGridSize));
+        int topLeftX     = static_cast<int>(std::floor(bullet->getTopLeft().x / Level::kGridSize));
+        int topLeftY     = static_cast<int>(std::floor(bullet->getTopLeft().y / Level::kGridSize));
         int bottomRightX = static_cast<int>(std::floor(bullet->getBottomRight().x / Level::kGridSize));
         int bottomRightY = static_cast<int>(std::floor(bullet->getBottomRight().y / Level::kGridSize));
 
@@ -101,14 +101,14 @@ void BulletManager::detonate(const Vec2f& bombPosition, Level& level, int radius
                 continue;
             }
 
-            if (auto brick = dynamic_cast<Brick*>(currentObstacle.get()) )
+            if (auto brick = dynamic_cast<Brick*>(currentObstacle.get()))
             {
                 if (brick->isDestroyable())
                 {
                     currentObstacle.reset();
                 }
             }
-            else if (auto bombBrick = dynamic_cast<BombBrick*>(currentObstacle.get()))
+            else
             {
                 currentObstacle.reset();
             }
