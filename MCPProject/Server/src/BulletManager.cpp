@@ -71,6 +71,18 @@ void BulletManager::handleCollisions(Level& level)
         }
     }
 
+    std::ranges::for_each(
+        m_bullets | std::views::filter([](const auto& bullet) { return bullet && bullet->isActive(); }),
+        [&](auto& bullet) {
+            for (auto& other : m_bullets) {
+                if (other && other->isActive() && other != bullet && bullet->collides(*other)) {
+                    bullet->setState(Bullet::State::Inactive);
+                    other->setState(Bullet::State::Inactive);
+                    break;
+                }
+            }
+        });
+
     removeInactive(level);
 }
 
