@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Database.cpp" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Database.h" />
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />
     <ClInclude Include="src\include\Bullet.h" />
@@ -157,6 +159,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <AdditionalIncludeDirectories>$(SolutionDir)Server\src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS  /D _SILENCE_ALL_CXX20_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
