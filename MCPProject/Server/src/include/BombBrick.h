@@ -7,7 +7,7 @@ class BombBrick : public Obstacle
 public:
     BombBrick(
         const Vec2f& pos,
-        int explosionRadius = 3
+        float explosionRadius = 3.0
     );
 
     ~BombBrick() override = default;
@@ -15,5 +15,5 @@ public:
     int getExplosionRadius() const noexcept;
 
 private:
-    int m_explosionRadius;
+    float m_explosionRadius;
 };

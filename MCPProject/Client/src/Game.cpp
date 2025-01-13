@@ -9,7 +9,8 @@
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }, m_internalID{0}
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }
+    , m_internalID{ 0 }, m_bulletManager{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
@@ -66,6 +67,11 @@ void Game::handleInputs(float deltaTime)
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         move(Direction::Right, deltaTime);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    {
+        m_networkManager.shoot(m_internalID);
     }
 }
 
@@ -155,6 +161,14 @@ void Game::update()
         m_players[playerId].setDirection(direction);
     });
 
+    m_bulletManager.clearBullets();
+    std::ranges::for_each(updateResponse["bullets"], [this](const auto& bulletData) {
+        sf::Vector2f position = { bulletData["position"][0], bulletData["position"][1] };
+        Direction direction = bulletData["direction"];
+        m_bulletManager.addBullet(
+            std::make_unique<Bullet>(position, ResourceManager::getInstance().getTexture("bullet"), direction));
+    });
+
     m_level.update(updateResponse["levelLayout"]);
 
     return;
@@ -183,6 +197,8 @@ void Game::render()
                 const auto& [id, player] = entry;
                 m_window.draw(player);
             });
+
+            m_bulletManager.draw(m_window);
 
             m_window.draw(m_level);
 

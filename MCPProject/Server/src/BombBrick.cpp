@@ -2,7 +2,7 @@
 
 BombBrick::BombBrick(
     const Vec2f& pos,
-    int explosionRadius
+    float explosionRadius
 )
 	: Obstacle(pos, { kObstacleSize, kObstacleSize }, false, true),
 	  m_explosionRadius(explosionRadius)

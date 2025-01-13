@@ -1,7 +1,8 @@
 #include "GameObject.h"
+#include <cmath>
 
 GameObject::GameObject(const Vec2f& position, const Vec2f& size)
-    : m_size{size}, m_origin{0.0f, 0.0f}, m_position{position}
+    : m_size{size}, m_origin{0.0f, 0.0f}, m_position{position}, m_rotation{0}
 {}
 
 bool GameObject::collides(const GameObject& other) const noexcept
@@ -34,12 +35,6 @@ bool GameObject::collides(const Vec2f& otherTopLeft, const Vec2f& otherBottomRig
     return xCollision && yCollision;
 }
 
-// TODO: implement
-void GameObject::rotate(float)
-{
-
-}
-
 void GameObject::setOrigin(const Vec2f& originOffset)
 {
     m_origin = originOffset;
@@ -48,6 +43,11 @@ void GameObject::setOrigin(const Vec2f& originOffset)
 void GameObject::setPosition(const Vec2f& position)
 {
     m_position = position;
+}
+
+void GameObject::setSize(const Vec2f& size)
+{
+    m_size = size;
 }
 
 Vec2f GameObject::getOrigin() const noexcept

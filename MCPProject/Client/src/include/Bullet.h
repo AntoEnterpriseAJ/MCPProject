@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include <SFML/Graphics.hpp>
 #include "Direction.h"
-#include "Vec2f.h"
 #include "GameObject.h"
 
 class Bullet : public GameObject
@@ -11,26 +11,28 @@ public:
         Active,
         Inactive,
     };
+
 public:
+
     Bullet(
-        const Vec2f& pos, 
-        Direction    dir,
-        const Vec2f& size = {kBulletSizeX, kBulletSizeY}
+        sf::Vector2f       pos, 
+        const sf::Texture& texture, 
+        Direction,
+        sf::Vector2f       size = sf::Vector2f(kBulletSizeX, kBulletSizeY)
     );
-    ~Bullet() override = default;
 
     void update(float deltaTime);
     void setState(State state);
     void move(float offsetX, float offsetY);
 
-    bool isActive() const;
     Direction getDirection() const;
     State getState() const;
 
 private:
     static constexpr float kBulletSpeed { 400.0f };
-    static constexpr float kBulletSizeX { 20.0f };
+    static constexpr float kBulletSizeX { 50.0f };
     static constexpr float kBulletSizeY { 50.0f };
+
 private:
     Direction m_direction : 2;
     State     m_state     : 1;

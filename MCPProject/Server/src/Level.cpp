@@ -8,7 +8,11 @@
 #include "Brick.h"
 #include "BombBrick.h"
 #include "Bush.h"
-#include "../../MapGenerator/MapGenerator.h"
+#include "../../MapGenerator/MapGenerator.h" // ?
+
+Level::Level()
+    : m_ID{ 0 }, m_levelLayout{}, m_layoutTypes{}
+{}
 
 void Level::load()
 {
@@ -19,30 +23,75 @@ void Level::load()
         return dist(gen);
         };
 
-    std::array<int, kHeight* kWidth> map;
-    GenerateGameMap(map.data());
+    uint8_t firstLevel{ 1 };
+    uint8_t lastLevel{ 5 };
+    uint8_t randomLevel{ static_cast<uint8_t>(random(firstLevel, lastLevel)) };
+
+    m_ID = randomLevel;
+    std::string levelFileName{ "res/levels/level" + std::to_string(randomLevel) + ".txt" };
+
+    std::ifstream fin(levelFileName);
+    if (!fin)
+    {
+        std::cerr << "ERROR: Cannot open the file!\n";
+        return;
+    }
+
+    //std::array<int, kHeight* kWidth> map;
+    //GenerateGameMap(map);
 
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            int tex = map[i * kWidth + j];
+            int tex; fin >> tex;
+            //int tex = map[i * kWidth + j]; for DLL testing
 
             ObstacleType obstacleType{ tex };
             Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
 
             int bombBrickChance = random(1, 10);
-            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) {
+            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) 
+            {
                 obstacleType = ObstacleType::BombBrick;
             }
 
             auto obstacle = createObstacle(obstacleType, position);
             this->setObstacle({ i, j }, obstacle, obstacleType);
             });
+    });
+}
+
+void Level::updateLayoutTypes()
+{
+    std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
+        std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
+            uint16_t index = i * kWidth + j;
+            auto& obstacle = m_levelLayout[index];
+            if (!obstacle && m_layoutTypes[index])
+            {
+                m_layoutTypes[index] = static_cast<uint16_t>(ObstacleType::None);
+            }
         });
+    });
 }
 
 const Level::layoutTypes& Level::getLayoutTypes() const noexcept
 {
     return m_layoutTypes;
+}
+
+Level::layoutTypes& Level::getLayoutTypes()
+{
+    return m_layoutTypes;
+}
+
+const Level::levelLayout& Level::getLayout() const noexcept
+{
+    return m_levelLayout;
+}
+
+Level::levelLayout& Level::getLayout()
+{
+    return m_levelLayout;
 }
 
 void Level::setObstacle(const Position& position, std::unique_ptr<Obstacle>& obstacle, ObstacleType obstacleType)
@@ -76,13 +125,13 @@ std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const
     {
         return std::make_unique<BombBrick>(position);
     }
-    else if (obstacleType  == ObstacleType::Bush)
+    else if (obstacleType == ObstacleType::Bush)
     {
         return std::make_unique<Bush>(position);
     }
-    else if (obstacleType  == ObstacleType::UnbreakableBrick)
+    else if (obstacleType == ObstacleType::UnbreakableBrick)
     {
-        return std::make_unique<Brick>(position);
+        return std::make_unique<Brick>(position, 3, false, false);
     }
     else
     {

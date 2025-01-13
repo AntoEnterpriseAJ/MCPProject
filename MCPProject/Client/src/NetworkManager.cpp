@@ -182,6 +182,30 @@ void NetworkManager::movePlayer(uint16_t clientID, Direction direction, float de
     //std::cout << response.text << "\n";
 }
 
+void NetworkManager::shoot(uint16_t clientID)
+{
+    nlohmann::json data = {
+        {"id", clientID}
+    };
+
+    m_session.SetUrl(
+        cpr::Url{ m_URL.addToPath("room").addToPath(std::to_string(m_currentRoomID)).addToPath("shoot").build() }
+    );
+    m_session.SetHeader(cpr::Header{ {"Content-Type", "application/json"} });
+    m_session.SetBody(cpr::Body{ data.dump() });
+
+    cpr::Response response = m_session.Post();
+
+    if (response.status_code != cpr::status::HTTP_OK)
+    {
+        std::cout << std::format("There was an error shooting: HTTP status: {}, Error: {}\n"
+            , response.status_code
+            , response.error.message);
+        return;
+    }
+    //std::cout << response.text << "\n";
+}
+
 void NetworkManager::setRoomID(uint8_t roomID)
 {
     m_currentRoomID = roomID;

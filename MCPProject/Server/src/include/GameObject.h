@@ -11,9 +11,10 @@ public:
     bool collides(const Vec2f& otherTopLeft, const Vec2f& otherBottomRight) const noexcept;
 
     // TODO: implement
-    void rotate(float);
+    //void rotate(float);
     void setOrigin(const Vec2f& originOffset);
     void setPosition(const Vec2f& position);
+    void setSize(const Vec2f& size);
 
     Vec2f getOrigin()      const noexcept;
     Vec2f GetPosition()    const noexcept;
@@ -24,4 +25,5 @@ private:
     Vec2f m_position;
     Vec2f m_origin;
     Vec2f m_size;
+    int   m_rotation;
 };
