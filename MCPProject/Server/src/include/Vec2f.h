@@ -1,32 +1,46 @@
 #pragma once
+#include <functional>
 
 struct Vec2f
 {
     float x;
     float y;
 
-    friend Vec2f operator+(const Vec2f& first, const Vec2f& second)
+    friend constexpr Vec2f operator+(const Vec2f& lhs, const Vec2f& rhs) noexcept
     {
-        return {first.x + second.x, first.y + second.y};
+        return {lhs.x + rhs.x, lhs.y + rhs.y};
     }
 
-    friend Vec2f operator-(const Vec2f& first, const Vec2f& second)
+    friend constexpr Vec2f operator-(const Vec2f& lhs, const Vec2f& rhs) noexcept
     {
-        return {first.x - second.x, first.y - second.y};
+        return {lhs.x - rhs.x, lhs.y - rhs.y};
     }
 
-    friend Vec2f operator/(const Vec2f& first, float scalar)
+    friend constexpr Vec2f operator/(const Vec2f& lhs, float scalar) noexcept
     {
-        return {first.x / scalar, first.y / scalar};
+        return {lhs.x / scalar, lhs.y / scalar};
     }
 
-    friend Vec2f operator*(const Vec2f& first, float scalar)
+    friend constexpr Vec2f operator*(const Vec2f& rhs, float scalar) noexcept
     {
-        return {first.x / scalar, first.y / scalar};
+        return { rhs.x * scalar, rhs.y * scalar };
     }
 
-    Vec2f operator-()
+    friend constexpr Vec2f operator*(float scalar, const Vec2f& vec) noexcept 
+    {
+        return { vec.x * scalar, vec.y * scalar };
+    }
+
+    constexpr Vec2f operator-() const noexcept
     {
         return {-x, -y};
+    }
+
+    constexpr std::pair<int, int> toGridCoords(float gridSize) const noexcept
+    {
+        return {
+            static_cast<int>(std::floor(x / gridSize)),
+            static_cast<int>(std::floor(y / gridSize))
+        };
     }
 };
