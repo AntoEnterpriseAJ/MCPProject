@@ -5,7 +5,6 @@
 
 class TextBox {
 public:
-
     TextBox(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Font& font, unsigned int fontSize);
 
     void setPosition(const sf::Vector2f& position);
@@ -19,15 +18,13 @@ public:
     void setOutlineThickness(float thickness);
 
     void handleEvent(const sf::Event& event);
-
     void draw(sf::RenderWindow& window);
-
     std::string getText() const;
 
 private:
     sf::RectangleShape m_box;
-    sf::Text           m_text;
-    sf::Font           m_font;
-    bool               m_isFocused;
-    std::string        m_inputText;
+    sf::Text m_text;
+    sf::Font m_font;
+    bool m_isFocused;
+    std::string m_inputText;
 };

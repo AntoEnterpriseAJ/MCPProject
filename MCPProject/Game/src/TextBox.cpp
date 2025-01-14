@@ -3,8 +3,8 @@
 TextBox::TextBox(
     const sf::Vector2f& size,
     const sf::Vector2f& position,
-    const sf::Font& m_font,
-    unsigned int        m_fontSize
+    const sf::Font& font,
+    unsigned int fontSize
 )
     : m_isFocused(false), m_inputText("")
 {
@@ -14,9 +14,9 @@ TextBox::TextBox(
     m_box.setOutlineColor(sf::Color::Black);
     m_box.setOutlineThickness(2.0f);
 
-    this->m_font = m_font;
-    m_text.setFont(this->m_font);
-    m_text.setCharacterSize(m_fontSize);
+    m_font = font;
+    m_text.setFont(m_font);
+    m_text.setCharacterSize(fontSize);
     m_text.setFillColor(sf::Color::Black);
     m_text.setPosition(position.x + 5, position.y + 5);
 }
@@ -71,20 +71,37 @@ void TextBox::setOutlineThickness(float thickness)
 
 void TextBox::handleEvent(const sf::Event& event)
 {
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+    {
+        sf::Vector2i mousePos = sf::Mouse::getPosition();
+        if (m_box.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos)))
+        {
+            setFocus(true);
+        }
+        else
+        {
+            setFocus(false);
+        }
+    }
+
     if (!m_isFocused) return;
 
     if (event.type == sf::Event::TextEntered)
     {
-        if (event.text.unicode == 8) {
+        // Backspace
+        if (event.text.unicode == 8)
+        {
             if (!m_inputText.empty())
             {
                 m_inputText.pop_back();
             }
         }
+        // Valid ASCII characters
         else if (event.text.unicode < 128)
         {
             m_inputText += static_cast<char>(event.text.unicode);
         }
+
         m_text.setString(m_inputText);
     }
 }
