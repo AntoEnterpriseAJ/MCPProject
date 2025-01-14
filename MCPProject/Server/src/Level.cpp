@@ -40,6 +40,7 @@ void Level::load()
     //std::array<int, kHeight* kWidth> map;
     //GenerateGameMap(map);
 
+    uint16_t currentBrickCount{ 0 };
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
             int tex; fin >> tex;
@@ -48,10 +49,14 @@ void Level::load()
             ObstacleType obstacleType{ tex };
             Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
 
-            int bombBrickChance = random(1, 10);
-            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) 
+            if (currentBrickCount < kMaxBombs)
             {
-                obstacleType = ObstacleType::BombBrick;
+                int bombBrickChance = random(1, 10);
+                if (obstacleType == ObstacleType::Brick && bombBrickChance == 1)
+                {
+                    obstacleType = ObstacleType::BombBrick;
+                    currentBrickCount++;
+                }
             }
 
             auto obstacle = createObstacle(obstacleType, position);
