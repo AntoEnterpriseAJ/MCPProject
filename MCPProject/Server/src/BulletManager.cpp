@@ -3,6 +3,7 @@
 #include "BombBrick.h"
 #include "Brick.h"
 #include "Bush.h"
+#include "Vec2f.h"
 #include <iostream>
 #include <algorithm>
 #include <memory>
@@ -11,20 +12,19 @@
 void BulletManager::addBullet(std::unique_ptr<Bullet> bullet)
 {
     m_bullets.push_back(std::move(bullet));
-    std::cout << "Currently we have " << m_bullets.size() << " bullets\n";
 }
 
-void BulletManager::update(Level& level, float deltaTime)
+void BulletManager::update(Level& level, std::unordered_map<uint8_t, Player>& players, float deltaTime)
 {
-    handleCollisions(level);
+    handleCollisions(level, players);
 
-    for (auto& bullet : m_bullets)
+    for (auto& bullet : m_bullets | std::views::filter([](const auto& b) { return b != nullptr; }))
     {
         bullet->update(deltaTime);
     }
 }
 
-void BulletManager::handleCollisions(Level& level)
+void BulletManager::handleCollisions(Level& level, std::unordered_map<uint8_t, Player>& players)
 {
     auto& levelLayout = level.getLayout();
 
@@ -64,7 +64,7 @@ void BulletManager::handleCollisions(Level& level)
                     {
                         std::cout << "Hit bomb brick\n";
                         bullet->setState(Bullet::State::Inactive);
-                        detonate(bombBrick->GetPosition(), level, bombBrick->getExplosionRadius() * Obstacle::kObstacleSize);
+                        detonate(bombBrick->GetPosition(), level, players);
                     }
                 }
             }
@@ -83,16 +83,60 @@ void BulletManager::handleCollisions(Level& level)
             }
         });
 
+    handlePlayerCollision(players);
+
     removeInactive(level);
 }
 
-// TODO: refactor
-void BulletManager::detonate(const Vec2f& bombPosition, Level& level, float radius)
+void BulletManager::handlePlayerCollision(std::unordered_map<uint8_t, Player>& players)
 {
-    auto& levelLayout = level.getLayout();
+    auto isActiveBullet = [](const auto& bullet) {
+        return bullet != nullptr && bullet->isActive();
+        };
 
-    auto [topLeftX, topLeftY]         = (bombPosition - Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
-    auto [bottomRightX, bottomRightY] = (bombPosition + Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
+    auto isAlivePlayer = [](const Player& player) {
+        return player.isAlive();
+        };
+
+    for (auto& bullet : m_bullets | std::views::filter(isActiveBullet))
+    {
+        for (auto& player : players | std::ranges::views::values | std::views::filter(isAlivePlayer))
+        {
+            if (bullet->collides(player))
+            {
+                player.hit(bullet->getDamage());
+                if (!player.isAlive())
+                {
+                    players.at(bullet->getPlayerID()).addPoints(GameRoom::kPointsPerKill);
+                }
+
+                bullet->setState(Bullet::State::Inactive);
+                break;
+            }
+        }
+    }
+}
+
+void BulletManager::detonate(const Vec2f& bombPosition, Level& level, std::unordered_map<uint8_t, Player>& players)
+{
+    auto& levelLayout          { level.getLayout() };
+    constexpr float radius     { BombBrick::kExplosionRadius * Obstacle::kObstacleSize };
+    Vec2f explosionTopLeft     { bombPosition - Vec2f{radius, radius} };
+    Vec2f explosionBottomRight { bombPosition + Vec2f{radius, radius} };
+
+    auto alivePlayers = players | std::views::values | std::views::filter([](const auto& player) {
+        return player.isAlive(); 
+        });
+
+    auto [topLeftX, topLeftY]         = explosionTopLeft.toGridCoords(Level::kGridSize);
+    auto [bottomRightX, bottomRightY] = explosionBottomRight.toGridCoords(Level::kGridSize);
+
+    std::ranges::for_each(alivePlayers, [&](auto& player) {
+        if (player.collides(explosionTopLeft, explosionBottomRight))
+        {
+            player.kill();
+        }
+        });
 
     for (int x = topLeftX; x <= bottomRightX; ++x)
     {

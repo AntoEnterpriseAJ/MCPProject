@@ -8,9 +8,10 @@
 class Level
 {
 public:
+    static constexpr float    kGridSize { 40.0f };
     static constexpr uint16_t kWidth    { 30 };
     static constexpr uint16_t kHeight   { 20 };
-    static constexpr float    kGridSize { 40.0f };
+    static constexpr uint16_t kMaxBombs { 3 };
 public:
     using Position = std::pair<uint16_t, uint16_t>;
     using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight* kWidth>;

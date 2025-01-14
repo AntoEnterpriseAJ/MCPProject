@@ -18,46 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\BombBrick.cpp" />
-    <ClCompile Include="src\Brick.cpp" />
-    <ClCompile Include="src\Bullet.cpp" />
-    <ClCompile Include="src\BulletManager.cpp" />
-    <ClCompile Include="src\Bush.cpp" />
-    <ClCompile Include="src\Explosion.cpp" />
-    <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\GameObject.cpp" />
-    <ClCompile Include="src\Level.cpp" />
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\NetworkManager.cpp" />
-    <ClCompile Include="src\Obstacle.cpp" />
-    <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\ResourceManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\include\BombBrick.h" />
-    <ClInclude Include="src\include\Brick.h" />
-    <ClInclude Include="src\include\Bullet.h" />
-    <ClInclude Include="src\include\BulletManager.h" />
-    <ClInclude Include="src\include\Bush.h" />
-    <ClInclude Include="src\include\Direction.h" />
-    <ClInclude Include="src\include\Explosion.h" />
-    <ClInclude Include="src\include\Game.h" />
-    <ClInclude Include="src\include\GameObject.h" />
-    <ClInclude Include="src\include\Level.h" />
-    <ClInclude Include="src\include\NetworkManager.h" />
-    <ClInclude Include="src\include\Obstacle.h" />
-    <ClInclude Include="src\include\Player.h" />
-    <ClInclude Include="src\include\PlayerState.h" />
-    <ClInclude Include="src\include\ResourceManager.h" />
-    <ClInclude Include="src\include\ObstacleType.h" />
-    <ClInclude Include="src\include\URL.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a807d86a-114f-48dd-856b-9bb8e493c625}</ProjectGuid>
-    <RootNamespace>Client</RootNamespace>
+    <ProjectGuid>{fec910ee-27f8-4282-9e4a-309053e9ea67}</ProjectGuid>
+    <RootNamespace>Test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,9 +104,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,9 +118,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,6 +126,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

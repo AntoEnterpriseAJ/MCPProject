@@ -44,11 +44,11 @@ void NetworkManager::createRoom()
     }
 }
 
-nlohmann::json NetworkManager::join(const Player& player, uint8_t roomID)
+nlohmann::json NetworkManager::join(uint8_t roomID)
 {
     std::cout << "Trying to join...\n";
     nlohmann::json data {
-        {"position", {player.GetPosition().x, player.GetPosition().y}}
+        /*{"position", {player.GetPosition().x, player.GetPosition().y}}*/
     };
 
     cpr::Response joinResponse = cpr::Post(
@@ -87,7 +87,6 @@ nlohmann::json NetworkManager::join(const Player& player, uint8_t roomID)
         return {};
     }
 }
-
 nlohmann::json NetworkManager::update()
 {
     m_session.SetUrl(

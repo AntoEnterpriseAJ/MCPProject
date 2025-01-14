@@ -107,5 +107,8 @@
     <ClInclude Include="src\include\Explosion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\PlayerState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

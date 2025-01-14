@@ -25,6 +25,7 @@
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Bush.cpp" />
+    <ClCompile Include="src\include\PlayerState.h" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\GameRoom.cpp" />
     <ClCompile Include="src\Main.cpp" />
