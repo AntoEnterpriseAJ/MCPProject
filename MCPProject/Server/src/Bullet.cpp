@@ -1,9 +1,26 @@
 ﻿#include "Bullet.h"
 
-Bullet::Bullet(const Vec2f& pos, Direction dir, const Vec2f& size)
-    : GameObject{ pos, size }, m_state{State::Active}, m_direction{dir}
+Bullet::Bullet(const Vec2f& pos, Direction dir, const Vec2f& size, uint16_t damage)
+    : GameObject{ pos, size }, m_state{ State::Active }
+    , m_direction{ dir }, m_damage{ damage }
 {
     setOrigin(size / 2.0f);
+
+    switch (dir)
+    {
+    case Direction::Up:
+        this->rotate(0);
+        break;
+    case Direction::Down:
+        this->rotate(180);
+        break;
+    case Direction::Left:
+        this->rotate(270);
+        break;
+    case Direction::Right:
+        this->rotate(90);
+        break;
+    }
 }
 
 void Bullet::update(float deltaTime)
@@ -28,18 +45,23 @@ void Bullet::move(float offsetX, float offsetY)
     this->setPosition(this->GetPosition() + Vec2f{offsetX, offsetY});
 }
 
-bool Bullet::isActive() const
+bool Bullet::isActive() const noexcept
 {
     return m_state == State::Active;
 }
 
-Direction Bullet::getDirection() const
+Direction Bullet::getDirection() const noexcept
 {
     return m_direction;
 }
 
-Bullet::State Bullet::getState() const
+Bullet::State Bullet::getState() const noexcept
 {
     return m_state;
+}
+
+uint16_t Bullet::getDamage() const noexcept
+{
+    return m_damage;
 }
 

@@ -15,7 +15,8 @@ public:
     Bullet(
         const Vec2f& pos, 
         Direction    dir,
-        const Vec2f& size = {kBulletSizeX, kBulletSizeY}
+        const Vec2f& size = { kBulletSizeX, kBulletSizeY },
+        uint16_t     damage = kBulletDamage
     );
     ~Bullet() override = default;
 
@@ -23,15 +24,18 @@ public:
     void setState(State state);
     void move(float offsetX, float offsetY);
 
-    bool isActive() const;
-    Direction getDirection() const;
-    State getState() const;
+    bool isActive() const noexcept;
+    Direction getDirection() const noexcept;
+    State getState() const noexcept;
+    uint16_t getDamage() const noexcept;
 
+public:
+    static constexpr float    kBulletSpeed { 400.0f };
+    static constexpr float    kBulletSizeX { 20.0f };
+    static constexpr float    kBulletSizeY { 50.0f };
+    static constexpr uint16_t kBulletDamage{ 25 };
 private:
-    static constexpr float kBulletSpeed { 400.0f };
-    static constexpr float kBulletSizeX { 20.0f };
-    static constexpr float kBulletSizeY { 50.0f };
-private:
+    uint16_t  m_damage;
     Direction m_direction : 2;
     State     m_state     : 1;
 };
