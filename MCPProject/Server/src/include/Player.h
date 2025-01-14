@@ -28,6 +28,7 @@ public:
     void kill();
     void eliminate();
     void respawn();
+    void addPoints(uint16_t points);
 
     bool isAlive() const;
     bool isEliminated() const;
@@ -37,6 +38,7 @@ public:
     PlayerState GetState() const;
     uint16_t GetLives() const;
     uint16_t GetHealth() const;
+    uint16_t GetPoints() const;
 public:
     static constexpr float    kPlayerSizeX  = 39.9f;
     static constexpr float    kPlayerSizeY  = 39.9f;
@@ -45,6 +47,7 @@ public:
 private:
     uint16_t    m_lives;
     uint16_t    m_health;
+    uint16_t    m_points;
     Direction   m_direction : 2;
     Vec2f       m_respawnPosition;
     PlayerState m_state : 2;

@@ -2,7 +2,7 @@
 
 Player::Player(const Vec2f& position, const Vec2f& size, Direction direction, uint16_t lives, uint16_t health)
     : GameObject(position, size), m_direction{ direction }, m_lives{ lives }
-    , m_respawnPosition{}, m_state{ PlayerState::Alive }, m_health{ health }
+    , m_respawnPosition{}, m_state{ PlayerState::Alive }, m_health{ health }, m_points{ 0 }
 {
     this->setOrigin(size / 2.0f);
 }
@@ -25,6 +25,11 @@ uint16_t Player::GetLives() const
 uint16_t Player::GetHealth() const
 {
     return m_health;
+}
+
+uint16_t Player::GetPoints() const
+{
+    return m_points;
 }
 
 void Player::resetShootCooldown()
@@ -64,6 +69,11 @@ void Player::respawn()
 {
     m_state = PlayerState::Alive;
     m_health = kPlayerHealth;
+}
+
+void Player::addPoints(uint16_t points)
+{
+    m_points += points;
 }
 
 bool Player::isEliminated() const
