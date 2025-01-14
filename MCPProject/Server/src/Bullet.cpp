@@ -2,7 +2,7 @@
 
 Bullet::Bullet(const Vec2f& pos, Direction dir, const Vec2f& size, uint16_t damage)
     : GameObject{ pos, size }, m_state{ State::Active }
-    , m_direction{ dir }, m_damage{ damage }
+    , m_direction{ dir }, m_damage{ damage }, m_playerID{}
 {
     setOrigin(size / 2.0f);
 
@@ -63,5 +63,10 @@ Bullet::State Bullet::getState() const noexcept
 uint16_t Bullet::getDamage() const noexcept
 {
     return m_damage;
+}
+
+uint8_t Bullet::getPlayerID() const noexcept
+{
+    return m_playerID;
 }
 

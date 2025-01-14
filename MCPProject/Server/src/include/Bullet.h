@@ -28,6 +28,7 @@ public:
     Direction getDirection() const noexcept;
     State getState() const noexcept;
     uint16_t getDamage() const noexcept;
+    uint8_t getPlayerID() const noexcept;
 
 public:
     static constexpr float    kBulletSpeed { 400.0f };
@@ -36,6 +37,7 @@ public:
     static constexpr uint16_t kBulletDamage{ 25 };
 private:
     uint16_t  m_damage;
+    uint8_t   m_playerID;
     Direction m_direction : 2;
     State     m_state     : 1;
 };
