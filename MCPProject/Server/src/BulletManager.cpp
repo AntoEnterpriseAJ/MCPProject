@@ -11,20 +11,19 @@
 void BulletManager::addBullet(std::unique_ptr<Bullet> bullet)
 {
     m_bullets.push_back(std::move(bullet));
-    std::cout << "Currently we have " << m_bullets.size() << " bullets\n";
 }
 
-void BulletManager::update(Level& level, float deltaTime)
+void BulletManager::update(Level& level, std::unordered_map<uint8_t, Player>& players, float deltaTime)
 {
-    handleCollisions(level);
+    handleCollisions(level, players);
 
-    for (auto& bullet : m_bullets)
+    for (auto& bullet : m_bullets | std::views::filter([](const auto& b) { return b != nullptr; }))
     {
         bullet->update(deltaTime);
     }
 }
 
-void BulletManager::handleCollisions(Level& level)
+void BulletManager::handleCollisions(Level& level, std::unordered_map<uint8_t, Player>& players)
 {
     auto& levelLayout = level.getLayout();
 
@@ -83,10 +82,35 @@ void BulletManager::handleCollisions(Level& level)
             }
         });
 
+    handlePlayerCollision(players);
+
     removeInactive(level);
 }
 
-// TODO: refactor
+void BulletManager::handlePlayerCollision(std::unordered_map<uint8_t, Player>& players)
+{
+    auto isActiveBullet = [](const auto& bullet) {
+        return bullet != nullptr && bullet->isActive();
+        };
+
+    auto isAlivePlayer = [](const Player& player) {
+        return player.isAlive();
+        };
+
+    for (auto& bullet : m_bullets | std::views::filter(isActiveBullet))
+    {
+        for (auto& player : players | std::ranges::views::values | std::views::filter(isAlivePlayer))
+        {
+            if (bullet->collides(player))
+            {
+                player.hit(bullet->getDamage());
+                bullet->setState(Bullet::State::Inactive);
+                break;
+            }
+        }
+    }
+}
+
 void BulletManager::detonate(const Vec2f& bombPosition, Level& level, float radius)
 {
     auto& levelLayout = level.getLayout();
