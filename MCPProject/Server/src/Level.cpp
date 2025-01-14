@@ -8,11 +8,12 @@
 #include "Brick.h"
 #include "BombBrick.h"
 #include "Bush.h"
-#include "../../MapGenerator/MapGenerator.h"
+#include "../../MapGenerator/MapGenerator.h" // ?
 
 Level::Level()
     : m_ID{ 0 }, m_levelLayout{}, m_layoutTypes{}
-{}
+{
+}
 
 void Level::load()
 {
@@ -23,11 +24,12 @@ void Level::load()
         return dist(gen);
         };
 
-    std::array<int, kHeight* kWidth> map;
-    GenerateGameMap(map);
+    uint8_t firstLevel{ 1 };
+    uint8_t lastLevel{ 5 };
+    uint8_t randomLevel{ static_cast<uint8_t>(random(firstLevel, lastLevel)) };
 
-    int maxNumberOfBombBricks = random(0, 3);
-    int numberOfBombBricks = 0;
+    m_ID = randomLevel;
+    std::string levelFileName{ "res/levels/level" + std::to_string(randomLevel) + ".txt" };
 
     std::ifstream fin(levelFileName);
     if (!fin)
@@ -45,8 +47,8 @@ void Level::load()
             int tex; fin >> tex;
             //int tex = map[i * kWidth + j]; for DLL testing
 
-                        ObstacleType obstacleType{ tex };
-                        Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
+            ObstacleType obstacleType{ tex };
+            Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
 
             if (currentBrickCount < kMaxBombs)
             {
@@ -58,11 +60,10 @@ void Level::load()
                 }
             }
 
-                        auto obstacle = createObstacle(obstacleType, position);
-                        this->setObstacle({ i, j }, obstacle, obstacleType);
-                    });
+            auto obstacle = createObstacle(obstacleType, position);
+            this->setObstacle({ i, j }, obstacle, obstacleType);
             });
-    }
+        });
 }
 
 void Level::updateLayoutTypes()
@@ -75,8 +76,8 @@ void Level::updateLayoutTypes()
             {
                 m_layoutTypes[index] = static_cast<uint16_t>(ObstacleType::None);
             }
+            });
         });
-    });
 }
 
 const Level::layoutTypes& Level::getLayoutTypes() const noexcept
@@ -120,7 +121,7 @@ std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const
 {
     if (obstacleType == ObstacleType::None)
     {
-        return {nullptr};
+        return { nullptr };
     }
     else if (obstacleType == ObstacleType::Brick)
     {
