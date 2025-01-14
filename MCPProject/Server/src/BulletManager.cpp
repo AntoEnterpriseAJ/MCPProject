@@ -105,6 +105,11 @@ void BulletManager::handlePlayerCollision(std::unordered_map<uint8_t, Player>& p
             if (bullet->collides(player))
             {
                 player.hit(bullet->getDamage());
+                if (!player.isAlive())
+                {
+                    players.at(bullet->getPlayerID()).addPoints(GameRoom::kPointsPerKill);
+                }
+
                 bullet->setState(Bullet::State::Inactive);
                 break;
             }
