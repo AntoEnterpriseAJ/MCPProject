@@ -48,6 +48,7 @@
     <ClInclude Include="src\include\NetworkManager.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
+    <ClInclude Include="src\include\PlayerState.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
     <ClInclude Include="src\include\ObstacleType.h" />
     <ClInclude Include="src\include\URL.h" />
