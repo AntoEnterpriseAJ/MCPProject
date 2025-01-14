@@ -10,7 +10,7 @@
 
 bool MapGenerator::isValid(int x, int y, const std::vector<std::vector<int>>& grid)
 {
-    return x >= 0 && x < ROWS && y >= 0 && y < COLS && grid[x][y] != 3;
+    return x >= 0 && x < ROWS && y >= 0 && y < COLS && (grid[x][y] == 0 || grid[x][y] == 2);
 }
 
 bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Point>& playerPositions)
@@ -95,8 +95,11 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
             visited[x][y] = true;
             currentSize++;
 
-            if (currentSize > MAX_CLUSTER_SIZE)
+            if (currentSize > MAX_CLUSTER_SIZE) {
+                grid[x][y] = 0;
                 return currentSize;
+            }
+
 
             const int dx[] = { -1, 1, 0, 0, -1, -1, 1, 1 };
             const int dy[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
@@ -168,6 +171,9 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
                     else if (countNeighbors(i, j, 2, false) == 4)
                         grid[i][j] = 2;
                 }
+
+                if ((grid[i][j] == 1 || grid[i][j] == 2 || grid[i][j] == 3) && countNeighbors(i, j, 0, false) == 4)
+                    grid[i][j] = 0;
             }
         }
 
