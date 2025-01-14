@@ -61,7 +61,7 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
     std::mt19937 gen(rd());
     srand(gen());
 
-    auto countNeighbors = [&](int x, int y, int type, bool diagonals) -> int  // calculeaza vecinii unui block
+    auto countNeighbors = [&](int x, int y, int type, bool diagonals) -> int
         {
             const int dx[] = { -1, 1, 0, 0, -1, -1, 1, 1 };
             const int dy[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
