@@ -1,7 +1,8 @@
-#include <iostream>
+﻿#include <iostream>
 #include <crow.h>
 #include "Routing.h"
 #include "Database.h"
+#include "../../MapGenerator/MapGenerator.h"
 
 int main()
 {
@@ -62,3 +63,25 @@ int main()
     }*/
 
 }
+
+//int main() {
+//    // Dimensiunile hărții
+//    const int ROWS = MapGenerator::ROWS;
+//    const int COLS = MapGenerator::COLS;
+//
+//    // Array pentru stocarea hărții generate
+//    std::array<int, ROWS* COLS> map;
+//
+//    // Apel funcție din DLL
+//    GenerateGameMap(map);
+//
+//    // Afișare hartă
+//    for (int i = 0; i < ROWS; ++i) {
+//        for (int j = 0; j < COLS; ++j) {
+//            std::cout << map[i * COLS + j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+//
+//    return 0;
+//}

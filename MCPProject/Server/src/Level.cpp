@@ -8,7 +8,7 @@
 #include "Brick.h"
 #include "BombBrick.h"
 #include "Bush.h"
-#include "../../MapGenerator/MapGenerator.h" // ?
+#include "../../MapGenerator/MapGenerator.h"
 
 Level::Level()
     : m_ID{ 0 }, m_levelLayout{}, m_layoutTypes{}
@@ -23,41 +23,35 @@ void Level::load()
         return dist(gen);
         };
 
-    uint8_t firstLevel{ 1 };
-    uint8_t lastLevel{ 5 };
-    uint8_t randomLevel{ static_cast<uint8_t>(random(firstLevel, lastLevel)) };
+    std::array<int, kHeight* kWidth> map;
+    GenerateGameMap(map);
 
-    m_ID = randomLevel;
-    std::string levelFileName{ "res/levels/level" + std::to_string(randomLevel) + ".txt" };
+    int maxNumberOfBombBricks = random(0, 3);
+    int numberOfBombBricks = 0;
 
-    std::ifstream fin(levelFileName);
-    if (!fin)
+    if (maxNumberOfBombBricks != 0)
     {
-        std::cerr << "ERROR: Cannot open the file!\n";
-        return;
-    }
-
-    //std::array<int, kHeight* kWidth> map;
-    //GenerateGameMap(map);
-
-    std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
-        std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            int tex; fin >> tex;
-            //int tex = map[i * kWidth + j]; for DLL testing
-
-            ObstacleType obstacleType{ tex };
-            Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
-
-            int bombBrickChance = random(1, 10);
-            if (obstacleType == ObstacleType::Brick && bombBrickChance == 1) 
+        std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i)
             {
-                obstacleType = ObstacleType::BombBrick;
-            }
+                std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j)
+                    {
+                        int tex = map[i * kWidth + j];
 
-            auto obstacle = createObstacle(obstacleType, position);
-            this->setObstacle({ i, j }, obstacle, obstacleType);
+                        ObstacleType obstacleType{ tex };
+                        Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
+
+                        int bombBrickChance = random(1, 10);
+                        if (obstacleType == ObstacleType::Brick && bombBrickChance == 1 && maxNumberOfBombBricks != numberOfBombBricks)
+                        {
+                            numberOfBombBricks++;
+                            obstacleType = ObstacleType::BombBrick;
+                        }
+
+                        auto obstacle = createObstacle(obstacleType, position);
+                        this->setObstacle({ i, j }, obstacle, obstacleType);
+                    });
             });
-    });
+    }
 }
 
 void Level::updateLayoutTypes()
