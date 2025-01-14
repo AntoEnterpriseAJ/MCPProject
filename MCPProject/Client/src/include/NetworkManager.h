@@ -11,7 +11,7 @@ public:
     NetworkManager();
 
     void createRoom();
-    nlohmann::json join(const Player& player, uint8_t roomID);
+    nlohmann::json join(uint8_t roomID);
     nlohmann::json update();
     nlohmann::json getExistingRooms();
     void movePlayer(uint16_t clientID, Direction direction, float deltaTime);
