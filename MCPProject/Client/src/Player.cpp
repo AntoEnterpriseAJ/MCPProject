@@ -41,6 +41,11 @@ void Player::setState(PlayerState state)
     m_state = state;
 }
 
+void Player::setPoints(uint16_t points)
+{
+    m_points = points;
+}
+
 bool Player::isAlive() const
 {
     return m_state == PlayerState::Alive;
@@ -112,5 +117,10 @@ uint16_t Player::GetLives() const
 uint16_t Player::GetHealth() const
 {
     return m_health;
+}
+
+uint16_t Player::GetPoints() const
+{
+    return m_points;
 }
 

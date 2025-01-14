@@ -16,6 +16,7 @@ public:
     void setLives(uint16_t lives);
     void setHealth(uint16_t health);
     void setState(PlayerState state);
+    void setPoints(uint16_t points);
 
     // client side only movement, maybe will use later
     void move(Direction direction, float deltaTime);
@@ -27,6 +28,7 @@ public:
     PlayerState GetState() const;
     uint16_t    GetLives() const;
     uint16_t    GetHealth() const;
+    uint16_t    GetPoints() const;
 
 private:
     static constexpr float    kCooldownTime = 0.5f;
@@ -37,6 +39,7 @@ private:
     float       m_timeElapsed; // TODO: do i need this
     uint16_t    m_lives;
     uint16_t    m_health;
+    uint16_t    m_points;
     PlayerState m_state : 2;
     Direction   m_direction : 2;
 };
