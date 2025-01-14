@@ -42,7 +42,8 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
                 {"direction", player.GetDirection()},
                 {"lives", player.GetLives()},
                 {"health", player.GetHealth()},
-                {"state", player.GetState()}
+                {"state", player.GetState()},
+                {"points", player.GetPoints()},
                 });
         }
 

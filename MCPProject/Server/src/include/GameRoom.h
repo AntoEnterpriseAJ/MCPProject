@@ -29,9 +29,10 @@ public:
     std::unordered_map<uint8_t, Player>& getPlayers() noexcept;
 
 public:
-    static constexpr uint16_t kWindowWidth  { 1200 };
-    static constexpr uint16_t kWindowHeight { 800 };
-    static constexpr uint16_t kMaxPlayers   { 4 };
+    static constexpr uint16_t kWindowWidth   { 1200 };
+    static constexpr uint16_t kWindowHeight  { 800 };
+    static constexpr uint16_t kMaxPlayers    { 4 };
+    static constexpr uint16_t kPointsPerKill { 100 };
 private:
     bool checkCollision(const Player& player, const Vec2f& newPosition);
 private:
