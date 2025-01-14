@@ -157,6 +157,7 @@ void Game::update()
         uint16_t    lives     { playerData["lives"] };
         uint16_t    health    { playerData["health"] };
         PlayerState state     { playerData["state"] };
+        uint16_t    points    { playerData["points"] };
 
 
         if (!m_players.contains(playerId))
@@ -169,6 +170,7 @@ void Game::update()
         m_players[playerId].setLives(lives);
         m_players[playerId].setHealth(health);
         m_players[playerId].setState(state);
+        m_players[playerId].setPoints(points);
     });
 
     m_bulletManager.clearBullets();
@@ -186,6 +188,8 @@ void Game::update()
 
 void Game::render()
 {
+    sf::Clock logClock;
+
     while (m_window.isOpen())
     {
         float deltaTime = m_lastFrametimeClock.restart().asSeconds();
@@ -215,6 +219,20 @@ void Game::render()
             m_window.draw(m_level);
 
             m_window.display();
+
+            if (logClock.getElapsedTime().asSeconds() >= 3.0f)
+            {
+                std::cout << "Player Points:\n";
+
+                std::ranges::for_each(m_players, [](const auto& pair) {
+                    auto [playerId, player] = pair;
+                    std::cout << std::format("Player id({}), Health({}), Lives({}), Points: {}\n",
+                        playerId, player.GetHealth(), player.GetLives(), player.GetPoints());
+                    });
+
+                std::cout << "--------------------------------------------------\n";
+                logClock.restart();
+            }
         }
     }
 }
