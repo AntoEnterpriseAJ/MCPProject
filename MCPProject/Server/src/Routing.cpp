@@ -48,15 +48,14 @@ void Routing::run()
             return crow::response(404, "Room not found");
         }
 
-        auto data = nlohmann::json::parse(req.body);
-        if (!data.contains("position") || !data["position"].is_array() || data["position"].size() != 2)
+        if (m_rooms[roomID].getPlayers().size() >= GameRoom::kMaxPlayers)
         {
-            return crow::response(400, "invalid request body");
+            return crow::response(400, "Room is full");
         }
-        
-        Vec2f position{data["position"][0], data["position"][1]};
-        uint8_t playerID = m_rooms[roomID].addPlayer(position); 
 
+        auto data = nlohmann::json::parse(req.body); // TODO: fix, currently not used
+        
+        uint8_t playerID = m_rooms[roomID].addPlayer(); 
         nlohmann::json response = {
             {"playerID", playerID},
             {"message", std::format("Player {} joined room {}", playerID, roomID)}
@@ -116,5 +115,5 @@ void Routing::run()
     });
 
    crow::logger::setLogLevel(crow::LogLevel::Critical);
-   m_server.port(kPort).multithreaded().run();
+   m_server.port(kPort).run();
 }
