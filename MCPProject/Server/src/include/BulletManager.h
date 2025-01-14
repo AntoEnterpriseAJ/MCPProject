@@ -18,7 +18,7 @@ private:
     void addExplosion(const Bullet& bullet);
     void removeInactive(Level& level);
 
-    void detonate(const Vec2f& bombPosition, Level& level, float radius);
+    void detonate(const Vec2f& bombPosition, Level& level, std::unordered_map<uint8_t, Player>& players);
 private:
     std::vector<std::unique_ptr<Bullet>> m_bullets;
 };

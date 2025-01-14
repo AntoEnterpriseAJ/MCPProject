@@ -3,6 +3,7 @@
 #include "BombBrick.h"
 #include "Brick.h"
 #include "Bush.h"
+#include "Vec2f.h"
 #include <iostream>
 #include <algorithm>
 #include <memory>
@@ -63,7 +64,7 @@ void BulletManager::handleCollisions(Level& level, std::unordered_map<uint8_t, P
                     {
                         std::cout << "Hit bomb brick\n";
                         bullet->setState(Bullet::State::Inactive);
-                        detonate(bombBrick->GetPosition(), level, bombBrick->getExplosionRadius() * Obstacle::kObstacleSize);
+                        detonate(bombBrick->GetPosition(), level, players);
                     }
                 }
             }
@@ -111,12 +112,26 @@ void BulletManager::handlePlayerCollision(std::unordered_map<uint8_t, Player>& p
     }
 }
 
-void BulletManager::detonate(const Vec2f& bombPosition, Level& level, float radius)
+void BulletManager::detonate(const Vec2f& bombPosition, Level& level, std::unordered_map<uint8_t, Player>& players)
 {
-    auto& levelLayout = level.getLayout();
+    auto& levelLayout          { level.getLayout() };
+    constexpr float radius     { BombBrick::kExplosionRadius * Obstacle::kObstacleSize };
+    Vec2f explosionTopLeft     { bombPosition - Vec2f{radius, radius} };
+    Vec2f explosionBottomRight { bombPosition + Vec2f{radius, radius} };
 
-    auto [topLeftX, topLeftY]         = (bombPosition - Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
-    auto [bottomRightX, bottomRightY] = (bombPosition + Vec2f{radius, radius}).toGridCoords(Level::kGridSize);
+    auto alivePlayers = players | std::views::values | std::views::filter([](const auto& player) {
+        return player.isAlive(); 
+        });
+
+    auto [topLeftX, topLeftY]         = explosionTopLeft.toGridCoords(Level::kGridSize);
+    auto [bottomRightX, bottomRightY] = explosionBottomRight.toGridCoords(Level::kGridSize);
+
+    std::ranges::for_each(alivePlayers, [&](auto& player) {
+        if (player.collides(explosionTopLeft, explosionBottomRight))
+        {
+            player.kill();
+        }
+        });
 
     for (int x = topLeftX; x <= bottomRightX; ++x)
     {
