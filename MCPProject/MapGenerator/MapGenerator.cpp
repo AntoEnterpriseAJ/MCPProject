@@ -6,13 +6,14 @@
 #include <cstdlib>
 #include <algorithm>
 #include <functional>
+#include <random>
 
-bool MapGenerator::isValid(int x, int y, const std::vector<std::vector<int>>& grid) 
+bool MapGenerator::isValid(int x, int y, const std::vector<std::vector<int>>& grid)
 {
     return x >= 0 && x < ROWS && y >= 0 && y < COLS && grid[x][y] != 3;
 }
 
-bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Point>& playerPositions) 
+bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const std::vector<Point>& playerPositions)
 {
     std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
     std::queue<Point> q;
@@ -21,7 +22,7 @@ bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const s
     visited[playerPositions[0].x][playerPositions[0].y] = true;
 
     int reachableCells = 1;
-    while (!q.empty()) 
+    while (!q.empty())
     {
         Point current = q.front();
         q.pop();
@@ -29,12 +30,12 @@ bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const s
         const int dx[] = { -1, 1, 0, 0 };
         const int dy[] = { 0, 0, -1, 1 };
 
-        for (int i = 0; i < 4; ++i) 
+        for (int i = 0; i < 4; ++i)
         {
             int nx = current.x + dx[i];
             int ny = current.y + dy[i];
 
-            if (isValid(nx, ny, grid) && !visited[nx][ny]) 
+            if (isValid(nx, ny, grid) && !visited[nx][ny])
             {
                 visited[nx][ny] = true;
                 q.push({ nx, ny });
@@ -43,9 +44,9 @@ bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const s
         }
     }
 
-    for (const auto& player : playerPositions) 
+    for (const auto& player : playerPositions)
     {
-        if (!visited[player.x][player.y]) 
+        if (!visited[player.x][player.y])
         {
             return false;
         }
@@ -56,20 +57,22 @@ bool MapGenerator::isMapTraversable(std::vector<std::vector<int>>& grid, const s
 
 void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<Point>& playerPositions)
 {
-    static bool initialized = false;
-    if (!initialized)
-    {
-        srand(static_cast<unsigned>(time(0)));
-        initialized = true;
-    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    srand(gen());
 
-    auto countNeighbors = [&](int x, int y, int type) -> int
+    auto countNeighbors = [&](int x, int y, int type, bool diagonals) -> int
         {
-            const int dx[] = { -1, 1, 0, 0 };
-            const int dy[] = { 0, 0, -1, 1 };
+            const int dx[] = { -1, 1, 0, 0, -1, -1, 1, 1 };
+            const int dy[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
             int count = 0;
 
-            for (int i = 0; i < 4; ++i)
+            int i;
+            if (diagonals)
+                i = 7;
+            else
+                i = 3;
+            for (; i >= 0; --i)
             {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
@@ -83,23 +86,27 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
 
     const int MAX_CLUSTER_SIZE = 10;
 
-    std::function<int(int, int, int, std::vector<std::vector<bool>>&)> countClusterSize =
-        [&](int x, int y, int type, std::vector<std::vector<bool>>& visited) -> int
+    std::function<int(int, int, int, std::vector<std::vector<bool>>&, int&)> countClusterSize =
+        [&](int x, int y, int type, std::vector<std::vector<bool>>& visited, int& currentSize) -> int
         {
             if (x < 0 || x >= ROWS || y < 0 || y >= COLS || visited[x][y] || grid[x][y] != type)
                 return 0;
 
             visited[x][y] = true;
-            int size = 1;
+            currentSize++;
 
-            const int dx[] = { -1, 1, 0, 0 };
-            const int dy[] = { 0, 0, -1, 1 };
+            if (currentSize > MAX_CLUSTER_SIZE)
+                return currentSize;
 
-            for (int i = 0; i < 4; ++i)
+            const int dx[] = { -1, 1, 0, 0, -1, -1, 1, 1 };
+            const int dy[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+
+            for (int i = 0; i < 8; ++i)
             {
-                size += countClusterSize(x + dx[i], y + dy[i], type, visited);
+                countClusterSize(x + dx[i], y + dy[i], type, visited, currentSize);
             }
-            return size;
+
+            return currentSize;
         };
 
     do {
@@ -107,9 +114,9 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
         {
             for (int j = 0; j < COLS; ++j)
             {
-                std::vector<std::pair<int, int>> probabilities = { {0, 35}, {1, 30}, {2, 25}, {3, 10} };
+                std::vector<std::pair<int, int>> probabilities = { {0, 20}, {1, 40}, {2, 30}, {3, 10} };
                 std::sort(probabilities.begin(), probabilities.end(), [&](const auto& a, const auto& b) {
-                    return countNeighbors(i, j, a.first) > countNeighbors(i, j, b.first);
+                    return countNeighbors(i, j, a.first, true) > countNeighbors(i, j, b.first, true);
                     });
 
                 for (const auto& prob : probabilities)
@@ -124,11 +131,42 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
                         break;
                     }
                 }
+            }
+        }
 
-                std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
-                if (countClusterSize(i, j, grid[i][j], visited) > MAX_CLUSTER_SIZE)
+        for (int i = 0; i < ROWS; ++i)
+        {
+            for (int j = 0; j < COLS; ++j)
+            {
+                if (grid[i][j] == 1 || grid[i][j] == 2)
                 {
-                    grid[i][j] = 0;
+                    const int dx[] = { -1, 1, 0, 0 };
+                    const int dy[] = { 0, 0, -1, 1 };
+
+                    for (int k = 0; k < 4; ++k)
+                    {
+                        int nx = i + dx[k];
+                        int ny = j + dy[k];
+                        if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && grid[nx][ny] == 0)
+                        {
+                            std::vector<std::vector<bool>> visited(ROWS, std::vector<bool>(COLS, false));
+                            int clusterSize = 0;
+                            countClusterSize(i, j, grid[i][j], visited, clusterSize);
+
+                            if (clusterSize > MAX_CLUSTER_SIZE)
+                            {
+                                grid[i][j] = 0;
+                            }
+                        }
+                    }
+                }
+
+                if (grid[i][j] == 0)
+                {
+                    if (countNeighbors(i, j, 1, false) == 4)
+                        grid[i][j] = 0;
+                    else if (countNeighbors(i, j, 2, false) == 4)
+                        grid[i][j] = 2;
                 }
             }
         }
@@ -153,16 +191,16 @@ void MapGenerator::generateMap(std::vector<std::vector<int>>& grid, std::vector<
     } while (!isMapTraversable(grid, playerPositions));
 }
 
-void GenerateGameMap(std::array<int, MapGenerator::ROWS * MapGenerator::COLS>& map)
+void GenerateGameMap(std::array<int, MapGenerator::ROWS* MapGenerator::COLS>& map)
 {
     std::vector<std::vector<int>> grid(MapGenerator::ROWS, std::vector<int>(MapGenerator::COLS, 0));
     std::vector<MapGenerator::Point> playerPositions;
 
     MapGenerator::generateMap(grid, playerPositions);
 
-    for (int i = 0; i < MapGenerator::ROWS; ++i) 
+    for (int i = 0; i < MapGenerator::ROWS; ++i)
     {
-        for (int j = 0; j < MapGenerator::COLS; ++j) 
+        for (int j = 0; j < MapGenerator::COLS; ++j)
         {
             map[i * MapGenerator::COLS + j] = grid[i][j];
         }
