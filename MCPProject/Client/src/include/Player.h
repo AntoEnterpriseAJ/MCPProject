@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
 #include "Direction.h"
+#include "PlayerState.h"
 
 class Player : public GameObject
 {
@@ -12,19 +13,30 @@ public:
 
     void Update(float deltaTime);
     void setDirection(Direction direction);
+    void setLives(uint16_t lives);
+    void setHealth(uint16_t health);
+    void setState(PlayerState state);
 
     // client side only movement, maybe will use later
     void move(Direction direction, float deltaTime);
-    void restartCooldown();
+    void resetShootCooldown();
 
-    bool canShoot() const;
-    Direction GetDirection() const;
+    bool        isAlive() const;
+    bool        canShoot() const;
+    Direction   GetDirection() const;
+    PlayerState GetState() const;
+    uint16_t    GetLives() const;
+    uint16_t    GetHealth() const;
 
 private:
-    static constexpr float kCooldownTime = 0.5f;
-    static constexpr float kPlayerSpeed = 150.0f;
+    static constexpr float    kCooldownTime = 0.5f;
+    static constexpr float    kPlayerSpeed  = 150.0f;
+    static constexpr uint16_t kPlayerHealth = 100.0f;
+    static constexpr uint16_t kPlayerLives  = 3;
 private:
-    float     m_health;
-    float     m_timeElapsed;
-    Direction m_direction : 2;
+    float       m_timeElapsed; // TODO: do i need this
+    uint16_t    m_lives;
+    uint16_t    m_health;
+    PlayerState m_state : 2;
+    Direction   m_direction : 2;
 };

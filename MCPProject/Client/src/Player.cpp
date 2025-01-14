@@ -4,8 +4,8 @@
 #include <iostream>
 
 Player::Player(sf::Vector2f pos, const sf::Texture& texture, sf::Vector2f size)
-    : GameObject{ pos, texture, size }, m_health{ 100 }
-    , m_direction{Direction::Left}, m_timeElapsed{0}
+    : GameObject{ pos, texture, size }, m_health{ kPlayerHealth }, m_direction{Direction::Left}
+    , m_timeElapsed{ 0 }, m_lives{ kPlayerLives }, m_state{ PlayerState::Alive }
 {
     m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2, m_sprite.getLocalBounds().height / 2);
 }
@@ -24,6 +24,26 @@ void Player::setDirection(Direction direction)
 {
     m_direction = direction;
     m_sprite.setRotation(getRotation(direction));
+}
+
+void Player::setLives(uint16_t lives)
+{
+    m_lives = lives;
+}
+
+void Player::setHealth(uint16_t health)
+{
+    m_health = health;
+}
+
+void Player::setState(PlayerState state)
+{
+    m_state = state;
+}
+
+bool Player::isAlive() const
+{
+    return m_state == PlayerState::Alive;
 }
 
 bool Player::canShoot() const
@@ -74,8 +94,23 @@ void Player::move(Direction direction, float deltaTime)
     m_sprite.setRotation(getRotation(m_direction));
 }
 
-void Player::restartCooldown()
+void Player::resetShootCooldown()
 {
     m_timeElapsed = 0;
+}
+
+PlayerState Player::GetState() const
+{
+    return m_state;
+}
+
+uint16_t Player::GetLives() const
+{
+    return m_lives;
+}
+
+uint16_t Player::GetHealth() const
+{
+    return m_health;
 }
 
