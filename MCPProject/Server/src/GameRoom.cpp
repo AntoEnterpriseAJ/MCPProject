@@ -4,7 +4,7 @@
 #include <iostream>
 
 GameRoom::GameRoom()
-    : m_idCounter{ 0 }, m_roomID{ 0 }, m_version{ 0 }, m_players{}
+    : m_idCounter{ 0 }, m_roomID{ 0 }, m_version{ 1 }, m_players{}
 {}
 
 GameRoom::GameRoom(uint8_t m_roomID)
@@ -13,9 +13,11 @@ GameRoom::GameRoom(uint8_t m_roomID)
     m_level.load();
 }
 
-uint8_t GameRoom::addPlayer(const Vec2f& position)
+uint8_t GameRoom::addPlayer()
 {
-    m_players.emplace(m_idCounter, position);
+    m_players.emplace(m_idCounter, m_respawnPositions[m_idCounter]);
+    m_players.at(m_idCounter).setRespawnPosition(m_respawnPositions[m_idCounter]);
+
     m_version = (m_version + 1) % kMaxVersion;
     return m_idCounter++;
 }
@@ -37,7 +39,10 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
             response["players"].push_back({
                 {"id", id},
                 {"position", {player.GetPosition().x, player.GetPosition().y}}, // TODO: custom serialization
-                {"direction", player.GetDirection()}
+                {"direction", player.GetDirection()},
+                {"lives", player.GetLives()},
+                {"health", player.GetHealth()},
+                {"state", player.GetState()}
                 });
         }
 
@@ -47,11 +52,9 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
         {
             response["bullets"].push_back({
                 {"position", {bullet->GetPosition().x, bullet->GetPosition().y}},
-                {"direction", bullet->getDirection()}
+                {"direction", bullet->getDirection()},
                 });
         }
-
-        std::cout << "Currently we have " << m_bulletManager.getBullets().size() << " bullets\n";
     }
 
     return response;
@@ -110,21 +113,23 @@ void GameRoom::shoot(uint8_t playerID)
 
     if (!player.canShoot()) return;
 
-    player.restartCooldown();
+    player.resetShootCooldown();
     Vec2f offset{ 0.0f, 0.0f };
+    Bullet bullet{ {0.0f, 0.0f}, Direction::Up };
+
     switch (player.GetDirection())
     {
     case Direction::Up:
-        offset = { 0.0f, -Player::kPlayerSizeY };
+        offset = { 0.0f, -Player::kPlayerSizeY - bullet.GetSize().y / 2.0f };
         break;
     case Direction::Down:
-        offset = { 0.0f, Player::kPlayerSizeY };
+        offset = { 0.0f, Player::kPlayerSizeY + bullet.GetSize().y / 2.0f };
         break;
     case Direction::Left:
-        offset = { -Player::kPlayerSizeX, 0.0f };
+        offset = { -Player::kPlayerSizeX - bullet.GetSize().x / 2.0f, 0.0f};
         break;
     case Direction::Right:
-        offset = { Player::kPlayerSizeX, 0.0f };
+        offset = { Player::kPlayerSizeX + bullet.GetSize().x / 2.0f, 0.0f};
         break;
     }
 
@@ -134,12 +139,34 @@ void GameRoom::shoot(uint8_t playerID)
 
 void GameRoom::update()
 {
+    updateBullets();
+    updatePlayerStates();
+}
+
+void GameRoom::updatePlayerStates()
+{
+    bool updated = false;
+    for (auto& [id, player] : m_players | std::views::filter([](const auto& pair) { return !pair.second.isAlive() && pair.second.canRespawn(); }))
+    {
+        player.respawn();
+        player.setPosition(m_respawnPositions[id]);
+        updated = true;
+    }
+
+    if (updated)
+    {
+        m_version = (m_version + 1) % kMaxVersion;
+    }
+}
+
+void GameRoom::updateBullets()
+{
     auto now = std::chrono::steady_clock::now();
     float deltaTime = std::chrono::duration<float>(now - m_lastUpdated).count();
     m_lastUpdated = now;
-    m_version = (m_version + 1) % kMaxVersion;
+    m_bulletManager.update(m_level, m_players, deltaTime);
 
-    m_bulletManager.update(m_level, deltaTime);
+    m_version = (m_version + 1) % kMaxVersion;
 }
 
 const Level& GameRoom::getLevel() const noexcept
@@ -167,21 +194,31 @@ const std::unordered_map<uint8_t, Player>& GameRoom::getPlayers() const noexcept
     return m_players;
 }
 
+std::unordered_map<uint8_t, Player>& GameRoom::getPlayers() noexcept
+{
+    return m_players;
+}
+
 bool GameRoom::checkCollision(const Player& player, const Vec2f& newPosition)
 {
-    Vec2f topLeft     { newPosition - player.getOrigin() };
-    Vec2f bottomRight { topLeft + player.GetSize() };
+    Vec2f topLeft{ newPosition - player.getOrigin() };
+    Vec2f bottomRight{ topLeft + player.GetSize() };
 
-    int topLeftX     = static_cast<int>(std::floor(topLeft.x / Level::kGridSize));
-    int topLeftY     = static_cast<int>(std::floor(topLeft.y / Level::kGridSize));
-    int bottomRightX = static_cast<int>(std::floor(bottomRight.x / Level::kGridSize));
-    int bottomRightY = static_cast<int>(std::floor(bottomRight.y / Level::kGridSize));
+    if (topLeft.x < 0 || topLeft.y < 0 ||
+        bottomRight.x > Level::kWidth * Level::kGridSize ||
+        bottomRight.y > Level::kHeight * Level::kGridSize)
+    {
+        return true;
+    }
+
+    auto [topLeftX, topLeftY] = topLeft.toGridCoords(Level::kGridSize);
+    auto [bottomRightX, bottomRightY] = bottomRight.toGridCoords(Level::kGridSize);
 
     for (int x = topLeftX; x <= bottomRightX; ++x)
     {
         for (int y = topLeftY; y <= bottomRightY; ++y)
         {
-            const auto& currentObstacle {m_level[{y, x}]};
+            const auto& currentObstacle{ m_level[{y, x}] };
             if (!currentObstacle) continue;
 
             if (!currentObstacle->isPassable() && currentObstacle->collides(topLeft, bottomRight))
