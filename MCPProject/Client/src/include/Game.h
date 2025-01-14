@@ -30,7 +30,7 @@ public:
 private:
     void handleInputs(float deltaTime);
     void createRoom();
-    void join(const Player& player, uint8_t roomID);
+    bool join(uint8_t roomID);
     void update();
     void move(Direction direction, float deltaTime);
     void displayRooms();

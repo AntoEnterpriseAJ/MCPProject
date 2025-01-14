@@ -52,6 +52,11 @@ void Game::handleInputs(float deltaTime)
 
     if (!m_window.hasFocus()) return;
 
+    if (!m_players[m_internalID].isAlive())
+    {
+        return;
+    }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
         move(Direction::Up, deltaTime);
@@ -80,12 +85,17 @@ void Game::createRoom()
     m_networkManager.createRoom();
 }
 
-void Game::join(const Player& player, uint8_t roomID)
+bool Game::join(uint8_t roomID)
 {
-    nlohmann::json response = m_networkManager.join(player, roomID);
+    nlohmann::json response = m_networkManager.join(roomID);
+
+    if (response.empty())
+    {
+        return false;
+    }
 
     m_internalID = response["playerID"];
-    m_players[m_internalID] = player;
+    return true;
 }
 
 void Game::move(Direction direction, float deltaTime)
@@ -106,29 +116,22 @@ void Game::handleMenu()
 
     if (option == 1)
     {
-        std::cout << "Spawn pos x, y =";
-        float x, y;
-        std::cin >> x >> y;
-
-        Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
-
         this->createRoom();
-        this->join(player, m_networkManager.getCurrentRoomID());
+        join(m_networkManager.getCurrentRoomID());
                 
         m_gameState = GameState::Playing;
     }
     else if (option == 2)
     {
-        std::cout << "Spawn pos x, y =";
-        float x, y;
-        std::cin >> x >> y;
-
         int roomID;
         std::cout << "room id=";
         std::cin >> roomID;
 
-        Player player{sf::Vector2f{x, y}, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
-        this->join(player, roomID);
+        if (!join(roomID))
+        {
+            std::cout << "Something went wrong\n";
+            return;
+        }
 
         m_gameState = GameState::Playing;
     }
@@ -149,8 +152,12 @@ void Game::update()
 
     std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
         sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
-        uint16_t playerId = playerData["id"];
-        Direction direction = playerData["direction"];
+        uint16_t    playerId  { playerData["id"] };
+        Direction   direction { playerData["direction"] };
+        uint16_t    lives     { playerData["lives"] };
+        uint16_t    health    { playerData["health"] };
+        PlayerState state     { playerData["state"] };
+
 
         if (!m_players.contains(playerId))
         {
@@ -159,6 +166,9 @@ void Game::update()
 
         m_players[playerId].setPosition(newPosition);
         m_players[playerId].setDirection(direction);
+        m_players[playerId].setLives(lives);
+        m_players[playerId].setHealth(health);
+        m_players[playerId].setState(state);
     });
 
     m_bulletManager.clearBullets();
@@ -193,10 +203,12 @@ void Game::render()
 
             m_level.drawBackground(m_window);
 
-            std::ranges::for_each(m_players, [this](const auto& entry){
-                const auto& [id, player] = entry;
-                m_window.draw(player);
-            });
+            std::ranges::for_each(m_players | std::views::values | std::views::filter([](const Player& player) {
+                return player.isAlive();
+                }),
+                [this](const Player& player) {
+                    m_window.draw(player);
+                });
 
             m_bulletManager.draw(m_window);
 
