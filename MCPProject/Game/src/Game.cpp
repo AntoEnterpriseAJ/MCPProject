@@ -8,7 +8,7 @@
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
     m_level{},
-    m_menu{ kWindowWidth, kWindowHeight },
+    m_menu{},
     m_loginWindow{ kWindowWidth, kWindowHeight },
     m_gameState{ GameState::Menu }
 {
@@ -128,31 +128,12 @@ void Game::render()
                 {
                     m_window.close();
                 }
-            }
-
-            m_menu.handleInput(m_window);
-
-            if (m_menu.isStartGameSelected()) 
-            {
-                m_gameState = GameState::Login;
+                m_menu.handleEvent(m_window, event);
             }
 
             m_window.clear();
             m_menu.draw(m_window);
-            m_window.display();
-        }
-        else if (m_gameState == GameState::Login) 
-        {
-            m_loginWindow.handleInput(m_window);
 
-            if (m_loginWindow.isLoginSuccessful()) 
-            {
-                m_gameState = GameState::Playing;
-            }
-
-            m_window.clear();
-            m_loginWindow.draw(m_window);
-            m_window.display();
         }
         else if (m_gameState == GameState::Playing) 
         {
@@ -178,8 +159,8 @@ void Game::render()
 
             m_window.draw(m_level);
             m_powerUpManager.Draw(m_window);
-
-            m_window.display();
         }
+
+        m_window.display();
     }
 }

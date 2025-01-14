@@ -145,6 +145,7 @@
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Bush.cpp" />
+    <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Explosion.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PowerUpManager.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\TextBox.cpp" />
     <ClCompile Include="src\UnbreakableBrick.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +166,7 @@
     <ClInclude Include="src\include\Bullet.h" />
     <ClInclude Include="src\include\BulletManager.h" />
     <ClInclude Include="src\include\Bush.h" />
+    <ClInclude Include="src\include\Button.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Explosion.h" />
     <ClInclude Include="src\include\Game.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="src\include\PowerUp.h" />
     <ClInclude Include="src\include\PowerUpManager.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
+    <ClInclude Include="src\include\TextBox.h" />
     <ClInclude Include="src\include\UnbreakableBrick.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

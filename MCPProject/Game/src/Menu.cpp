@@ -1,61 +1,71 @@
 ﻿#include "Menu.h"
-#include <iostream>
 
-Menu::Menu(float width, float height)
+Menu::Menu()
+    : 
+    m_currentState(MenuState::MainPage),
+    m_playButton("Play", { 300, 200 }, { 200, 50 }),
+    m_exitButton("Exit", { 300, 300 }, { 200, 50 })
 {
-    if (!backgroundTexture.loadFromFile("res/textures/background_menu.png"))
-    {
-        std::cerr << "Failed to load background image!" << std::endl;
-    }
+    sf::Font font;
+    font.loadFromFile("res/font_text/static/Jaro_9pt-Regular.ttf");
 
-    backgroundSprite.setTexture(backgroundTexture);
-    backgroundSprite.setScale(
-        static_cast<float>(width) / backgroundTexture.getSize().x,
-        static_cast<float>(height) / backgroundTexture.getSize().y
-    );
+    m_displayText.setFont(m_font);
+    m_displayText.setCharacterSize(36);
+    m_displayText.setFillColor(sf::Color::Black);
+    m_displayText.setPosition(100, 100);
 
-    if (!font.loadFromFile("res/font_text/Jaro-Regular-VariableFont_opsz.ttf"))
-    {
-        std::cerr << "Failed to load font!" << std::endl;
-    }
-
-    startButton.setFont(font);
-    startButton.setCharacterSize(50);
-    startButton.setString("Start Game");
-    startButton.setPosition(width / 2 - startButton.getLocalBounds().width / 2, height / 2 - 100);
-
-    exitButton.setFont(font);
-    exitButton.setCharacterSize(50);
-    exitButton.setString("Exit");
-    exitButton.setPosition(width / 2 - exitButton.getLocalBounds().width / 2, height / 2 + 50);
+    setState(m_currentState);
 }
 
-void Menu::draw(sf::RenderWindow& window) const
+void Menu::setState(MenuState state) 
 {
-    window.draw(backgroundSprite);
-    window.draw(startButton);
-    window.draw(exitButton);
-}
+    m_currentState = state;
 
-void Menu::handleInput(sf::RenderWindow& window)
-{
-    sf::Vector2f mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
-
-    if (startButton.getGlobalBounds().contains(mousePos) &&
-        sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    switch (state) 
     {
-        startGameSelected = true;
-    }
-
-    if (exitButton.getGlobalBounds().contains(mousePos) &&
-        sf::Mouse::isButtonPressed(sf::Mouse::Left))
-    {
-        window.close();
+    case MenuState::MainPage:         m_displayText.setString("Main Page");        break;
+    case MenuState::Authentification: m_displayText.setString("Authentification"); break;
+    case MenuState::RoomSelection:    m_displayText.setString("Room Selection");   break;
+    case MenuState::Lobby:            m_displayText.setString("Lobby");            break;
     }
 }
 
-
-bool Menu::isStartGameSelected() const
+void Menu::handleEvent(sf::RenderWindow& window, const sf::Event& event) 
 {
-    return startGameSelected;
+    if (m_currentState == MenuState::MainPage) 
+    {
+        handleMainPageEvents(window, event);
+    }
+}
+
+void Menu::handleMainPageEvents(sf::RenderWindow& window, const sf::Event& event) 
+{
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
+    {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+        if (m_playButton.isHovered(mousePos)) 
+        {
+            // TODO : switch to authentification menu state
+        }
+        else if (m_exitButton.isHovered(mousePos))
+        {
+            window.close();
+        }
+    }
+}
+
+void Menu::draw(sf::RenderWindow& window) 
+{
+    if (m_currentState == MenuState::MainPage) 
+    {
+        window.draw(m_displayText);
+        m_playButton.draw(window);
+        m_exitButton.draw(window);
+    }
+}
+
+Menu::MenuState Menu::getState() const 
+{
+    return m_currentState;
 }
