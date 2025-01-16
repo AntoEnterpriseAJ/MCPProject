@@ -1,8 +1,14 @@
 ﻿#include "Bullet.h"
 
-Bullet::Bullet(const Vec2f& pos, Direction dir, const Vec2f& size, uint16_t damage)
+Bullet::Bullet(
+    const Vec2f& pos,
+    Direction dir,
+    uint8_t playerID,
+    const Vec2f& size,
+    uint16_t damage
+)
     : GameObject{ pos, size }, m_state{ State::Active }
-    , m_direction{ dir }, m_damage{ damage }, m_playerID{}
+    , m_direction{ dir }, m_damage{ damage }, m_playerID{playerID}
 {
     setOrigin(size / 2.0f);
 

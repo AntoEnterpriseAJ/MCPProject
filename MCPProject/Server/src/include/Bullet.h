@@ -15,6 +15,7 @@ public:
     Bullet(
         const Vec2f& pos, 
         Direction    dir,
+        uint8_t      playerID,
         const Vec2f& size = { kBulletSizeX, kBulletSizeY },
         uint16_t     damage = kBulletDamage
     );
