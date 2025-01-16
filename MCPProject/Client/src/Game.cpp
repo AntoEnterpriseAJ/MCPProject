@@ -10,7 +10,7 @@ static uint32_t clientVersion{0};
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }
-    , m_internalID{ 0 }, m_bulletManager{}
+    , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
@@ -181,6 +181,15 @@ void Game::update()
             std::make_unique<Bullet>(position, ResourceManager::getInstance().getTexture("bullet"), direction));
     });
 
+    m_powerUpManager.clearPowerUps();
+    std::ranges::for_each(updateResponse["powerUps"], [this](const auto& powerUpData) {
+        sf::Vector2f position { powerUpData["position"][0], powerUpData["position"][1] };
+        PowerUpEffect effect{ powerUpData["effect"]};
+        sf::Vector2f size{ powerUpData["size"][0], powerUpData["size"][1] };
+
+        m_powerUpManager.addPowerUp(position, size, effect);
+    });
+
     m_level.update(updateResponse["levelLayout"]);
 
     return;
@@ -215,6 +224,7 @@ void Game::render()
                 });
 
             m_bulletManager.draw(m_window);
+            m_powerUpManager.draw(m_window);
 
             m_window.draw(m_level);
 
