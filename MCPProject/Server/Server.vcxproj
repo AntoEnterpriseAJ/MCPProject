@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BuyablePowerUp.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
@@ -31,10 +32,14 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\Obstacle.cpp" />
+    <ClCompile Include="src\PickablePowerUp.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PowerUp.cpp" />
+    <ClCompile Include="src\PowerUpManager.cpp" />
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\include\BuyablePowerUp.h" />
     <ClInclude Include="src\include\Database.h" />
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />
@@ -47,7 +52,11 @@
     <ClInclude Include="src\include\GameObject.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\ObstacleType.h" />
+    <ClInclude Include="src\include\PickablePowerUp.h" />
     <ClInclude Include="src\include\Player.h" />
+    <ClInclude Include="src\include\PowerUp.h" />
+    <ClInclude Include="src\include\PowerUpEffect.h" />
+    <ClInclude Include="src\include\PowerUpManager.h" />
     <ClInclude Include="src\include\Routing.h" />
     <ClInclude Include="src\include\Vec2f.h" />
   </ItemGroup>
