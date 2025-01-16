@@ -1,8 +1,8 @@
 #include "Player.h"
 
 Player::Player(const Vec2f& position, const Vec2f& size, Direction direction, uint16_t lives, uint16_t health)
-    : GameObject(position, size), m_direction{ direction }, m_lives{ lives }
-    , m_respawnPosition{}, m_state{ PlayerState::Alive }, m_health{ health }, m_points{ 0 }
+    : GameObject(position, size), m_direction{ direction }, m_lives{ lives }, m_respawnPosition{}
+    , m_state{ PlayerState::Alive }, m_health{ health }, m_points{ 0 }, m_lastShoot{}, m_lastRespawn{}
 {
     this->setOrigin(size / 2.0f);
 }
@@ -30,6 +30,43 @@ uint16_t Player::GetHealth() const
 uint16_t Player::GetPoints() const
 {
     return m_points;
+}
+
+void Player::applyPowerUp(const std::unique_ptr<PowerUp>& powerUp)
+{
+    powerUp->Activate();
+
+    switch (powerUp->GetEffect())
+    {
+    case PowerUpEffect::HealthUp:
+        m_health = kPlayerHealth;
+        break;
+    case PowerUpEffect::SpeedUp:
+        break;
+    case PowerUpEffect::DamageUp:
+        break;
+    case PowerUpEffect::ReduceShootCooldown:
+        break;
+    case PowerUpEffect::BulletSpeedUp:
+        break;
+    }
+}
+
+void Player::deactivatePowerUp(std::unique_ptr<PowerUp>& powerUp)
+{
+    switch (powerUp->GetEffect())
+    {
+    case PowerUpEffect::HealthUp:
+        break;
+    case PowerUpEffect::SpeedUp:
+        break;
+    case PowerUpEffect::DamageUp:
+        break;
+    case PowerUpEffect::ReduceShootCooldown:
+        break;
+    case PowerUpEffect::BulletSpeedUp:
+        break;
+    }
 }
 
 void Player::resetShootCooldown()
@@ -74,6 +111,25 @@ void Player::respawn()
 void Player::addPoints(uint16_t points)
 {
     m_points += points;
+}
+
+void Player::addPowerUp(std::unique_ptr<PowerUp> powerUp)
+{
+    applyPowerUp(powerUp);
+    m_powerUps.push_back(std::move(powerUp));
+}
+
+void Player::updatePowerUps()
+{
+    for (auto& powerUp : m_powerUps)
+    {
+        if (powerUp->HasExpired())
+        {
+            deactivatePowerUp(powerUp);
+        }
+    }
+
+    std::erase_if(m_powerUps, [](const auto& powerUp) { return powerUp->HasExpired(); });
 }
 
 bool Player::isEliminated() const

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Direction.h"
 #include "PlayerState.h"
+#include "PowerUp.h"
 
 class Player : public GameObject
 {
@@ -29,6 +30,8 @@ public:
     void eliminate();
     void respawn();
     void addPoints(uint16_t points);
+    void addPowerUp(std::unique_ptr<PowerUp> powerUp);
+    void updatePowerUps();
 
     bool isAlive() const;
     bool isEliminated() const;
@@ -45,12 +48,18 @@ public:
     static constexpr uint16_t kPlayerHealth = 100.0f;
     static constexpr uint16_t kPlayerLives  = 3;
 private:
+    void applyPowerUp(const std::unique_ptr<PowerUp>& powerUp);
+    void deactivatePowerUp(std::unique_ptr<PowerUp>& powerUp);
+private:
     uint16_t    m_lives;
     uint16_t    m_health;
     uint16_t    m_points;
     Direction   m_direction : 2;
     Vec2f       m_respawnPosition;
     PlayerState m_state : 2;
+
+    std::vector<std::unique_ptr<PowerUp>> m_powerUps;
+
     std::chrono::steady_clock::time_point m_lastShoot;
     std::chrono::steady_clock::time_point m_lastRespawn;
 };
