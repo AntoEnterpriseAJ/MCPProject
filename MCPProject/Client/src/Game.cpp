@@ -13,7 +13,10 @@ Game::Game()
     , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
-    instance.loadTextureFromFile("res/textures/penguin1.png", "player");
+    instance.loadTextureFromFile("res/textures/penguin1.png", "player1");
+    instance.loadTextureFromFile("res/textures/penguin2.png", "player2");
+    instance.loadTextureFromFile("res/textures/penguin3.png", "player3");
+    instance.loadTextureFromFile("res/textures/penguin4.png", "player4");
     instance.loadTextureFromFile("res/textures/ice_block.png", "brick");
     instance.loadTextureFromFile("res/textures/ice.png", "bullet");
     instance.loadTextureFromFile("res/textures/bush.png", "bush");
@@ -162,8 +165,10 @@ void Game::update()
 
         if (!m_players.contains(playerId))
         {
-            m_players[playerId] = {newPosition, ResourceManager::getInstance().getTexture("player"), sf::Vector2f{39.9f, 39.9f}};
+            std::string textureKey = "player" + std::to_string(playerId + 1);
+            m_players[playerId] = { newPosition, ResourceManager::getInstance().getTexture(textureKey), sf::Vector2f{39.9f, 39.9f} };
         }
+
 
         m_players[playerId].setPosition(newPosition);
         m_players[playerId].setDirection(direction);
