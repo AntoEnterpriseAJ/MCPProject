@@ -38,14 +38,14 @@ void Level::load()
         return;
     }
 
-    std::array<int, kHeight* kWidth> map;
-    GenerateGameMap(map);
+    //std::array<int, kHeight* kWidth> map;
+    //GenerateGameMap(map);
 
     uint16_t currentBrickCount{ 0 };
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-            // int tex; fin >> tex;
-            int tex = map[i * kWidth + j]; //for DLL testing
+             int tex; fin >> tex;
+            //int tex = map[i * kWidth + j]; //for DLL testing
 
             ObstacleType obstacleType{ tex };
             Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };
