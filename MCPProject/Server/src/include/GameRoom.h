@@ -3,6 +3,7 @@
 #include "Level.h"
 #include "Vec2f.h"
 #include "BulletManager.h"
+#include "PowerUpManager.h"
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 #include <chrono>
@@ -18,8 +19,6 @@ public:
     void move(uint8_t playerID, Direction direction, float deltaTime);
     void shoot(uint8_t playerID);
     void update();
-    void updatePlayerStates();
-    void updateBullets();
 
     const Level& getLevel() const noexcept;
     uint32_t getVersion() const noexcept;
@@ -34,6 +33,9 @@ public:
     static constexpr uint16_t kMaxPlayers    { 4 };
     static constexpr uint16_t kPointsPerKill { 100 };
 private:
+    void updateBullets();
+    void updatePlayerStates();
+    void updatePlayersPowerUps();
     bool checkCollision(const Player& player, const Vec2f& newPosition);
 private:
     static constexpr uint32_t kMaxVersion   { 1000000 };
@@ -48,7 +50,8 @@ private:
     uint8_t  m_idCounter;
     uint32_t m_version;
     Level    m_level;
-    BulletManager m_bulletManager;
+    BulletManager  m_bulletManager;
+    PowerUpManager m_powerUpManager;
     std::unordered_map<uint8_t, Player> m_players;
     std::chrono::steady_clock::time_point m_lastUpdated;
 };
