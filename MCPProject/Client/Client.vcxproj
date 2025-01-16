@@ -32,6 +32,8 @@
     <ClCompile Include="src\NetworkManager.cpp" />
     <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PowerUp.cpp" />
+    <ClCompile Include="src\PowerUpManager.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,9 @@
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
     <ClInclude Include="src\include\PlayerState.h" />
+    <ClInclude Include="src\include\PowerUp.h" />
+    <ClInclude Include="src\include\PowerUpEffect.h" />
+    <ClInclude Include="src\include\PowerUpManager.h" />
     <ClInclude Include="src\include\ResourceManager.h" />
     <ClInclude Include="src\include\ObstacleType.h" />
     <ClInclude Include="src\include\URL.h" />
