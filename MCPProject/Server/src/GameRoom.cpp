@@ -1,6 +1,6 @@
 #include "GameRoom.h"
 #include "ObstacleType.h"
-
+#include "PickablePowerUp.h"
 #include <iostream>
 
 GameRoom::GameRoom()
@@ -28,6 +28,7 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
         {"serverVersion", m_version},
     };
 
+    update();
     if (clientVersion != m_version)
     {
         m_level.updateLayoutTypes();
@@ -47,13 +48,22 @@ nlohmann::json GameRoom::getStateResponse(uint32_t clientVersion) noexcept
                 });
         }
 
-        update();
         response["bullets"] = nlohmann::json::array();
         for (const auto& bullet : m_bulletManager.getBullets())
         {
             response["bullets"].push_back({
                 {"position", {bullet->GetPosition().x, bullet->GetPosition().y}},
                 {"direction", bullet->getDirection()},
+                });
+        }
+
+        response["powerUps"] = nlohmann::json::array();
+        for (const auto& powerUp : m_powerUpManager.getCollectablePowerUps())
+        {
+            response["powerUps"].push_back({
+                {"effect", powerUp.GetEffect()},
+                {"position", {powerUp.GetPosition().x, powerUp.GetPosition().y}},
+                {"size", {PickablePowerUp::kPowerUpSize.x, PickablePowerUp::kPowerUpSize.y}}
                 });
         }
     }
@@ -116,7 +126,7 @@ void GameRoom::shoot(uint8_t playerID)
 
     player.resetShootCooldown();
     Vec2f offset{ 0.0f, 0.0f };
-    Bullet bullet{ {0.0f, 0.0f}, Direction::Up };
+    Bullet bullet{ {}, Direction::Up, {} };
 
     switch (player.GetDirection())
     {
@@ -134,7 +144,11 @@ void GameRoom::shoot(uint8_t playerID)
         break;
     }
 
-    m_bulletManager.addBullet(std::make_unique<Bullet>(player.GetPosition() + offset, player.GetDirection()));
+    m_bulletManager.addBullet(std::make_unique<Bullet>(
+        player.GetPosition() + offset,
+        player.GetDirection(),
+        playerID
+    ));
     m_version = (m_version + 1) % kMaxVersion;
 }
 
@@ -142,12 +156,21 @@ void GameRoom::update()
 {
     updateBullets();
     updatePlayerStates();
+    m_powerUpManager.update(m_players, m_level.getLayout());
+    updatePlayersPowerUps();
+    //m_version = (m_version + 1) % kMaxVersion; TODO: for powerups
 }
 
 void GameRoom::updatePlayerStates()
 {
     bool updated = false;
-    for (auto& [id, player] : m_players | std::views::filter([](const auto& pair) { return !pair.second.isAlive() && pair.second.canRespawn(); }))
+
+    auto respawnablePlayers = m_players
+        | std::views::filter([](const auto& pair) {
+            return !pair.second.isAlive() && pair.second.canRespawn();
+        });
+
+    for (auto& [id, player] : respawnablePlayers)
     {
         player.respawn();
         player.setPosition(m_respawnPositions[id]);
@@ -168,6 +191,14 @@ void GameRoom::updateBullets()
     m_bulletManager.update(m_level, m_players, deltaTime);
 
     m_version = (m_version + 1) % kMaxVersion;
+}
+
+void GameRoom::updatePlayersPowerUps()
+{
+    for (auto& player : m_players | std::views::values)
+    {
+        player.updatePowerUps();
+    }
 }
 
 const Level& GameRoom::getLevel() const noexcept
