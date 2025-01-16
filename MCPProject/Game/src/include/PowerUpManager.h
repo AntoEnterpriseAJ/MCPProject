@@ -14,7 +14,7 @@ public:
     void SpawnRandomPowerUp(const std::vector<std::unique_ptr<Obstacle>>& levelObstacles);
 
 private:
-    std::vector<PowerUp> m_activePowerUps;
+    std::vector<PowerUp> m_collectablePowerUps;
     sf::Clock m_spawnClock;
 
     int randomNumberGenerator(int lower, int higher);

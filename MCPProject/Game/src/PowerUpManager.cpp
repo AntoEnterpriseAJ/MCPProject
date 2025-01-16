@@ -43,7 +43,7 @@ void PowerUpManager::SpawnRandomPowerUp(const std::vector<std::unique_ptr<Obstac
     std::string powerUpName = "SpeedBoost";
 
     PowerUp newPowerUp(randomPos, texture, powerUpName);
-    m_activePowerUps.push_back(newPowerUp);
+    m_collectablePowerUps.push_back(newPowerUp);
 
     std::cout << "PowerUp added!\n";
 }
@@ -76,7 +76,7 @@ bool PowerUpManager::IsPositionValid(const sf::Vector2f& position, const std::ve
 
 void PowerUpManager::Draw(sf::RenderWindow& window) const
 {
-    for (const auto& powerUp : m_activePowerUps)
+    for (const auto& powerUp : m_collectablePowerUps)
     {
         window.draw(powerUp);
     }
