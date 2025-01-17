@@ -1,14 +1,13 @@
-#include "Level.h"
-#include "Level.h"
-#include "Level.h"
-#include "Level.h"
-#include "Brick.h"
-#include "Bush.h"
-#include "BombBrick.h"
-#include "ResourceManager.h"
-#include "Obstacle.h"
-#include <iostream>
-#include <ranges>
+module Level;
+
+import <iostream>;
+import <ranges>;
+import "Brick.h";
+import "Bush.h";
+import "BombBrick.h";
+import "ResourceManager.h";
+import "Obstacle.h";
+
 
 Level::Level()
     : m_ID{0}, m_levelLayout{}

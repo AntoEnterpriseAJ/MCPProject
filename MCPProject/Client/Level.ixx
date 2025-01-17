@@ -1,21 +1,22 @@
-#pragma once
-#include "ObstacleType.h"
-#include "Obstacle.h"
-#include <array>
-#include <memory>
+export module Level;
+import <array>;
+import <memory>;
+import "ObstacleType.h";
+import "Obstacle.h";
 
-class Level : public sf::Drawable
+
+export class Level : public sf::Drawable
 {
 public:
     static constexpr uint16_t kWidth{ 30 };
     static constexpr uint16_t kHeight{ 20 };
     using Position = std::pair<uint16_t, uint16_t>;
-    using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight * kWidth>;
+    using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight* kWidth>;
 public:
     Level();
 
     void init();
-    void update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel);
+    void update(const std::array<uint16_t, kHeight* kWidth>& updatedLevel);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void drawBackground(sf::RenderWindow& window) const;
 
