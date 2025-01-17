@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include <Game.h>
 
 void BulletManager::addExplosion(const Bullet& bullet)
 {
