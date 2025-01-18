@@ -3,6 +3,7 @@
 Player::Player(const Vec2f& position, const Vec2f& size, Direction direction, uint16_t lives, uint16_t health)
     : GameObject(position, size), m_direction{ direction }, m_lives{ lives }, m_respawnPosition{}
     , m_state{ PlayerState::Alive }, m_health{ health }, m_points{ 0 }, m_lastShoot{}, m_lastRespawn{}
+    , m_powerUps{}, m_playerSpeed{ kPlayerSpeed }, m_damageMultiplier{ 1.0f }, m_shootCooldown{ kCooldownTime }
 {
     this->setOrigin(size / 2.0f);
 }
@@ -32,6 +33,16 @@ uint16_t Player::GetPoints() const
     return m_points;
 }
 
+float Player::getSpeed() const
+{
+    return m_playerSpeed;
+}
+
+float Player::getDamageMultiplier() const
+{
+    return m_damageMultiplier;
+}
+
 void Player::applyPowerUp(const std::unique_ptr<PowerUp>& powerUp)
 {
     powerUp->Activate();
@@ -42,10 +53,13 @@ void Player::applyPowerUp(const std::unique_ptr<PowerUp>& powerUp)
         m_health = kPlayerHealth;
         break;
     case PowerUpEffect::SpeedUp:
+        m_playerSpeed += kPlayerSpeed * 0.5f;
         break;
     case PowerUpEffect::DamageUp:
+        m_damageMultiplier += 0.5f;
         break;
     case PowerUpEffect::ReduceShootCooldown:
+        m_shootCooldown -= kCooldownTime * 0.5f;
         break;
     case PowerUpEffect::BulletSpeedUp:
         break;
@@ -59,10 +73,13 @@ void Player::deactivatePowerUp(std::unique_ptr<PowerUp>& powerUp)
     case PowerUpEffect::HealthUp:
         break;
     case PowerUpEffect::SpeedUp:
+        m_playerSpeed -= kPlayerSpeed * 0.5f;
         break;
     case PowerUpEffect::DamageUp:
+        m_damageMultiplier -= 0.5f;
         break;
     case PowerUpEffect::ReduceShootCooldown:
+        m_shootCooldown += kCooldownTime * 0.5f;
         break;
     case PowerUpEffect::BulletSpeedUp:
         break;
@@ -146,7 +163,7 @@ bool Player::canShoot() const
 {
     auto now = std::chrono::steady_clock::now();
     float deltaTime = std::chrono::duration<float>(now - m_lastShoot).count();
-    return deltaTime >= kCooldownTime;
+    return deltaTime >= m_shootCooldown;
 }
 
 bool Player::canRespawn() const
@@ -159,6 +176,11 @@ bool Player::canRespawn() const
     auto now = std::chrono::steady_clock::now();
     float deltaTime = std::chrono::duration<float>(now - m_lastRespawn).count();
     return deltaTime >= kRespawnTime;
+}
+
+void Player::setPoints(uint16_t points)
+{
+    m_points = points;
 }
 
 void Player::setDirection(Direction direction)
@@ -183,6 +205,11 @@ void Player::setDirection(Direction direction)
             break;
         }
     }
+}
+
+void Player::setDamageMultiplier(float multiplier)
+{
+    m_damageMultiplier = multiplier;
 }
 
 void Player::setRespawnPosition(const Vec2f& position)

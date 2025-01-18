@@ -7,10 +7,6 @@
 class Player : public GameObject
 {
 public:
-    static constexpr float kCooldownTime = 0.5f;
-    static constexpr float kPlayerSpeed = 150.0f;
-    static constexpr float kRespawnTime = 3.0f;
-public:
     Player() = default;
     Player(
         const Vec2f& position,
@@ -21,7 +17,9 @@ public:
     );
     ~Player() override = default;
 
+    void setPoints(uint16_t points);
     void setDirection(Direction direction);
+    void setDamageMultiplier(float multiplier);
     void setRespawnPosition(const Vec2f& position);
     void resetShootCooldown();
 
@@ -37,12 +35,17 @@ public:
     bool isEliminated() const;
     bool canShoot() const;
     bool canRespawn() const;
-    Direction GetDirection() const;
+    Direction   GetDirection() const;
     PlayerState GetState() const;
-    uint16_t GetLives() const;
-    uint16_t GetHealth() const;
-    uint16_t GetPoints() const;
+    uint16_t    GetLives() const;
+    uint16_t    GetHealth() const;
+    uint16_t    GetPoints() const;
+    float       getSpeed() const;
+    float       getDamageMultiplier() const;
 public:
+    static constexpr float    kCooldownTime = 0.5f;
+    static constexpr float    kPlayerSpeed = 150.0f;
+    static constexpr float    kRespawnTime = 3.0f;
     static constexpr float    kPlayerSizeX  = 39.9f;
     static constexpr float    kPlayerSizeY  = 39.9f;
     static constexpr uint16_t kPlayerHealth = 100.0f;
@@ -57,6 +60,9 @@ private:
     Direction   m_direction : 2;
     Vec2f       m_respawnPosition;
     PlayerState m_state : 2;
+    float       m_playerSpeed;
+    float       m_damageMultiplier;
+    float       m_shootCooldown;
 
     std::vector<std::unique_ptr<PowerUp>> m_powerUps;
 
