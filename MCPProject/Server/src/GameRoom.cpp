@@ -95,19 +95,19 @@ void GameRoom::move(uint8_t playerID, Direction direction, float deltaTime)
     player.setDirection(direction);
     if (direction == Direction::Up)
     {
-        newPosition.y -= Player::kPlayerSpeed * deltaTime;
+        newPosition.y -= player.getSpeed() * deltaTime;
     }
     else if (direction == Direction::Down)
     {
-        newPosition.y += Player::kPlayerSpeed * deltaTime;
+        newPosition.y += player.getSpeed() * deltaTime;
     }
     else if (direction == Direction::Left)
     {
-        newPosition.x -= Player::kPlayerSpeed * deltaTime;
+        newPosition.x -= player.getSpeed() * deltaTime;
     }
     else if (direction == Direction::Right)
     {
-        newPosition.x += Player::kPlayerSpeed * deltaTime;
+        newPosition.x += player.getSpeed() * deltaTime;
     }
 
     if (!checkCollision(player, newPosition))
@@ -147,8 +147,11 @@ void GameRoom::shoot(uint8_t playerID)
     m_bulletManager.addBullet(std::make_unique<Bullet>(
         player.GetPosition() + offset,
         player.GetDirection(),
-        playerID
+        playerID,
+        Vec2f{Bullet::kBulletSizeX, Bullet::kBulletSizeY},
+        Bullet::kBulletDamage * player.getDamageMultiplier()
     ));
+
     m_version = (m_version + 1) % kMaxVersion;
 }
 
