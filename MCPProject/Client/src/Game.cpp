@@ -53,9 +53,7 @@ void Game::handleInputs(float deltaTime)
         }
     }
 
-    if (!m_window.hasFocus()) return;
-
-    if (!m_players[m_internalID].isAlive())
+    if (!m_window.hasFocus() || !m_players[m_internalID].isAlive())
     {
         return;
     }
@@ -81,11 +79,25 @@ void Game::handleInputs(float deltaTime)
     {
         m_networkManager.shoot(m_internalID);
     }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+    {
+        buyPowerUp(PowerUpEffect::DamageUp);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+    {
+        buyPowerUp(PowerUpEffect::ReduceShootCooldown);
+    }
 }
 
 void Game::createRoom()
 {
     m_networkManager.createRoom();
+}
+
+void Game::buyPowerUp(PowerUpEffect powerUp)
+{
+    m_networkManager.buyPowerUp(m_internalID, m_databaseID, powerUp);
 }
 
 bool Game::join(uint8_t roomID)
@@ -101,6 +113,32 @@ bool Game::join(uint8_t roomID)
     return true;
 }
 
+bool Game::login(const std::string& username, const std::string& password)
+{
+    nlohmann::json response = m_networkManager.login(username, password);
+    if (response.empty())
+    {
+        std::cout << "Login failed\n";
+        return false;
+    }
+
+    std::cout << "Login successful\n";
+    return true;
+}
+
+bool Game::registerUser(const std::string& username, const std::string& password)
+{
+    nlohmann::json response = m_networkManager.registerUser(username, password);
+    if (response.empty())
+    {
+        std::cout << "Register failed\n";
+        return false;
+    }
+
+    std::cout << "Register successful\n";
+    return true;
+}
+
 void Game::move(Direction direction, float deltaTime)
 {
     m_networkManager.movePlayer(m_internalID, direction, deltaTime);
@@ -113,8 +151,46 @@ void Game::displayRooms()
 
 void Game::handleMenu()
 {
-    std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
+    std::cout << "Welcome to the game\n";
+    std::cout << "1.Login\n2.Register\n";
+
+    bool authenticated = false;
     int option;
+    std::cin >> option;
+
+    if (option == 1)
+    {
+        std::string username, password;
+        std::cout << "username=";
+        std::cin >> username;
+        std::cout << "password=";
+        std::cin >> password;
+        if (login(username, password))
+        {
+            m_gameState = GameState::Playing;
+            authenticated = true;
+        }
+    }
+    else if (option == 2)
+    {
+        std::string username, password;
+        std::cout << "username=";
+        std::cin >> username;
+        std::cout << "password=";
+        std::cin >> password;
+        if (registerUser(username, password))
+        {
+            m_gameState = GameState::Playing;
+            authenticated = true;
+        }
+    }
+
+    if (!authenticated)
+    {
+        return;
+    }
+
+    std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
     std::cin >> option;
 
     if (option == 1)

@@ -31,7 +31,10 @@ public:
 private:
     void handleInputs(float deltaTime);
     void createRoom();
+    void buyPowerUp(PowerUpEffect powerUp);
     bool join(uint8_t roomID);
+    bool login(const std::string& username, const std::string& password);
+    bool registerUser(const std::string& username, const std::string& password);
     void update();
     void move(Direction direction, float deltaTime);
     void displayRooms();
@@ -47,6 +50,7 @@ private:
     PowerUpManager         m_powerUpManager;
     BulletManager          m_bulletManager;
     uint16_t               m_internalID;
+    uint16_t               m_databaseID;
     GameState              m_gameState;
     sf::RenderWindow       m_window;
 };
