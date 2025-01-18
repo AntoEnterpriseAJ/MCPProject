@@ -1,5 +1,4 @@
 ﻿#include "Bullet.h"
-#include "Game.h"
 
 Bullet::Bullet(sf::Vector2f pos, const sf::Texture& texture, Direction dir, sf::Vector2f size)
     : GameObject{ pos, texture, size }, m_state{State::Active}, m_direction{dir}

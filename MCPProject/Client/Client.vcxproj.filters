@@ -63,6 +63,12 @@
     <ClCompile Include="src\PowerUpManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Level.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Player.h">
@@ -74,16 +80,10 @@
     <ClInclude Include="src\include\Direction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\NetworkManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Obstacle.h">

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game.ixx" />
+    <ClCompile Include="Level.ixx" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
@@ -44,9 +46,7 @@
     <ClInclude Include="src\include\Bush.h" />
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Explosion.h" />
-    <ClInclude Include="src\include\Game.h" />
     <ClInclude Include="src\include\GameObject.h" />
-    <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\NetworkManager.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />
@@ -147,6 +147,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,6 +165,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Client\src\include</AdditionalIncludeDirectories>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
