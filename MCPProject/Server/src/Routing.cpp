@@ -5,7 +5,7 @@
 #include <ranges>
 
 Routing::Routing()
-    : m_roomIDCounter{ 0 }, m_server{}
+    : m_roomIDCounter{ 0 }, m_server{}, m_dbManager{ "game.db" }
 {}
 
 void Routing::run()
@@ -112,6 +112,92 @@ void Routing::run()
 
         m_rooms[roomID].shoot(data["id"]);
         return crow::response(200, "the shoot was successful");
+    });
+
+    CROW_ROUTE(m_server, "/room/<int>/buyPowerUp").methods(crow::HTTPMethod::Post)
+        ([this](const crow::request& req, uint8_t roomID) {
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "room not found");
+        }
+        auto data = nlohmann::json::parse(req.body);
+        if (!data.contains("id") || !data.contains("databaseID") || !data.contains("powerUp"))
+        {
+            return crow::response(400, "invalid request body");
+        }
+
+        uint8_t playerID      { data["id"] };
+        uint16_t databaseID   { data["databaseID"] };
+        PowerUpEffect powerUp { data["powerUp"].get<PowerUpEffect>() };
+
+        Player& player{ m_rooms[roomID].getPlayer(playerID) };
+
+        uint16_t currentPoints{ player.GetPoints() };
+        if (currentPoints < PowerUp::getCost(powerUp))
+        {
+            return crow::response(400, "not enough points to buy the power up");
+        }
+
+        player.setPoints(currentPoints - PowerUp::getCost(powerUp));
+
+        m_rooms[roomID].getPlayer(playerID).addPowerUp(
+            std::make_unique<PowerUp>(powerUp, PowerUp::kDefaultDuration)
+        );
+
+        return crow::response(200, "the power up was bought successfully");
+     });
+
+    CROW_ROUTE(m_server, "/login").methods(crow::HTTPMethod::Post)
+        ([this](const crow::request& req) {
+        auto data = nlohmann::json::parse(req.body);
+        if (!data.contains("username") || !data.contains("password"))
+        {
+            return crow::response(400, "invalid request body");
+        }
+
+        if (!m_dbManager.userExists(data["username"]))
+        {
+            return crow::response(404, "can't log in, username not found");
+        }
+
+        if (!m_dbManager.verifyCredentials(data["username"], data["password"]))
+        {
+            return crow::response(401, "wrong username or password");
+        }
+
+        // TODO: if the databaseID was already assigned...
+        // there shouldn't be more people on the same acc
+
+        nlohmann::json response{
+            {"message", "login successful"},
+            {"databaseID", m_dbManager.getUserID(data["username"])},
+        };
+
+        return crow::response(200, response.dump());
+    });
+
+    CROW_ROUTE(m_server, "/register").methods(crow::HTTPMethod::Post)
+        ([this](const crow::request& req) {
+        auto data = nlohmann::json::parse(req.body);
+        if (!data.contains("username") || !data.contains("password"))
+        {
+            return crow::response(400, "invalid request body");
+        }
+        if (m_dbManager.userExists(data["username"]))
+        {
+            return crow::response(400, "username already exists");
+        }
+        if (!m_dbManager.addUser(data["username"], data["password"]))
+        {
+            return crow::response(500, "failed to add user");
+        }
+
+        nlohmann::json response{
+            {"message", "user registered successfully"},
+            {"databaseID", m_dbManager.getUserID(data["username"])},
+        };
+
+        return crow::response(200, response.dump());
     });
 
    crow::logger::setLogLevel(crow::LogLevel::Critical);
