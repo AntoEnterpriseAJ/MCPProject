@@ -29,9 +29,13 @@ class DatabaseManager {
 public:
     explicit DatabaseManager(const std::string& db_path);
     ~DatabaseManager();
+    bool userExists(const std::string& username);
     bool addUser(const std::string& username, const std::string& password);
     bool verifyCredentials(const std::string& username, const std::string& password);
+    uint16_t getUserPoints(uint16_t id);
     std::optional<uint16_t> getUserPoints(const std::string& username);
+    int getUserID(const std::string& username);
+    uint16_t setUserPoints(uint16_t id, uint16_t points);
     bool setUserPoints(const std::string& username, uint16_t points);
 private:
     std::unique_ptr<Storage> m_storage;

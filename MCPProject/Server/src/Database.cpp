@@ -14,6 +14,19 @@ DatabaseManager::DatabaseManager(const std::string& db_path) {
 
 DatabaseManager::~DatabaseManager() = default;
 
+bool DatabaseManager::userExists(const std::string& username)
+{
+    try {
+        auto users = m_storage->get_all<User>(
+            sql::where(sql::c(&User::username) == username)
+        );
+        return !users.empty();
+    }
+    catch (const std::exception& e) {
+        return false;
+    }
+}
+
 bool DatabaseManager::addUser(const std::string& username, const std::string& password) {
     try {
         User user{ -1, username, password, 0 };
@@ -40,6 +53,22 @@ bool DatabaseManager::verifyCredentials(const std::string& username, const std::
     }
 }
 
+uint16_t DatabaseManager::getUserPoints(uint16_t id)
+{
+    try {
+        auto users = m_storage->get_all<User>(
+            sql::where(sql::c(&User::id) == id)
+        );
+        if (users.empty()) {
+            return 0;
+        }
+        return users[0].points;
+    }
+    catch (const std::exception& e) {
+        return 0;
+    }
+}
+
 std::optional<uint16_t> DatabaseManager::getUserPoints(const std::string& username) {
     try {
         auto users = m_storage->get_all<User>(
@@ -52,6 +81,41 @@ std::optional<uint16_t> DatabaseManager::getUserPoints(const std::string& userna
     }
     catch (const std::exception& e) {
         return std::nullopt;
+    }
+}
+
+int DatabaseManager::getUserID(const std::string& username)
+{
+    try {
+        auto users = m_storage->get_all<User>(
+            sql::where(sql::c(&User::username) == username)
+        );
+        if (users.empty()) {
+            return -1;
+        }
+        return users[0].id;
+    }
+    catch (const std::exception& e) {
+        return -1;
+    }
+}
+
+uint16_t DatabaseManager::setUserPoints(uint16_t id, uint16_t points)
+{
+    try {
+        auto users = m_storage->get_all<User>(
+            sql::where(sql::c(&User::id) == id)
+        );
+        if (users.empty()) {
+            return 0;
+        }
+        auto& user = users[0];
+        user.points = points;
+        m_storage->update(user);
+        return points;
+    }
+    catch (const std::exception& e) {
+        return 0;
     }
 }
 
