@@ -60,7 +60,7 @@ void PowerUpManager::tryToSpawnPowerUp(const Level::levelLayout& levelLayout)
         };
 
         PowerUpEffect effect{ random(0, static_cast<int>(PowerUpEffect::HealthUp)) };
-        effect = PowerUpEffect::HealthUp; // TODO: REMOVE, FOR TESTING ONLY
+        //effect = PowerUpEffect::HealthUp; // TODO: REMOVE, FOR TESTING ONLY
 
         PickablePowerUp powerUp{ position, PickablePowerUp::kPowerUpSize, effect, 10.0f };
         if (checkValidPosition(levelLayout, powerUp))
