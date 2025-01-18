@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <cpr/cpr.h>
 #include "URL.h"
+#include "PowerUpEffect.h"
 
 class NetworkManager
 {
@@ -12,6 +13,9 @@ public:
 
     void createRoom();
     nlohmann::json join(uint8_t roomID);
+    nlohmann::json login(const std::string& username, const std::string& password);
+    nlohmann::json registerUser(const std::string& username, const std::string& password);
+    void buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEffect powerUp);
     nlohmann::json update();
     nlohmann::json getExistingRooms();
     void movePlayer(uint16_t clientID, Direction direction, float deltaTime);

@@ -87,6 +87,86 @@ nlohmann::json NetworkManager::join(uint8_t roomID)
         return {};
     }
 }
+nlohmann::json NetworkManager::login(const std::string& username, const std::string& password)
+{
+    nlohmann::json data = {
+        {"username", username},
+        {"password", password}
+    };
+    m_session.SetUrl(
+        cpr::Url{ m_URL.addToPath("login").build() }
+    );
+    m_session.SetHeader(cpr::Header{ {"Content-Type", "application/json"} });
+    m_session.SetBody(cpr::Body{ data.dump() });
+    cpr::Response response = m_session.Post();
+    if (response.status_code != cpr::status::HTTP_OK)
+    {
+        std::cout << std::format("There was an error logging in. HTTP status: {}, Error: {}\n"
+            , response.status_code
+            , response.error.message);
+        return {};
+    }
+    try
+    {
+        return nlohmann::json::parse(response.text);
+    }
+    catch (const nlohmann::json::parse_error& e)
+    {
+        throw std::runtime_error("JSON parse error: " + std::string(e.what()));
+    }
+}
+
+nlohmann::json NetworkManager::registerUser(const std::string& username, const std::string& password)
+{
+    nlohmann::json data = {
+        {"username", username},
+        {"password", password}
+    };
+    m_session.SetUrl(
+        cpr::Url{ m_URL.addToPath("register").build() }
+    );
+    m_session.SetHeader(cpr::Header{ {"Content-Type", "application/json"} });
+    m_session.SetBody(cpr::Body{ data.dump() });
+    cpr::Response response = m_session.Post();
+    if (response.status_code != cpr::status::HTTP_OK)
+    {
+        std::cout << std::format("There was an error registering. HTTP status: {}, Error: {}\n"
+            , response.status_code
+            , response.error.message);
+        return {};
+    }
+    try
+    {
+        return nlohmann::json::parse(response.text);
+    }
+    catch (const nlohmann::json::parse_error& e)
+    {
+        throw std::runtime_error("JSON parse error: " + std::string(e.what())); \
+    }
+}
+
+void NetworkManager::buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEffect powerUp)
+{
+    nlohmann::json data = {
+        {"id", clientID},
+        {"databaseID", databaseID},
+        {"powerUp", powerUp}
+    };
+    m_session.SetUrl(
+        cpr::Url{ m_URL.addToPath("room").addToPath(std::to_string(m_currentRoomID)).addToPath("buyPowerUp").build() }
+    );
+    m_session.SetHeader(cpr::Header{ {"Content-Type", "application/json"} });
+    m_session.SetBody(cpr::Body{ data.dump() });
+    cpr::Response response = m_session.Post();
+    if (response.status_code != cpr::status::HTTP_OK)
+    {
+        std::cout << std::format("There was an error buying the power up. HTTP status: {}, Error: {}\n"
+            , response.status_code
+            , response.error.message);
+        return;
+    }
+}
+
 nlohmann::json NetworkManager::update()
 {
     m_session.SetUrl(
