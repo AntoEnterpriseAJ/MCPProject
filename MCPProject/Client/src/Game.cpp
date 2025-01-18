@@ -1,11 +1,10 @@
-module Game;
-
-import <nlohmann/json.hpp>;
-import <cpr/cpr.h>;
-import <iostream>;
-import <memory>;
-import <chrono>;
-import "ResourceManager.h";
+#include "Game.h"
+#include <nlohmann/json.hpp>;
+#include <cpr/cpr.h>;
+#include <iostream>;
+#include <memory>;
+#include <chrono>;
+#include "ResourceManager.h";
 
 
 static uint32_t clientVersion{0};

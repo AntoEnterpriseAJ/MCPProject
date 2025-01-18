@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.ixx" />
-    <ClCompile Include="Level.ixx" />
+    <ClCompile Include="src\include\Game.h" />
+    <ClCompile Include="src\include\Level.h" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\Bullet.cpp" />

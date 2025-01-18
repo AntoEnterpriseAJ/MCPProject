@@ -63,10 +63,10 @@
     <ClCompile Include="src\PowerUpManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Level.ixx">
+    <ClCompile Include="src\include\Level.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.ixx">
+    <ClCompile Include="src\include\Game.h">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>

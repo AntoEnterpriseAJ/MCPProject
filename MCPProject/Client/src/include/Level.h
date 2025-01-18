@@ -1,11 +1,11 @@
-export module Level;
-import <array>;
-import <memory>;
-import "ObstacleType.h";
-import "Obstacle.h";
+#pragma once
+#include <array>;
+#include <memory>;
+#include "ObstacleType.h";
+#include "Obstacle.h";
 
 
-export class Level : public sf::Drawable
+class Level : public sf::Drawable
 {
 public:
     static constexpr uint16_t kWidth{ 30 };

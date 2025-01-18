@@ -1,18 +1,18 @@
-export module Game;
+#pragma once
 
-import <SFML/Graphics.hpp>;
-import <cstdint>;
-import <unordered_map>;
-import <string>;
-import <string_view>;
-import <cpr/cpr.h>;
-import "Player.h";
-import "NetworkManager.h";
-import "BulletManager.h";
-import "PowerUpManager.h";
-import Level;
+#include <SFML/Graphics.hpp>;
+#include <cstdint>;
+#include <unordered_map>;
+#include <string>;
+#include <string_view>;
+#include <cpr/cpr.h>;
+#include "Player.h";
+#include "NetworkManager.h";
+#include "BulletManager.h";
+#include "PowerUpManager.h";
+#include "Level.h";
 
-export class Game
+class Game
 {
 public:
     enum class GameState

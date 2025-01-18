@@ -1,7 +1,5 @@
 #pragma once
 
-import Level;
-
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Bullet.h"

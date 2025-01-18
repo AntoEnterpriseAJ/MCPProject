@@ -1,12 +1,11 @@
-module Level;
-
-import <iostream>;
-import <ranges>;
-import "Brick.h";
-import "Bush.h";
-import "BombBrick.h";
-import "ResourceManager.h";
-import "Obstacle.h";
+#include "Level.h"
+#include <iostream>;
+#include <ranges>;
+#include "Brick.h";
+#include "Bush.h";
+#include "BombBrick.h";
+#include "ResourceManager.h";
+#include "Obstacle.h";
 
 
 Level::Level()

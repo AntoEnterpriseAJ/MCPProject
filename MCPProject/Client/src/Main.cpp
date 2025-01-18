@@ -1,4 +1,4 @@
-import Game;
+#include "Game.h"
 
 int main()
 {
