@@ -17,10 +17,9 @@ class Game
 public:
     enum class GameState
     {
+        Authentificate,
         Menu,
         Playing,
-        Login,
-        Register
     };
 
     Game();
@@ -40,6 +39,7 @@ private:
     void move(Direction direction, float deltaTime);
     void displayRooms();
     void handleMenu();
+    void handleAuthentification();
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
     static constexpr uint16_t kWindowHeight{ 800 };

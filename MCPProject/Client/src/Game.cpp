@@ -10,7 +10,7 @@
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Authentificate }
     , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
@@ -154,72 +154,76 @@ void Game::displayRooms()
 
 void Game::handleMenu()
 {
-    std::cout << "Welcome to the game\n";
-    std::cout << "1.Login\n2.Register\n";
-
-    bool authenticated = false;
-    int option;
-    std::cin >> option;
-
-    if (option == 1)
+    if (m_gameState == GameState::Menu)
     {
-        std::string username, password;
-        std::cout << "username=";
-        std::cin >> username;
-        std::cout << "password=";
-        std::cin >> password;
-        if (login(username, password))
+        int option;
+        std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
+        std::cin >> option;
+
+        if (option == 1)
         {
+            this->createRoom();
+            join(m_networkManager.getCurrentRoomID());
+
             m_gameState = GameState::Playing;
-            authenticated = true;
         }
-    }
-    else if (option == 2)
-    {
-        std::string username, password;
-        std::cout << "username=";
-        std::cin >> username;
-        std::cout << "password=";
-        std::cin >> password;
-        if (registerUser(username, password))
+        else if (option == 2)
         {
+            int roomID;
+            std::cout << "room id=";
+            std::cin >> roomID;
+
+            if (!join(roomID))
+            {
+                std::cout << "Something went wrong\n";
+                return;
+            }
+
             m_gameState = GameState::Playing;
-            authenticated = true;
         }
-    }
-
-    if (!authenticated)
-    {
-        return;
-    }
-
-    std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
-    std::cin >> option;
-
-    if (option == 1)
-    {
-        this->createRoom();
-        join(m_networkManager.getCurrentRoomID());
-                
-        m_gameState = GameState::Playing;
-    }
-    else if (option == 2)
-    {
-        int roomID;
-        std::cout << "room id=";
-        std::cin >> roomID;
-
-        if (!join(roomID))
+        else if (option == 3)
         {
-            std::cout << "Something went wrong\n";
-            return;
+            displayRooms();
         }
-
-        m_gameState = GameState::Playing;
     }
-    else if (option == 3)
+}
+
+void Game::handleAuthentification()
+{
+    if (m_gameState == GameState::Authentificate)
     {
-        displayRooms();
+        std::cout << "1.Login\n2.Register\n";
+
+        bool authenticated = false;
+        int option;
+        std::cin >> option;
+
+        if (option == 1)
+        {
+            std::string username, password;
+            std::cout << "username=";
+            std::cin >> username;
+            std::cout << "password=";
+            std::cin >> password;
+            if (login(username, password))
+            {
+                m_gameState = GameState::Menu;
+                authenticated = true;
+            }
+        }
+        else if (option == 2)
+        {
+            std::string username, password;
+            std::cout << "username=";
+            std::cin >> username;
+            std::cout << "password=";
+            std::cin >> password;
+            if (registerUser(username, password))
+            {
+                m_gameState = GameState::Menu;
+                authenticated = true;
+            }
+        }
     }
 }
 
@@ -287,12 +291,15 @@ void Game::render()
     {
         float deltaTime = m_lastFrametimeClock.restart().asSeconds();
 
-        if (m_gameState == GameState::Menu)
+        if (m_gameState == GameState::Authentificate)
+        {
+            handleAuthentification();
+        }
+        else if (m_gameState == GameState::Menu)
         {
             handleMenu();
         }
-
-        if (m_gameState == GameState::Playing)
+        else if (m_gameState == GameState::Playing)
         {
             m_window.clear();
             handleInputs(deltaTime);
