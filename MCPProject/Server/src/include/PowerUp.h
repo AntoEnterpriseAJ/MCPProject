@@ -13,7 +13,22 @@ public:
 
     void Activate();
     bool HasExpired() const;
-
+public:
+    static constexpr uint16_t kDefaultDuration{ 10 };
+    static constexpr uint16_t kDamageUpCost{ 200 };
+    static constexpr uint16_t kReduceShootCooldownCost{ 500 };
+    static constexpr uint16_t getCost(PowerUpEffect effect)
+    {
+        switch (effect)
+        {
+        case PowerUpEffect::DamageUp:
+            return 200;
+        case PowerUpEffect::ReduceShootCooldown:
+            return 400;
+        default:
+            return 0;
+        }
+    }
 protected:
     PowerUpEffect m_effect;
     float m_duration;
