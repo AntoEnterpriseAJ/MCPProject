@@ -25,10 +25,10 @@ void PowerUpManager::addPowerUp(
     switch (effect)
     {
     case PowerUpEffect::SpeedUp:
-        m_powerUps.emplace_back(position, instance.getTexture("bombBrick"), size, effect);
+        m_powerUps.emplace_back(position, instance.getTexture("speedUp"), size, effect);
         break;
     case PowerUpEffect::HealthUp:
-        m_powerUps.emplace_back(position, instance.getTexture("bombBrick"), size, effect);
+        m_powerUps.emplace_back(position, instance.getTexture("healthUp"), size, effect);
         break;
     }
 

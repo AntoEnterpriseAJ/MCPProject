@@ -25,6 +25,8 @@ Game::Game()
     instance.loadTextureFromFile("res/textures/ice_map.png", "background");
     instance.loadTextureFromFile("res/textures/explosion.png", "explosionSheet");
     instance.loadTextureFromFile("res/textures/bombBrick.png", "bombBrick");
+    instance.loadTextureFromFile("res/textures/healthUp.png", "healthUp");
+    instance.loadTextureFromFile("res/textures/speedUp.png", "speedUp");
 
     m_level.init();
 }
