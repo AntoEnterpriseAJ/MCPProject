@@ -19,6 +19,7 @@ public:
     {
         Authentificate,
         Menu,
+        Waiting,
         Playing,
     };
 
@@ -39,6 +40,7 @@ private:
     void move(Direction direction, float deltaTime);
     void displayRooms();
     void handleMenu();
+    void handleRoomWaiting();
     void handleAuthentification();
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
