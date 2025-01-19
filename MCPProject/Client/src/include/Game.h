@@ -48,7 +48,7 @@ private:
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
     static constexpr uint16_t kWindowHeight{ 800 };
-
+    static uint32_t clientVersion;
 private:
     std::unordered_map<uint16_t, Player> m_players;
 

@@ -6,8 +6,7 @@
 #include <chrono>;
 #include "ResourceManager.h";
 
-
-static uint32_t clientVersion{ 0 };
+uint32_t Game::clientVersion{ 0 };
 
 Game::Game()
     : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Authentificate }
@@ -90,6 +89,10 @@ void Game::handleInputs(float deltaTime)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
     {
         buyPowerUp(PowerUpEffect::ReduceShootCooldown);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+    {
+        buyPowerUp(PowerUpEffect::BulletSpeedUp);
     }
 }
 
