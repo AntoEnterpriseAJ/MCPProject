@@ -1,4 +1,4 @@
-#include "TextBox.h"
+module TextBox;
 
 TextBox::TextBox()
 {

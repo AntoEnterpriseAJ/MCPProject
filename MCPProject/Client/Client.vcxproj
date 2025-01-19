@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Button.ixx" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Room.cpp" />
     <ClCompile Include="src\Menu.cpp" />
@@ -41,9 +42,9 @@
     <ClCompile Include="src\PowerUpManager.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\TextBox.cpp" />
+    <ClCompile Include="TextBox.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\Button.h" />
     <ClInclude Include="src\include\Menu.h" />
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />
@@ -65,7 +66,6 @@
     <ClInclude Include="src\include\ObstacleType.h" />
     <ClInclude Include="src\include\Room.h" />
     <ClInclude Include="src\include\URL.h" />
-    <ClInclude Include="src\include\TextBox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
