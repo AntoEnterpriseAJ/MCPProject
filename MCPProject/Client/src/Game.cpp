@@ -9,10 +9,15 @@
 uint32_t Game::clientVersion{ 0 };
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Authentificate }
-    , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test")
+    , m_gameState{ GameState::Authentificate }
+    , m_internalID{ 0 }
+    , m_bulletManager{}
+    , m_powerUpManager{}
+    , m_menu{kWindowWidth, kWindowHeight, m_networkManager, m_databaseID, m_internalID}
 {
     ResourceManager& instance = ResourceManager::getInstance();
+
     instance.loadTextureFromFile("res/textures/penguin1.png", "player1");
     instance.loadTextureFromFile("res/textures/penguin2.png", "player2");
     instance.loadTextureFromFile("res/textures/penguin3.png", "player3");
@@ -43,6 +48,7 @@ uint16_t Game::getWindowHeight()
 void Game::handleInputs(float deltaTime)
 {
     sf::Event event;
+
     while (m_window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
@@ -54,8 +60,8 @@ void Game::handleInputs(float deltaTime)
             m_window.close();
         }
     }
-
-    if (!m_window.hasFocus() || !m_players[m_internalID].isAlive())
+    // || !m_players[m_internalID].isAlive()
+    if (!m_window.hasFocus())
     {
         return;
     }
@@ -254,7 +260,8 @@ void Game::update()
     GameRoomState roomState{ updateResponse["roomState"] };
     if (roomState == GameRoomState::Finished)
     {
-        m_gameState = GameState::Menu;
+        //m_gameState = GameState::Menu;
+        m_menu.backToRoomSelectionState();
         return;
     }
     std::ranges::for_each(updateResponse["players"], [this](const auto& playerData) {
@@ -310,7 +317,62 @@ void Game::render()
     {
         float deltaTime = m_lastFrametimeClock.restart().asSeconds();
 
-        if (m_gameState == GameState::Authentificate)
+        if (!m_menu.isPlayingState())
+        {
+            m_window.clear();
+
+            sf::Event event;
+            while (m_window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                {
+                    m_window.close();
+                }
+                m_menu.handleEvent(m_window, event);
+            }
+
+            m_menu.draw(m_window);
+            m_window.display();
+        }
+        else
+        {
+            m_window.clear();
+            handleInputs(deltaTime);
+            update();
+
+            m_level.drawBackground(m_window);
+
+            std::ranges::for_each(m_players | std::views::values | std::views::filter([](const Player& player) {
+                return player.isAlive();
+                }),
+                [this](const Player& player) {
+                    m_window.draw(player);
+                });
+
+            m_bulletManager.draw(m_window);
+            m_powerUpManager.draw(m_window);
+
+            m_window.draw(m_level);
+
+            m_window.display();
+
+            if (logClock.getElapsedTime().asSeconds() >= 3.0f)
+            {
+                std::cout << "Players info:\n";
+                std::ranges::for_each(m_players, [](const auto& pair) {
+                    auto [playerId, player] = pair;
+                    std::cout << std::format("Player id({}), Health({}), Lives({}), Points: {}\n",
+                        playerId, player.GetHealth(), player.GetLives(), player.GetPoints());
+                    });
+
+                std::cout << "--------------------------------------------------\n";
+                logClock.restart();
+            }
+        }
+
+        
+
+        /*if (m_gameState == GameState::Authentificate)
         {
             handleAuthentification();
         }
@@ -356,6 +418,6 @@ void Game::render()
                 std::cout << "--------------------------------------------------\n";
                 logClock.restart();
             }
-        }
+        }*/
     }
 }
