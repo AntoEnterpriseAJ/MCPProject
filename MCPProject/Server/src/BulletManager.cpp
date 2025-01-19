@@ -176,9 +176,13 @@ void BulletManager::removeInactive(Level& level)
         }
     }
 
-    std::erase_if(m_bullets, [](const auto& bullet) {
-        return bullet && bullet->getState() == Bullet::State::Inactive;
-    });
+    m_bullets.erase(
+        std::remove_if(m_bullets.begin(), m_bullets.end(),
+            [](const auto& bullet) {
+                return bullet && bullet->getState() == Bullet::State::Inactive;
+            }),
+        m_bullets.end()
+    );
 }
 
 const std::vector<std::unique_ptr<Bullet>>& BulletManager::getBullets() const noexcept
