@@ -185,20 +185,41 @@ void Routing::run()
         uint8_t playerID      { data["id"] };
         uint16_t databaseID   { data["databaseID"] };
         PowerUpEffect powerUp { data["powerUp"].get<PowerUpEffect>() };
+        Player& player        { m_rooms[roomID].getPlayer(playerID) };
 
-        Player& player{ m_rooms[roomID].getPlayer(playerID) };
-
-        uint16_t currentPoints{ player.GetPoints() };
-        if (currentPoints < PowerUp::getCost(powerUp))
+        if (powerUp != PowerUpEffect::BulletSpeedUp)
         {
-            return crow::response(400, "not enough points to buy the power up");
+            uint16_t currentPoints{ player.GetPoints() };
+            if (currentPoints < PowerUp::getCost(powerUp))
+            {
+                return crow::response(400, "not enough points to buy the power up");
+            }
+
+            player.setPoints(currentPoints - PowerUp::getCost(powerUp));
+            player.addPowerUp(std::make_unique<PowerUp>(powerUp, PowerUp::kDefaultDuration));
         }
+        else if (powerUp == PowerUpEffect::BulletSpeedUp || !player.getBoughtSpecialPowerUp())
+        {
+            std::cout << std::format(
+                "bullet speed up request: playerID({}), databaseID({})\n"
+                , playerID, databaseID
+            );
 
-        player.setPoints(currentPoints - PowerUp::getCost(powerUp));
+            uint16_t playerScore = m_dbManager.getUserScore(databaseID);
 
-        m_rooms[roomID].getPlayer(playerID).addPowerUp(
-            std::make_unique<PowerUp>(powerUp, PowerUp::kDefaultDuration)
-        );
+            if (playerScore < PowerUp::getCost(powerUp))
+            {
+                return crow::response(400, "not enough score to buy the power up");
+            }
+
+            player.addPowerUp(std::make_unique<PowerUp>(powerUp, PowerUp::kDefaultDuration));
+            player.setBoughtSpecialPowerUp(true);
+
+            std::cout << std::format(
+                "Player id({}), score({}) bought the score power up\n"
+                , playerID, m_dbManager.getUserScore(databaseID)
+            );
+        }
 
         return crow::response(200, "the power up was bought successfully");
      });
@@ -220,9 +241,6 @@ void Routing::run()
         {
             return crow::response(401, "wrong username or password");
         }
-
-        // TODO: if the databaseID was already assigned...
-        // there shouldn't be more people on the same acc
 
         nlohmann::json response{
             {"message", "login successful"},
