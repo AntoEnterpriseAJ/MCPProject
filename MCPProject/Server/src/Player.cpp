@@ -18,6 +18,11 @@ PlayerState Player::GetState() const
     return m_state;
 }
 
+uint16_t Player::getDatabaseID() const
+{
+    return m_databaseID;
+}
+
 uint16_t Player::GetLives() const
 {
     return m_lives;
@@ -205,6 +210,11 @@ void Player::setDirection(Direction direction)
             break;
         }
     }
+}
+
+void Player::setDatabaseID(uint16_t databaseID)
+{
+    m_databaseID = databaseID;
 }
 
 void Player::setDamageMultiplier(float multiplier)

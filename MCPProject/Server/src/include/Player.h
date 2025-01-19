@@ -19,6 +19,7 @@ public:
 
     void setPoints(uint16_t points);
     void setDirection(Direction direction);
+    void setDatabaseID(uint16_t databaseID);
     void setDamageMultiplier(float multiplier);
     void setRespawnPosition(const Vec2f& position);
     void resetShootCooldown();
@@ -37,6 +38,7 @@ public:
     bool canRespawn() const;
     Direction   GetDirection() const;
     PlayerState GetState() const;
+    uint16_t    getDatabaseID() const;
     uint16_t    GetLives() const;
     uint16_t    GetHealth() const;
     uint16_t    GetPoints() const;
@@ -57,6 +59,7 @@ private:
     uint16_t    m_lives;
     uint16_t    m_health;
     uint16_t    m_points;
+    uint16_t    m_databaseID;
     Direction   m_direction : 2;
     Vec2f       m_respawnPosition;
     PlayerState m_state : 2;
