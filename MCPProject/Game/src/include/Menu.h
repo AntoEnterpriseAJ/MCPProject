@@ -5,8 +5,10 @@
 
 #include "Button.h"
 #include "TextBox.h"
-
+#include <regex>
+#include <string>
 #include <vector>
+#include <iostream>
 
 class Menu {
 public:
@@ -24,6 +26,9 @@ public:
     void handleEvent(sf::RenderWindow& window, const sf::Event& event);
     void draw(sf::RenderWindow& window);
 
+    bool passwordValidator(const std::string& password);
+
+
     MenuState getState() const;
 
 private:
@@ -33,18 +38,17 @@ private:
     MenuState m_currentState;
     sf::Text  m_displayText;
     sf::Font  m_font;
+    sf::Text m_passwordValidationMessage;
 
-    // Main Page buttons
+
     Button m_playButton;
     Button m_exitButton;
 
-    // Login Page buttons and textboxs
     Button  m_loginButton;
     Button  m_registerButton;
     TextBox m_usernameTextBox;
     TextBox m_passwordTextBox;
 
-    // Room Selection Page buttons, text and list of available rooms
     Button              m_joinRoomButton;
     Button              m_createRoomButton;
     sf::Text            m_roomIdText;

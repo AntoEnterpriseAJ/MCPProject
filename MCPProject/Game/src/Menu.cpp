@@ -18,6 +18,12 @@ Menu::Menu(float width, float height)
     m_usernameTextBox = TextBox({ 300, 50 }, { 450, 200 }, m_font, 30);
     m_passwordTextBox = TextBox({ 300, 50 }, { 450, 260 }, m_font, 30);
 
+    m_passwordValidationMessage.setFont(m_font);
+    m_passwordValidationMessage.setCharacterSize(20);
+    m_passwordValidationMessage.setFillColor(sf::Color::Red);
+    m_passwordValidationMessage.setPosition(450, 320);
+    m_passwordValidationMessage.setString("");
+
     m_roomIdText.setFont(m_font);
     m_roomIdText.setString("Room ID");
     m_roomIdText.setCharacterSize(30);
@@ -77,6 +83,13 @@ void Menu::draw(sf::RenderWindow& window)
     }
 }
 
+bool Menu::passwordValidator(const std::string& password)
+{
+    std::regex pattern("^(?=.*[A-Z])(?=.*\\d).{8,}$");
+
+    return std::regex_match(password, pattern);
+}
+
 Menu::MenuState Menu::getState() const 
 {
     return m_currentState;
@@ -98,7 +111,6 @@ void Menu::handleMainPageEvents(sf::RenderWindow& window, const sf::Event& event
         }
     }
 }
-
 void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::Event& event)
 {
     m_usernameTextBox.handleEvent(event, window);
@@ -110,12 +122,26 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
 
         if (m_loginButton.isHovered(mousePos))
         {
-            // TODO: Login process
             setState(MenuState::RoomSelectionPage);
         }
-        if (m_registerButton.isHovered(mousePos))
+        else if (m_registerButton.isHovered(mousePos))
         {
-            // TODO: Register process
+            std::string password = m_passwordTextBox.getText();
+
+            if (passwordValidator(password))
+            {
+                m_passwordValidationMessage.setString("");
+                std::cout << "Password is valid. Proceeding with registration..." << std::endl;
+
+                // TODO: Proceed with registration logig
+            }
+            else
+            {
+                m_passwordValidationMessage.setString(
+                    "Password must include a number, a capital letter,\n"
+                    "and be at least 8 characters long."
+                );
+            }
         }
         else if (m_mainMenuButton.isHovered(mousePos))
         {
@@ -123,6 +149,7 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
         }
     }
 }
+
 
 void Menu::handleRoomSelectionPageEvents(sf::RenderWindow& window, const sf::Event& event)
 {
@@ -181,6 +208,10 @@ void Menu::drawAuthentificationPage(sf::RenderWindow& window)
     m_loginButton.    draw(window);
     m_registerButton. draw(window);
     m_mainMenuButton. draw(window);
+    if (!m_passwordValidationMessage.getString().isEmpty())
+    {
+        window.draw(m_passwordValidationMessage);
+    }   
 }
 
 void Menu::drawRoomSelectionPage(sf::RenderWindow& window)
