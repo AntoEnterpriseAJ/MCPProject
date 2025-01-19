@@ -5,6 +5,7 @@
 #include <cpr/cpr.h>
 #include "URL.h"
 #include "PowerUpEffect.h"
+#include "GameRoomState.h"
 
 class NetworkManager
 {
@@ -16,6 +17,7 @@ public:
     nlohmann::json login(const std::string& username, const std::string& password);
     nlohmann::json registerUser(const std::string& username, const std::string& password);
     void buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEffect powerUp);
+    GameRoomState getRoomState();
     nlohmann::json update();
     nlohmann::json getExistingRooms();
     void movePlayer(uint16_t clientID, Direction direction, float deltaTime);

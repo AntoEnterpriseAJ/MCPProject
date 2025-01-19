@@ -167,6 +167,39 @@ void NetworkManager::buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEf
     }
 }
 
+GameRoomState NetworkManager::getRoomState()
+{
+    m_session.SetUrl(
+        cpr::Url{ 
+            m_URL.addToPath("room").addToPath(std::to_string(m_currentRoomID)).addToPath("roomState").build() 
+        }
+    );
+
+    cpr::Response response = m_session.Get();
+    if (response.status_code != cpr::status::HTTP_OK)
+    {
+        std::cout << std::format("Couldn't retrieve the room state. HTTP Status: {}, Error: {}\n"
+            , response.status_code
+            , response.error.message);
+        return GameRoomState::Waiting;
+    }
+    try
+    {
+        nlohmann::json stateResponse = nlohmann::json::parse(response.text);
+        if (!stateResponse.contains("roomState"))
+        {
+            std::cout << "Invalid state response format: missing 'state'\n";
+            return GameRoomState::Waiting;
+        }
+        return stateResponse["roomState"].get<GameRoomState>();
+    }
+    catch (const nlohmann::json::parse_error& error)
+    {
+        std::cout << std::format("Error parsing join response: {}\n", error.what());
+        return GameRoomState::Waiting;
+    }
+}
+
 nlohmann::json NetworkManager::update()
 {
     m_session.SetUrl(
