@@ -63,7 +63,9 @@ void Routing::run()
             return crow::response(400, "Room is not in waiting state");
         }
 
-        uint8_t playerID = m_rooms[roomID].addPlayer(); 
+        auto data = nlohmann::json::parse(req.body);
+
+        uint8_t playerID = m_rooms[roomID].addPlayer(data["databaseID"]);
         nlohmann::json response = {
             {"playerID", playerID},
             {"roomState", m_rooms[roomID].getState()},
@@ -80,7 +82,7 @@ void Routing::run()
             return crow::response(404, "room not found");
         }
 
-        std::cout << "Room state requested for room " << roomID << "\n";
+        //std::cout << "Room state requested for room " << roomID << "\n";
 
         m_rooms[roomID].tryToStart();
         GameRoomState gameRoomState{ m_rooms[roomID].getState() };
@@ -103,8 +105,35 @@ void Routing::run()
             return crow::response(400, "clientVersion parameter missing");
         }
 
+        auto& room = m_rooms.at(roomID);
         uint32_t clientVersion = std::stoi(req.url_params.get("clientVersion"));
-        return crow::response(200, m_rooms.at(roomID).getGameStateResponse(clientVersion).dump());
+        nlohmann::json response = room.getGameStateResponse(clientVersion);
+
+        if (response["roomState"] == GameRoomState::Finished && !room.getUpdatedScore())
+        {
+            std::cout << "Game finished in room " << roomID << "\n";
+
+            auto eliminatedPlayersID = room.getEliminatedPlayers();
+            auto [firstPlaceID, secondPlaceID] = std::tuple{
+                eliminatedPlayersID.back(), eliminatedPlayersID[eliminatedPlayersID.size() - 2]
+            };
+
+            uint16_t firstPlaceDatabaseID = room.getPlayer(firstPlaceID).getDatabaseID();
+            uint16_t secondPlaceDatabaseID = room.getPlayer(secondPlaceID).getDatabaseID();
+
+            std::cout << "First place DatabaseID: " << firstPlaceDatabaseID
+                << " Second place DatabaseID: " << secondPlaceDatabaseID << "\n";
+
+            m_dbManager.addScore(firstPlaceDatabaseID, 2);
+            m_dbManager.addScore(secondPlaceDatabaseID, 1);
+
+            std::cout << "First place points: " << m_dbManager.getUserScore(firstPlaceDatabaseID)
+                << " Second place points: " << m_dbManager.getUserScore(secondPlaceDatabaseID) << "\n";
+
+            room.setUpdatedScore(true);
+        }
+
+        return crow::response(200, response.dump());
     });
 
     CROW_ROUTE(m_server, "/room/<int>/move").methods(crow::HTTPMethod::Post)
@@ -199,6 +228,8 @@ void Routing::run()
             {"message", "login successful"},
             {"databaseID", m_dbManager.getUserID(data["username"])},
         };
+
+        std::cout << "Database ID: " << m_dbManager.getUserID(data["username"]) << "\n";
 
         return crow::response(200, response.dump());
     });
