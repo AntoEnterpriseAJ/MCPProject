@@ -31,7 +31,9 @@ public:
     void addPoints(uint16_t points);
     void addPowerUp(std::unique_ptr<PowerUp> powerUp);
     void updatePowerUps();
+    void setBoughtSpecialPowerUp(bool bought);
 
+    bool getBoughtSpecialPowerUp() const;
     bool isAlive() const;
     bool isEliminated() const;
     bool canShoot() const;
@@ -43,7 +45,8 @@ public:
     uint16_t    GetHealth() const;
     uint16_t    GetPoints() const;
     float       getSpeed() const;
-    float       getDamageMultiplier() const;
+    float       getBulletDamageMultiplier() const;
+    float       getBulletSpeedMultiplier() const;
 public:
     static constexpr float    kCooldownTime = 0.5f;
     static constexpr float    kPlayerSpeed = 150.0f;
@@ -64,8 +67,10 @@ private:
     Vec2f       m_respawnPosition;
     PlayerState m_state : 2;
     float       m_playerSpeed;
-    float       m_damageMultiplier;
+    float       m_bulletDamageMultiplier;
+    float       m_bulletSpeedMultiplier;
     float       m_shootCooldown;
+    bool        m_boughtSpecialPowerUp;
 
     std::vector<std::unique_ptr<PowerUp>> m_powerUps;
 

@@ -3,7 +3,8 @@
 Player::Player(const Vec2f& position, const Vec2f& size, Direction direction, uint16_t lives, uint16_t health)
     : GameObject(position, size), m_direction{ direction }, m_lives{ lives }, m_respawnPosition{}
     , m_state{ PlayerState::Alive }, m_health{ health }, m_points{ 0 }, m_lastShoot{}, m_lastRespawn{}
-    , m_powerUps{}, m_playerSpeed{ kPlayerSpeed }, m_damageMultiplier{ 1.0f }, m_shootCooldown{ kCooldownTime }
+    , m_powerUps{}, m_playerSpeed{ kPlayerSpeed }, m_bulletDamageMultiplier{ 1.0f }
+    , m_shootCooldown{ kCooldownTime }, m_bulletSpeedMultiplier{ 1.0f }, m_boughtSpecialPowerUp{ false }
 {
     this->setOrigin(size / 2.0f);
 }
@@ -43,9 +44,14 @@ float Player::getSpeed() const
     return m_playerSpeed;
 }
 
-float Player::getDamageMultiplier() const
+float Player::getBulletDamageMultiplier() const
 {
-    return m_damageMultiplier;
+    return m_bulletDamageMultiplier;
+}
+
+float Player::getBulletSpeedMultiplier() const
+{
+    return m_bulletSpeedMultiplier;
 }
 
 void Player::applyPowerUp(const std::unique_ptr<PowerUp>& powerUp)
@@ -61,12 +67,13 @@ void Player::applyPowerUp(const std::unique_ptr<PowerUp>& powerUp)
         m_playerSpeed += kPlayerSpeed * 0.5f;
         break;
     case PowerUpEffect::DamageUp:
-        m_damageMultiplier += 0.5f;
+        m_bulletDamageMultiplier += 0.5f;
         break;
     case PowerUpEffect::ReduceShootCooldown:
         m_shootCooldown -= kCooldownTime * 0.5f;
         break;
     case PowerUpEffect::BulletSpeedUp:
+        m_bulletSpeedMultiplier *= 1.15f;
         break;
     }
 }
@@ -81,12 +88,13 @@ void Player::deactivatePowerUp(std::unique_ptr<PowerUp>& powerUp)
         m_playerSpeed -= kPlayerSpeed * 0.5f;
         break;
     case PowerUpEffect::DamageUp:
-        m_damageMultiplier -= 0.5f;
+        m_bulletDamageMultiplier -= 0.5f;
         break;
     case PowerUpEffect::ReduceShootCooldown:
         m_shootCooldown += kCooldownTime * 0.5f;
         break;
     case PowerUpEffect::BulletSpeedUp:
+        m_bulletSpeedMultiplier /= 1.15f;
         break;
     }
 }
@@ -154,9 +162,19 @@ void Player::updatePowerUps()
     std::erase_if(m_powerUps, [](const auto& powerUp) { return powerUp->HasExpired(); });
 }
 
+void Player::setBoughtSpecialPowerUp(bool bought)
+{
+    m_boughtSpecialPowerUp = bought;
+}
+
 bool Player::isEliminated() const
 {
     return m_state == PlayerState::Eliminated;
+}
+
+bool Player::getBoughtSpecialPowerUp() const
+{
+    return m_boughtSpecialPowerUp;
 }
 
 bool Player::isAlive() const
@@ -219,7 +237,7 @@ void Player::setDatabaseID(uint16_t databaseID)
 
 void Player::setDamageMultiplier(float multiplier)
 {
-    m_damageMultiplier = multiplier;
+    m_bulletDamageMultiplier = multiplier;
 }
 
 void Player::setRespawnPosition(const Vec2f& position)
