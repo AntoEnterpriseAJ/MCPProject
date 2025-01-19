@@ -24,28 +24,13 @@ void Level::load()
         return dist(gen);
         };
 
-    uint8_t firstLevel{ 1 };
-    uint8_t lastLevel{ 5 };
-    uint8_t randomLevel{ static_cast<uint8_t>(random(firstLevel, lastLevel)) };
-
-    m_ID = randomLevel;
-    std::string levelFileName{ "res/levels/level" + std::to_string(randomLevel) + ".txt" };
-
-    std::ifstream fin(levelFileName);
-    if (!fin)
-    {
-        std::cerr << "ERROR: Cannot open the file!\n";
-        return;
-    }
-
-    //std::array<int, kHeight* kWidth> map;
-    //GenerateGameMap(map);
+    std::array<int, kHeight* kWidth> map;
+    GenerateGameMap(map);
 
     uint16_t currentBrickCount{ 0 };
     std::ranges::for_each(std::views::iota(0, static_cast<int>(kHeight)), [&](int i) {
         std::ranges::for_each(std::views::iota(0, static_cast<int>(kWidth)), [&](int j) {
-             int tex; fin >> tex;
-            //int tex = map[i * kWidth + j]; //for DLL testing
+            int tex = map[i * kWidth + j];
 
             ObstacleType obstacleType{ tex };
             Vec2f position{ j * Obstacle::kObstacleSize, i * Obstacle::kObstacleSize };

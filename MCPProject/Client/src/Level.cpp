@@ -32,6 +32,12 @@ void Level::update(const std::array<uint16_t, kHeight * kWidth>& updatedLevel)
                     return;
                 }
 
+                if (textureType == ObstacleType::BombBrick)
+                {
+                    current->SetTexture(ResourceManager::getInstance().getTexture(ObstacleType::Brick));
+                    return;
+                }
+
                 current->SetTexture(ResourceManager::getInstance().getTexture(textureType));
                 return;
             }
@@ -95,7 +101,7 @@ std::unique_ptr<Obstacle> Level::createObstacle(ObstacleType obstacleType, const
     }
     else if (obstacleType == ObstacleType::BombBrick)
     {
-        return std::make_unique<BombBrick>(position, ResourceManager::getInstance().getTexture(obstacleType));
+        return std::make_unique<BombBrick>(position, ResourceManager::getInstance().getTexture(ObstacleType::Brick));
     }
     else if (obstacleType  == ObstacleType::Bush)
     {
