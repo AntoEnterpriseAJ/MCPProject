@@ -7,15 +7,11 @@
 #include "ResourceManager.h";
 
 
-static uint32_t clientVersion{0};
+static uint32_t clientVersion{ 0 };
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test")
-    , m_gameState{ GameState::Menu }
-    , m_internalID{ 0 }
-    , m_bulletManager{}
-    , m_powerUpManager{}
-    , m_menu(kWindowWidth, kWindowHeight)
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Authentificate }
+    , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player1");
@@ -204,7 +200,6 @@ void Game::handleRoomWaiting()
         }
     }
 }
-
 void Game::handleAuthentification()
 {
     if (m_gameState == GameState::Authentificate)
@@ -249,7 +244,7 @@ void Game::update()
     nlohmann::json updateResponse = m_networkManager.update();
 
     if (updateResponse.empty())
-    {   
+    {
         return;
     }
 
@@ -259,15 +254,14 @@ void Game::update()
         m_gameState = GameState::Menu;
         return;
     }
-
-    std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
-        sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
-        uint16_t    playerId  { playerData["id"] };
-        Direction   direction { playerData["direction"] };
-        uint16_t    lives     { playerData["lives"] };
-        uint16_t    health    { playerData["health"] };
-        PlayerState state     { playerData["state"] };
-        uint16_t    points    { playerData["points"] };
+    std::ranges::for_each(updateResponse["players"], [this](const auto& playerData) {
+        sf::Vector2f newPosition = { playerData["position"][0], playerData["position"][1] };
+        uint16_t    playerId{ playerData["id"] };
+        Direction   direction{ playerData["direction"] };
+        uint16_t    lives{ playerData["lives"] };
+        uint16_t    health{ playerData["health"] };
+        PlayerState state{ playerData["state"] };
+        uint16_t    points{ playerData["points"] };
 
         if (!m_players.contains(playerId))
         {
@@ -281,7 +275,7 @@ void Game::update()
         m_players[playerId].setHealth(health);
         m_players[playerId].setState(state);
         m_players[playerId].setPoints(points);
-    });
+        });
 
     m_bulletManager.clearBullets();
     std::ranges::for_each(updateResponse["bullets"], [this](const auto& bulletData) {
@@ -289,16 +283,16 @@ void Game::update()
         Direction direction = bulletData["direction"];
         m_bulletManager.addBullet(
             std::make_unique<Bullet>(position, ResourceManager::getInstance().getTexture("bullet"), direction));
-    });
+        });
 
     m_powerUpManager.clearPowerUps();
     std::ranges::for_each(updateResponse["powerUps"], [this](const auto& powerUpData) {
-        sf::Vector2f position { powerUpData["position"][0], powerUpData["position"][1] };
-        PowerUpEffect effect{ powerUpData["effect"]};
+        sf::Vector2f position{ powerUpData["position"][0], powerUpData["position"][1] };
+        PowerUpEffect effect{ powerUpData["effect"] };
         sf::Vector2f size{ powerUpData["size"][0], powerUpData["size"][1] };
 
         m_powerUpManager.addPowerUp(position, size, effect);
-    });
+        });
 
     m_level.update(updateResponse["levelLayout"]);
 
@@ -317,21 +311,9 @@ void Game::render()
         {
             handleAuthentification();
         }
-        if (m_gameState == GameState::Menu)
+        else if (m_gameState == GameState::Menu)
         {
-            sf::Event event;
-            while (m_window.pollEvent(event))
-            {
-                if (event.type == sf::Event::Closed)
-                {
-                    m_window.close();
-                }
-                m_menu.handleEvent(m_window, event);
-            }
-
-            m_window.clear();
-            m_menu.draw(m_window);
-            m_window.display();
+            handleMenu();
         }
         else if (m_gameState == GameState::Waiting)
         {

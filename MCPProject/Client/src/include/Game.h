@@ -53,7 +53,6 @@ private:
     std::unordered_map<uint16_t, Player> m_players;
 
     GameState        m_gameState;
-    Menu             m_menu;
     sf::Clock        m_lastFrametimeClock;
     Level            m_level;
     NetworkManager   m_networkManager;
