@@ -13,7 +13,7 @@ public:
     NetworkManager();
 
     void createRoom();
-    nlohmann::json join(uint8_t roomID);
+    nlohmann::json join(uint8_t roomID, uint16_t databaseID);
     nlohmann::json login(const std::string& username, const std::string& password);
     nlohmann::json registerUser(const std::string& username, const std::string& password);
     void buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEffect powerUp);
