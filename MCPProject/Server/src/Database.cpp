@@ -53,7 +53,7 @@ bool DatabaseManager::verifyCredentials(const std::string& username, const std::
     }
 }
 
-uint16_t DatabaseManager::getUserPoints(uint16_t id)
+uint16_t DatabaseManager::getUserScore(uint16_t id)
 {
     try {
         auto users = m_storage->get_all<User>(
@@ -62,14 +62,14 @@ uint16_t DatabaseManager::getUserPoints(uint16_t id)
         if (users.empty()) {
             return 0;
         }
-        return users[0].points;
+        return users[0].score;
     }
     catch (const std::exception& e) {
         return 0;
     }
 }
 
-std::optional<uint16_t> DatabaseManager::getUserPoints(const std::string& username) {
+std::optional<uint16_t> DatabaseManager::getUserScore(const std::string& username) {
     try {
         auto users = m_storage->get_all<User>(
             sql::where(sql::c(&User::username) == username)
@@ -77,7 +77,7 @@ std::optional<uint16_t> DatabaseManager::getUserPoints(const std::string& userna
         if (users.empty()) {
             return std::nullopt;
         }
-        return users[0].points;
+        return users[0].score;
     }
     catch (const std::exception& e) {
         return std::nullopt;
@@ -100,7 +100,25 @@ int DatabaseManager::getUserID(const std::string& username)
     }
 }
 
-uint16_t DatabaseManager::setUserPoints(uint16_t id, uint16_t points)
+void DatabaseManager::addScore(uint16_t id, uint16_t score)
+{
+    try {
+        auto users = m_storage->get_all<User>(
+            sql::where(sql::c(&User::id) == id)
+        );
+        if (users.empty()) {
+            return;
+        }
+        auto& user = users[0];
+        user.score += score;
+        m_storage->update(user);
+    }
+    catch (const std::exception& e) {
+        return;
+    }
+}
+
+uint16_t DatabaseManager::setUserScore(uint16_t id, uint16_t score)
 {
     try {
         auto users = m_storage->get_all<User>(
@@ -110,16 +128,16 @@ uint16_t DatabaseManager::setUserPoints(uint16_t id, uint16_t points)
             return 0;
         }
         auto& user = users[0];
-        user.points = points;
+        user.score = score;
         m_storage->update(user);
-        return points;
+        return score;
     }
     catch (const std::exception& e) {
         return 0;
     }
 }
 
-bool DatabaseManager::setUserPoints(const std::string& username, uint16_t points) {
+bool DatabaseManager::setUserScore(const std::string& username, uint16_t score) {
     try {
         auto users = m_storage->get_all<User>(
             sql::where(sql::c(&User::username) == username)
@@ -128,7 +146,7 @@ bool DatabaseManager::setUserPoints(const std::string& username, uint16_t points
             return false;
         }
         auto& user = users[0];
-        user.points = points;
+        user.score = score;
         m_storage->update(user);
         return true;
     }

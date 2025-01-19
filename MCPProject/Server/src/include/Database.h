@@ -10,7 +10,7 @@ struct User {
     int id;
     std::string username;
     std::string password;
-    uint16_t points;
+    uint16_t score;
 };
 
 inline auto init_storage(const std::string& path) {
@@ -19,7 +19,7 @@ inline auto init_storage(const std::string& path) {
             sql::make_column("id", &User::id, sql::primary_key().autoincrement()),
             sql::make_column("username", &User::username, sql::unique()),
             sql::make_column("password", &User::password),
-            sql::make_column("points", &User::points, sql::default_value(0))
+            sql::make_column("score", &User::score, sql::default_value(0))
         ));
 }
 
@@ -32,11 +32,12 @@ public:
     bool userExists(const std::string& username);
     bool addUser(const std::string& username, const std::string& password);
     bool verifyCredentials(const std::string& username, const std::string& password);
-    uint16_t getUserPoints(uint16_t id);
-    std::optional<uint16_t> getUserPoints(const std::string& username);
+    uint16_t getUserScore(uint16_t id);
+    std::optional<uint16_t> getUserScore(const std::string& username);
     int getUserID(const std::string& username);
-    uint16_t setUserPoints(uint16_t id, uint16_t points);
-    bool setUserPoints(const std::string& username, uint16_t points);
+    void addScore(uint16_t id, uint16_t score);
+    uint16_t setUserScore(uint16_t id, uint16_t score);
+    bool setUserScore(const std::string& username, uint16_t score);
 private:
     std::unique_ptr<Storage> m_storage;
 };
