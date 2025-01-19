@@ -25,6 +25,8 @@ public:
             return 200;
         case PowerUpEffect::ReduceShootCooldown:
             return 400;
+        case PowerUpEffect::BulletSpeedUp:
+            return 10;
         default:
             return 0;
         }
