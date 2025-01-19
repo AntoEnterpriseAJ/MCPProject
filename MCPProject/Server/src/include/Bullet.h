@@ -17,7 +17,8 @@ public:
         Direction    dir,
         uint8_t      playerID,
         const Vec2f& size = { kBulletSizeX, kBulletSizeY },
-        uint16_t     damage = kBulletDamage
+        uint16_t     damage = kBulletDamage,
+        float        speed  = kBulletSpeed
     );
     ~Bullet() override = default;
 
@@ -41,4 +42,5 @@ private:
     uint8_t   m_playerID;
     Direction m_direction : 2;
     State     m_state     : 1;
+    float     m_speed;
 };

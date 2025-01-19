@@ -5,10 +5,11 @@ Bullet::Bullet(
     Direction dir,
     uint8_t playerID,
     const Vec2f& size,
-    uint16_t damage
+    uint16_t damage,
+    float speed
 )
-    : GameObject{ pos, size }, m_state{ State::Active }
-    , m_direction{ dir }, m_damage{ damage }, m_playerID{playerID}
+    : GameObject{ pos, size }, m_state{ State::Active }, m_direction{ dir }
+    , m_damage{ damage }, m_playerID{ playerID }, m_speed{ speed }
 {
     setOrigin(size / 2.0f);
 
@@ -32,13 +33,13 @@ Bullet::Bullet(
 void Bullet::update(float deltaTime)
 {
     if (m_direction == Direction::Up)
-        this->move(0, -kBulletSpeed * deltaTime);
+        this->move(0, -m_speed * deltaTime);
     else if (m_direction == Direction::Down)
-        this->move(0, kBulletSpeed * deltaTime);
+        this->move(0, m_speed * deltaTime);
     else if (m_direction == Direction::Left)
-        this->move(-kBulletSpeed * deltaTime, 0);
+        this->move(-m_speed * deltaTime, 0);
     else if (m_direction == Direction::Right)
-        this->move(kBulletSpeed * deltaTime, 0);
+        this->move(m_speed * deltaTime, 0);
 }
 
 void Bullet::setState(Bullet::State state)
