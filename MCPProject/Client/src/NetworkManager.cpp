@@ -5,9 +5,6 @@
 
 const std::string NetworkManager::kServerUrl{"http://127.0.0.1:18080"};
 
-//TODO: add a logger
-//TODO: don't block the main thread waiting for responses (for now it's fine)
-//TODO: add custom json serialization for custom types
 NetworkManager::NetworkManager()
     : m_clientVersion{0}, m_URL{kServerUrl}, m_currentRoomID{0}
 {}
@@ -141,7 +138,7 @@ nlohmann::json NetworkManager::registerUser(const std::string& username, const s
     }
     catch (const nlohmann::json::parse_error& e)
     {
-        throw std::runtime_error("JSON parse error: " + std::string(e.what())); \
+        throw std::runtime_error("JSON parse error: " + std::string(e.what()));
     }
 }
 
@@ -160,9 +157,9 @@ void NetworkManager::buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEf
     cpr::Response response = m_session.Post();
     if (response.status_code != cpr::status::HTTP_OK)
     {
-        std::cout << std::format("There was an error buying the power up. HTTP status: {}, Error: {}\n"
-            , response.status_code
-            , response.error.message);
+        std::cout << std::format("There was an error buying the power up. HTTP status: {}, Error: {}\n",
+            response.status_code,
+            response.text.empty() ? response.error.message : response.text);
         return;
     }
 }
