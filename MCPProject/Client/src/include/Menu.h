@@ -2,8 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Button.h"
-#include "TextBox.h"
+import Button;
+import TextBox;
+
 #include "NetworkManager.h"
 #include "Room.h"
 

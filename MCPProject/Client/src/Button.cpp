@@ -1,4 +1,4 @@
-#include "Button.h"
+module Button;
 
 Button::Button(
     const std::string& label,
