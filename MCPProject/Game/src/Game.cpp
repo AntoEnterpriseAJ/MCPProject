@@ -6,11 +6,11 @@
 #include "PowerUpManager.h"
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"),
-    m_level{},
-    m_menu{},
-    m_loginWindow{ kWindowWidth, kWindowHeight },
-    m_gameState{ GameState::Menu }
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test")
+    , m_level{}
+    , m_menu{ kWindowWidth, kWindowHeight }
+    , m_loginWindow{ kWindowWidth, kWindowHeight }
+    , m_gameState{ GameState::Menu }
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player");
