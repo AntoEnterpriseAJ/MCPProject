@@ -14,8 +14,6 @@ void PowerUpManager::update(
     tryToSpawnPowerUp(levelLayout);
     handlePlayerCollisions(players);
     removeCollectedPowerUps();
-
-    std::cout << "Currently there are " << m_collectablePowerUps.size() << " powerUps spawned\n";
 }
 
 const std::vector<PickablePowerUp>& PowerUpManager::getCollectablePowerUps() const
