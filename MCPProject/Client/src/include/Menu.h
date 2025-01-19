@@ -25,8 +25,6 @@ public:
     void handleEvent(sf::RenderWindow& window, const sf::Event& event);
     void draw(sf::RenderWindow& window);
 
-    bool gameStarted();
-
     MenuState getState() const;
 
 private:
@@ -56,13 +54,12 @@ private:
     Button m_mainMenuButton;
 
 private:
-    void handleMainPageEvents(sf::RenderWindow& window, const sf::Event& event);
+    void handleMainPageEvents            (sf::RenderWindow& window, const sf::Event& event);
     void handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::Event& event);
-    void handleRoomSelectionPageEvents(sf::RenderWindow& window, const sf::Event& event);
-    void handleLobbyPageEvent(sf::RenderWindow& window, const sf::Event& event);
+    void handleRoomSelectionPageEvents   (sf::RenderWindow& window, const sf::Event& event);
 
-    void drawMainPage(sf::RenderWindow& window);
+    void drawMainPage            (sf::RenderWindow& window);
     void drawAuthentificationPage(sf::RenderWindow& window);
-    void drawRoomSelectionPage(sf::RenderWindow& window);
-    void drawLobbyPage(sf::RenderWindow& window);
+    void drawRoomSelectionPage   (sf::RenderWindow& window);
+    void drawLobbyPage           (sf::RenderWindow& window);
 };
