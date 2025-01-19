@@ -20,9 +20,14 @@ void Routing::run()
         nlohmann::json response;
         response["rooms"] = nlohmann::json::array();
 
-        std::ranges::for_each(m_rooms | std::ranges::views::values, [&response](const auto& room) {
+        auto waitingRooms = m_rooms | std::views::filter([](const auto& room) {
+            return room.second.getState() == GameRoomState::Waiting;
+        });
+
+        std::ranges::for_each(waitingRooms | std::ranges::views::values, [&response](const auto& room) {
             response["rooms"].emplace_back(nlohmann::json{
-                {"roomID", room.getID()}
+                {"roomID", room.getID()},
+                {"players", room.getPlayers().size()}
             });
         });
 
@@ -53,12 +58,34 @@ void Routing::run()
             return crow::response(400, "Room is full");
         }
 
-        auto data = nlohmann::json::parse(req.body); // TODO: fix, currently not used
-        
+        if (m_rooms[roomID].getState() != GameRoomState::Waiting)
+        {
+            return crow::response(400, "Room is not in waiting state");
+        }
+
         uint8_t playerID = m_rooms[roomID].addPlayer(); 
         nlohmann::json response = {
             {"playerID", playerID},
+            {"roomState", m_rooms[roomID].getState()},
             {"message", std::format("Player {} joined room {}", playerID, roomID)}
+        };
+
+        return crow::response(200, response.dump());
+    });
+
+    CROW_ROUTE(m_server, "/room/<int>/roomState").methods(crow::HTTPMethod::Get)
+        ([this](uint8_t roomID) {
+        if (!m_rooms.contains(roomID))
+        {
+            return crow::response(404, "room not found");
+        }
+
+        std::cout << "Room state requested for room " << roomID << "\n";
+
+        m_rooms[roomID].tryToStart();
+        GameRoomState gameRoomState{ m_rooms[roomID].getState() };
+        nlohmann::json response{
+            {"roomState", gameRoomState}
         };
 
         return crow::response(200, response.dump());
@@ -77,7 +104,7 @@ void Routing::run()
         }
 
         uint32_t clientVersion = std::stoi(req.url_params.get("clientVersion"));
-        return crow::response(200, m_rooms.at(roomID).getStateResponse(clientVersion).dump());
+        return crow::response(200, m_rooms.at(roomID).getGameStateResponse(clientVersion).dump());
     });
 
     CROW_ROUTE(m_server, "/room/<int>/move").methods(crow::HTTPMethod::Post)
