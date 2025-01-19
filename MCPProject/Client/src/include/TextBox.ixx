@@ -1,8 +1,10 @@
-#pragma once
-#include <SFML/Graphics.hpp>
-#include <string>
+export module TextBox;
 
-class TextBox {
+
+import <SFML/Graphics.hpp>;
+import <string>;
+
+export class TextBox {
 public:
     TextBox();
 

@@ -131,9 +131,6 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
             if (passwordValidator(password))
             {
                 m_passwordValidationMessage.setString("");
-                std::cout << "Password is valid. Proceeding with registration..." << std::endl;
-
-                // TODO: Proceed with registration logig
             }
             else
             {

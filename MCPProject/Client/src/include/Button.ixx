@@ -1,9 +1,9 @@
-#pragma once
+export module Button;
 
-#include <SFML/Graphics.hpp>
-#include <string>
+import <SFML/Graphics.hpp>;
+import <string>;
 
-class Button
+export class Button
 {
 public:
     Button(const std::string& label, const sf::Vector2f& position, const sf::Vector2f& size);

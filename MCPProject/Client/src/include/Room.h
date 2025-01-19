@@ -3,7 +3,7 @@
 #include <string>
 
 #include <SFML/Graphics.hpp>
-#include "Button.h"
+import Button;
 
 class Room
 {
