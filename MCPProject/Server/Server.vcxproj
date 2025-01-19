@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BuyablePowerUp.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\BombBrick.cpp" />
     <ClCompile Include="src\Brick.cpp" />
@@ -39,7 +38,6 @@
     <ClCompile Include="src\Routing.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\BuyablePowerUp.h" />
     <ClInclude Include="src\include\Database.h" />
     <ClInclude Include="src\include\BombBrick.h" />
     <ClInclude Include="src\include\Brick.h" />

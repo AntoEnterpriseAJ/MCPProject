@@ -66,9 +66,6 @@
     <ClCompile Include="src\PickablePowerUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BuyablePowerUp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Routing.h">
@@ -123,9 +120,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\PickablePowerUp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\BuyablePowerUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\PowerUpEffect.h">
