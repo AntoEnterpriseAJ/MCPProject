@@ -18,7 +18,6 @@ public:
     void setState(PlayerState state);
     void setPoints(uint16_t points);
 
-    // client side only movement, maybe will use later
     void move(Direction direction, float deltaTime);
     void resetShootCooldown();
 
@@ -35,8 +34,9 @@ private:
     static constexpr float    kPlayerSpeed  = 150.0f;
     static constexpr uint16_t kPlayerHealth = 100.0f;
     static constexpr uint16_t kPlayerLives  = 3;
+
 private:
-    float       m_timeElapsed; // TODO: do i need this
+    float       m_timeElapsed; 
     uint16_t    m_lives;
     uint16_t    m_health;
     uint16_t    m_points;

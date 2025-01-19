@@ -4,8 +4,6 @@
 #include <ranges>
 #include <sstream>
 
-//TODO: use convertible to string concept
-//      automatically convert to string what can be converted, to avoid addToPath(std::to_string(...))
 class URL
 {
 public:

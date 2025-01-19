@@ -13,13 +13,16 @@ public:
     NetworkManager();
 
     void createRoom();
+
     nlohmann::json join(uint8_t roomID, uint16_t databaseID);
     nlohmann::json login(const std::string& username, const std::string& password);
     nlohmann::json registerUser(const std::string& username, const std::string& password);
     void buyPowerUp(uint8_t clientID, uint16_t databaseID, PowerUpEffect powerUp);
+
     GameRoomState getRoomState();
     nlohmann::json update();
     nlohmann::json getExistingRooms();
+
     void movePlayer(uint16_t clientID, Direction direction, float deltaTime);
     void shoot(uint16_t clientID);
 
@@ -28,6 +31,7 @@ public:
 
 private:
     static const std::string kServerUrl;
+
 private:
     uint8_t      m_currentRoomID;
     cpr::Session m_session;

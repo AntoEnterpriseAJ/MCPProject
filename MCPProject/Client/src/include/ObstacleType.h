@@ -14,17 +14,11 @@ inline std::string toString(ObstacleType obstacleType)
 {
     switch (obstacleType)
     {
-    case ObstacleType::None:
-        return "none";
-    case ObstacleType::Brick:
-        return "brick";
-    case ObstacleType::UnbreakableBrick:
-        return "unbreakableBrick";
-    case ObstacleType::Bush:
-        return "bush";
-    case ObstacleType::BombBrick:
-        return "bombBrick";
-    default:
-        return "not a valid obstacle type";
+    case ObstacleType::None:             return "none";             break;
+    case ObstacleType::Brick:            return "brick";            break;
+    case ObstacleType::UnbreakableBrick: return "unbreakableBrick"; break;
+    case ObstacleType::Bush:             return "bush";             break;
+    case ObstacleType::BombBrick:        return "bombBrick";        break;
+    default: return "not a valid obstacle type"; break;
     }
 }

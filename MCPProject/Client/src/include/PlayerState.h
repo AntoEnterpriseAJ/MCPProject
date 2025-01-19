@@ -10,7 +10,7 @@ enum class PlayerState : uint8_t
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(PlayerState, {
-    {PlayerState::Alive, "alive"},
-    {PlayerState::Respawning, "respawning"},
-    {PlayerState::Eliminated, "eliminated"}
+    { PlayerState::Alive,      "alive"      },
+    { PlayerState::Respawning, "respawning" },
+    { PlayerState::Eliminated, "eliminated" }
 })  

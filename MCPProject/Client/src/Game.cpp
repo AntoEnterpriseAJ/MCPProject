@@ -60,7 +60,6 @@ void Game::handleInputs(float deltaTime)
             m_window.close();
         }
     }
-    // || !m_players[m_internalID].isAlive()
     if (!m_window.hasFocus())
     {
         return;
@@ -133,7 +132,6 @@ bool Game::login(const std::string& username, const std::string& password)
         std::cout << "Login failed\n";
         return false;
     }
-
     m_databaseID = response["databaseID"];
     std::cout << "Login successful\n";
     return true;
@@ -147,7 +145,6 @@ bool Game::registerUser(const std::string& username, const std::string& password
         std::cout << "Register failed\n";
         return false;
     }
-
     m_databaseID = response["databaseID"];
     std::cout << "Register successful\n";
     return true;
@@ -163,91 +160,6 @@ void Game::displayRooms()
     std::cout << m_networkManager.getExistingRooms().dump() << "\n";
 }
 
-void Game::handleMenu()
-{
-    if (m_gameState == GameState::Menu)
-    {
-        int option;
-        std::cout << "1.Create a new room\n2.Join an existing room\n3.Display existing rooms\n";
-        std::cin >> option;
-
-        if (option == 1)
-        {
-            this->createRoom();
-            join(m_networkManager.getCurrentRoomID());
-            m_gameState = GameState::Waiting;
-        }
-        else if (option == 2)
-        {
-            int roomID;
-            std::cout << "room id=";
-            std::cin >> roomID;
-
-            if (!join(roomID))
-            {
-                std::cout << "Something went wrong\n";
-                return;
-            }
-
-            m_gameState = GameState::Waiting;
-        }
-        else if (option == 3)
-        {
-            displayRooms();
-        }
-    }
-}
-
-void Game::handleRoomWaiting()
-{
-    if (m_gameState == GameState::Waiting)
-    {
-        GameRoomState gameRoomState = m_networkManager.getRoomState();
-        if (gameRoomState == GameRoomState::Playing)
-        {
-            m_gameState = GameState::Playing;
-        }
-    }
-}
-void Game::handleAuthentification()
-{
-    if (m_gameState == GameState::Authentificate)
-    {
-        std::cout << "1.Login\n2.Register\n";
-
-        bool authenticated = false;
-        int option;
-        std::cin >> option;
-
-        if (option == 1)
-        {
-            std::string username, password;
-            std::cout << "username=";
-            std::cin >> username;
-            std::cout << "password=";
-            std::cin >> password;
-            if (login(username, password))
-            {
-                m_gameState = GameState::Menu;
-                authenticated = true;
-            }
-        }
-        else if (option == 2)
-        {
-            std::string username, password;
-            std::cout << "username=";
-            std::cin >> username;
-            std::cout << "password=";
-            std::cin >> password;
-            if (registerUser(username, password))
-            {
-                m_gameState = GameState::Menu;
-                authenticated = true;
-            }
-        }
-    }
-}
-
 void Game::update()
 {
     nlohmann::json updateResponse = m_networkManager.update();
@@ -260,7 +172,6 @@ void Game::update()
     GameRoomState roomState{ updateResponse["roomState"] };
     if (roomState == GameRoomState::Finished)
     {
-        //m_gameState = GameState::Menu;
         m_menu.backToRoomSelectionState();
         return;
     }
@@ -369,55 +280,5 @@ void Game::render()
                 logClock.restart();
             }
         }
-
-        
-
-        /*if (m_gameState == GameState::Authentificate)
-        {
-            handleAuthentification();
-        }
-        else if (m_gameState == GameState::Menu)
-        {
-            handleMenu();
-        }
-        else if (m_gameState == GameState::Waiting)
-        {
-            handleRoomWaiting();
-        }
-        else if (m_gameState == GameState::Playing)
-        {
-            m_window.clear();
-            handleInputs(deltaTime);
-            update();
-
-            m_level.drawBackground(m_window);
-
-            std::ranges::for_each(m_players | std::views::values | std::views::filter([](const Player& player) {
-                return player.isAlive();
-                }),
-                [this](const Player& player) {
-                    m_window.draw(player);
-                });
-
-            m_bulletManager.draw(m_window);
-            m_powerUpManager.draw(m_window);
-
-            m_window.draw(m_level);
-
-            m_window.display();
-
-            if (logClock.getElapsedTime().asSeconds() >= 3.0f)
-            {
-                std::cout << "Players info:\n";
-                std::ranges::for_each(m_players, [](const auto& pair) {
-                    auto [playerId, player] = pair;
-                    std::cout << std::format("Player id({}), Health({}), Lives({}), Points: {}\n",
-                        playerId, player.GetHealth(), player.GetLives(), player.GetPoints());
-                    });
-
-                std::cout << "--------------------------------------------------\n";
-                logClock.restart();
-            }
-        }*/
     }
 }

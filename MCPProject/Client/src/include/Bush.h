@@ -11,5 +11,4 @@ public:
 
     ~Bush() override = default;
 private:
-    /*same as Obstacle*/
 };

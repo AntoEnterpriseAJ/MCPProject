@@ -10,7 +10,7 @@ enum class GameRoomState : uint8_t
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(GameRoomState, {
-    { GameRoomState::Waiting, "Waiting" },
-    { GameRoomState::Playing, "Playing" },
+    { GameRoomState::Waiting,  "Waiting"  },
+    { GameRoomState::Playing,  "Playing"  },
     { GameRoomState::Finished, "Finished" }
 })

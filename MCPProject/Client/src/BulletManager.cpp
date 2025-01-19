@@ -10,18 +10,10 @@ void BulletManager::addExplosion(const Bullet& bullet)
 
     switch (direction)
     {
-        case Direction::Right:
-            explosionPos = bullet.GetPosition() + sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
-            break;
-        case Direction::Left:
-            explosionPos = bullet.GetPosition() - sf::Vector2f(bullet.GetSize().x / 2.0f, 0);
-            break;
-        case Direction::Up:
-            explosionPos = bullet.GetPosition() - sf::Vector2f(0, bullet.GetSize().y / 2.0f);
-            break;
-        case Direction::Down:
-            explosionPos = bullet.GetPosition() + sf::Vector2f(0, bullet.GetSize().y / 2.0f);
-            break;
+        case Direction::Right: explosionPos = bullet.GetPosition() + sf::Vector2f(bullet.GetSize().x / 2.0f, 0); break;
+        case Direction::Left: explosionPos = bullet.GetPosition() - sf::Vector2f(bullet.GetSize().x / 2.0f, 0); break;
+        case Direction::Up: explosionPos = bullet.GetPosition() - sf::Vector2f(0, bullet.GetSize().y / 2.0f); break;
+        case Direction::Down: explosionPos = bullet.GetPosition() + sf::Vector2f(0, bullet.GetSize().y / 2.0f); break;
     }
 
     m_explosions.emplace_back(std::make_unique<Explosion>(

@@ -24,16 +24,16 @@ public:
     };
 
     Menu(
-          float width
-        , float height
-        , NetworkManager& networkManager
-        , uint16_t& databaseID
-        , uint16_t& internalID
+        float width,
+        float height,
+        NetworkManager& networkManager,
+        uint16_t& databaseID,
+        uint16_t& internalID
     );
 
-    void setState(MenuState state);
+    void setState   (MenuState state);
     void handleEvent(sf::RenderWindow& window, const sf::Event& event);
-    void draw(sf::RenderWindow& window);
+    void draw       (sf::RenderWindow& window);
 
     void updateExistingRooms(const nlohmann::json& json);
     std::string makeLabel(int id, int connectedPlayers);
@@ -44,32 +44,34 @@ public:
     bool passwordValidator(const std::string& password);
 
 private:
+
     std::vector<Room> m_existingRooms;
 
     float m_width;
     float m_height;
 
-    sf::Text m_passwordValidationMessage;
-
     MenuState m_currentState;
-    sf::Text  m_displayText;
+    
     sf::Font  m_font;
 
-    Button  m_loginButton;
-    Button  m_registerButton;
-    Button  m_exitButton;
     TextBox m_usernameTextBox;
     TextBox m_passwordTextBox;
 
-    Button              m_createRoomButton;
-    Button              m_refreshServers;
-    sf::Text            m_roomIdText;
-    sf::Text            m_playersText;
-    Button              m_backButton;
-
+    sf::Text  m_roomIdText;
+    sf::Text m_playersText;
+    sf::Text m_displayText;
     sf::Text m_waitingCooldown;
+    sf::Text m_passwordValidationMessage;
+
+    Button m_loginButton;
+    Button m_registerButton;
+    Button m_exitButton;
+    Button m_createRoomButton;
+    Button m_refreshServers;
+    Button m_backButton;
 
     NetworkManager& m_networkManager;
+
     uint16_t& m_databaseID;
     uint16_t& m_internalID;
 

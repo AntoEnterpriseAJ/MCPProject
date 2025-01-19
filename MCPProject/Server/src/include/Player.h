@@ -48,13 +48,13 @@ public:
     float       getBulletDamageMultiplier() const;
     float       getBulletSpeedMultiplier() const;
 public:
-    static constexpr float    kCooldownTime = 0.5f;
-    static constexpr float    kPlayerSpeed = 150.0f;
-    static constexpr float    kRespawnTime = 3.0f;
-    static constexpr float    kPlayerSizeX  = 39.9f;
-    static constexpr float    kPlayerSizeY  = 39.9f;
-    static constexpr uint16_t kPlayerHealth = 100.0f;
-    static constexpr uint16_t kPlayerLives  = 3;
+    static constexpr float    kCooldownTime{ 0.5f };
+    static constexpr float    kPlayerSpeed{ 150.0f };
+    static constexpr float    kRespawnTime{ 3.0f };
+    static constexpr float    kPlayerSizeX{ 39.9f };
+    static constexpr float    kPlayerSizeY{ 39.9f };
+    static constexpr uint16_t kPlayerHealth{ 100 };
+    static constexpr uint16_t kPlayerLives{ 3 };
 private:
     void applyPowerUp(const std::unique_ptr<PowerUp>& powerUp);
     void deactivatePowerUp(std::unique_ptr<PowerUp>& powerUp);

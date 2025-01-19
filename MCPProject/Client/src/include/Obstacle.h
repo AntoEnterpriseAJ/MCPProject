@@ -20,6 +20,7 @@ public:
 
 public:
     static constexpr float kObstacleSize{40.0f};
+
 protected:
     bool m_isDestroyable;
     bool m_isPassable;
