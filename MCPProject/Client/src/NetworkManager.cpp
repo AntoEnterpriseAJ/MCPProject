@@ -60,7 +60,7 @@ nlohmann::json NetworkManager::join(uint8_t roomID, uint16_t databaseID)
     {
         std::cout << std::format("There was an error joining. HTTP status: {}, Error: {}\n"
                                 , joinResponse.status_code
-                                , joinResponse.error.message);
+                                , joinResponse.text.empty() ? joinResponse.error.message : joinResponse.text);
         return {};
     }
     
@@ -100,7 +100,7 @@ nlohmann::json NetworkManager::login(const std::string& username, const std::str
     {
         std::cout << std::format("There was an error logging in. HTTP status: {}, Error: {}\n"
             , response.status_code
-            , response.error.message);
+            , response.text.empty() ? response.error.message : response.text);
         return {};
     }
     try
@@ -129,7 +129,7 @@ nlohmann::json NetworkManager::registerUser(const std::string& username, const s
     {
         std::cout << std::format("There was an error registering. HTTP status: {}, Error: {}\n"
             , response.status_code
-            , response.error.message);
+            , response.text.empty() ? response.error.message : response.text);
         return {};
     }
     try
@@ -177,7 +177,7 @@ GameRoomState NetworkManager::getRoomState()
     {
         std::cout << std::format("Couldn't retrieve the room state. HTTP Status: {}, Error: {}\n"
             , response.status_code
-            , response.error.message);
+            , response.text.empty() ? response.error.message : response.text);
         return GameRoomState::Waiting;
     }
     try
@@ -210,7 +210,7 @@ nlohmann::json NetworkManager::update()
     {
         std::cout << std::format("Couldn't retrieve the gamestate. HTTP Status: {}, Error: {}\n"
                                 , response.status_code
-                                , response.error.message);
+                                , response.text.empty() ? response.error.message : response.text);
         return {};
     }
     
@@ -250,7 +250,7 @@ nlohmann::json NetworkManager::getExistingRooms()
     if (response.status_code != cpr::status::HTTP_OK) {
                 std::cout << std::format("Couldn't retrieve the existings rooms. HTTP Status: {}, Error: {}\n"
                                 , response.status_code
-                                , response.error.message);
+                                , response.text.empty() ? response.error.message : response.text);
         return {};
     }
 
@@ -284,7 +284,7 @@ void NetworkManager::movePlayer(uint16_t clientID, Direction direction, float de
     {
         std::cout << std::format("There was an error moving: HTTP status: {}, Error: {}\n"
                                 , response.status_code
-                                , response.error.message);
+                                , response.text.empty() ? response.error.message : response.text);
         return;
     }
 
@@ -309,7 +309,7 @@ void NetworkManager::shoot(uint16_t clientID)
     {
         std::cout << std::format("There was an error shooting: HTTP status: {}, Error: {}\n"
             , response.status_code
-            , response.error.message);
+            , response.text.empty() ? response.error.message : response.text);
         return;
     }
     //std::cout << response.text << "\n";
