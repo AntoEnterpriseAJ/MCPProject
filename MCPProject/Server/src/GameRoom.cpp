@@ -168,7 +168,8 @@ void GameRoom::shoot(uint8_t playerID)
         player.GetDirection(),
         playerID,
         Vec2f{Bullet::kBulletSizeX, Bullet::kBulletSizeY},
-        Bullet::kBulletDamage * player.getDamageMultiplier()
+        Bullet::kBulletDamage * player.getBulletDamageMultiplier(),
+        Bullet::kBulletSpeed * player.getBulletSpeedMultiplier()
     ));
 
     m_version = (m_version + 1) % kMaxVersion;
