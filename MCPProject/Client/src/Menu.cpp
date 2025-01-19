@@ -35,6 +35,12 @@ Menu::Menu(float width, float height, NetworkManager& networkManager, uint16_t& 
     m_playersText.setFillColor(sf::Color::White);
     m_playersText.setPosition(310, 50);
 
+    m_passwordValidationMessage.setFont(m_font);
+    m_passwordValidationMessage.setCharacterSize(20);
+    m_passwordValidationMessage.setFillColor(sf::Color::Red);
+    m_passwordValidationMessage.setPosition(450, 320);
+    m_passwordValidationMessage.setString("");
+
     m_waitingCooldown.setFont(m_font);
     m_waitingCooldown.setString("Waiting...");
     m_waitingCooldown.setCharacterSize(30);
@@ -124,6 +130,13 @@ void Menu::backToRoomSelectionState()
     m_currentState = MenuState::RoomSelectionPage;
 }
 
+bool Menu::passwordValidator(const std::string& password)
+{
+    std::regex pattern("^(?=.*[A-Z])(?=.*\\d).{8,}$");
+
+    return std::regex_match(password, pattern);
+}
+
 void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::Event& event)
 {
     m_usernameTextBox.handleEvent(event, window);
@@ -143,10 +156,21 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
         }
         else if (m_registerButton.isHovered(mousePos))
         {
-            if (registerUser(m_usernameTextBox.getText(), m_passwordTextBox.getText()))
+            if (passwordValidator(m_passwordTextBox.getText()))
             {
-                updateExistingRooms(m_networkManager.getExistingRooms());
-                setState(MenuState::RoomSelectionPage);
+                m_passwordValidationMessage.setString("");
+                if (registerUser(m_usernameTextBox.getText(), m_passwordTextBox.getText()))
+                {
+                    updateExistingRooms(m_networkManager.getExistingRooms());
+                    setState(MenuState::RoomSelectionPage);
+                }
+            }
+            else
+            {
+                m_passwordValidationMessage.setString(
+                    "Password must include a number, a capital letter,\n"
+                    "and be at least 8 characters long."
+                );
             }
         }
         else if (m_exitButton.isHovered(mousePos))
@@ -213,6 +237,10 @@ void Menu::drawAuthentificationPage(sf::RenderWindow& window)
     m_loginButton.draw(window);
     m_registerButton.draw(window);
     m_exitButton.draw(window);
+    if (!m_passwordValidationMessage.getString().isEmpty())
+    {
+        window.draw(m_passwordValidationMessage);
+    }
 }
 
 void Menu::drawRoomSelectionPage(sf::RenderWindow& window)

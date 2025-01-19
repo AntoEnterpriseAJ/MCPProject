@@ -9,6 +9,8 @@
 
 #include <vector>
 #include <cstdint>
+#include <regex>
+#include <string>
 
 class Menu {
 public:
@@ -32,18 +34,21 @@ public:
     void handleEvent(sf::RenderWindow& window, const sf::Event& event);
     void draw(sf::RenderWindow& window);
 
-    bool isPlayingState();
-
     void updateExistingRooms(const nlohmann::json& json);
     std::string makeLabel(int id, int connectedPlayers);
 
     void backToRoomSelectionState();
+
+    bool isPlayingState();
+    bool passwordValidator(const std::string& password);
 
 private:
     std::vector<Room> m_existingRooms;
 
     float m_width;
     float m_height;
+
+    sf::Text m_passwordValidationMessage;
 
     MenuState m_currentState;
     sf::Text  m_displayText;
