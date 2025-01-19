@@ -10,8 +10,12 @@
 static uint32_t clientVersion{0};
 
 Game::Game()
-    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test"), m_gameState{ GameState::Menu }
-    , m_internalID{ 0 }, m_bulletManager{}, m_powerUpManager{}, m_menu(kWindowWidth, kWindowHeight)
+    : m_window(sf::VideoMode(kWindowWidth, kWindowHeight), "Test")
+    , m_gameState{ GameState::Menu }
+    , m_internalID{ 0 }
+    , m_bulletManager{}
+    , m_powerUpManager{}
+    , m_menu(kWindowWidth, kWindowHeight)
 {
     ResourceManager& instance = ResourceManager::getInstance();
     instance.loadTextureFromFile("res/textures/penguin1.png", "player1");
@@ -313,22 +317,19 @@ void Game::render()
         }
         if (m_gameState == GameState::Menu)
         {
-            if (!m_menu.gameStarted())
+            sf::Event event;
+            while (m_window.pollEvent(event))
             {
-                sf::Event event;
-                while (m_window.pollEvent(event))
+                if (event.type == sf::Event::Closed)
                 {
-                    if (event.type == sf::Event::Closed)
-                    {
-                        m_window.close();
-                    }
-                    m_menu.handleEvent(m_window, event);
+                    m_window.close();
                 }
-
-                m_window.clear();
-                m_menu.draw(m_window);
-                m_window.display();
+                m_menu.handleEvent(m_window, event);
             }
+
+            m_window.clear();
+            m_menu.draw(m_window);
+            m_window.display();
         }
         else if (m_gameState == GameState::Waiting)
         {

@@ -6,7 +6,7 @@
 #include "string"
 
 Menu::Menu(float width, float height)
-    : m_width(width), m_height(height)
+    : m_width{width}, m_height{height}
     , m_currentState(MenuState::MainPage)
     , m_playButton("Play", { 500 , 300 }, { 200, 50 })
     , m_exitButton("Exit", { 500 , 400 }, { 200, 50 })
@@ -130,39 +130,16 @@ void Menu::handleRoomSelectionPageEvents(sf::RenderWindow& window, const sf::Eve
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
         // TODO : Convert rooms from server to std::vector<Button> activeRooms
-        for (const auto& room : rooms)
-        {
-            if (room.isHovered(mousePos))
-            {
-                m_gameStarted = true;
-                break;
-            }
-        }
-        else if (m_createRoomButton.isHovered(mousePos))
-        {
-            
-        }
-        else if (m_mainMenuButton.isHovered(mousePos))
-        {
-            setState(MenuState::MainPage);
-        }
-    }
-}
-
-void Menu::handleLobbyPageEvent(sf::RenderWindow& window, const sf::Event& event)
-{
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-    {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
-        //if (m_joinRoomButton.isHovered(mousePos))
+        //for (const auto& room : rooms)
         //{
-        //    // TODO: Join a room
-        //    setState(MenuState::LobbyPage);
+        //    if (room.isHovered(mousePos))
+        //    {
+        //        // TODO: Switch to selected room
+        //    }
         //}
         //else if (m_createRoomButton.isHovered(mousePos))
         //{
-        //    // TODO: Create and join a room
+        //    // TODO: Create room
         //}
         //else if (m_mainMenuButton.isHovered(mousePos))
         //{
