@@ -1,23 +1,22 @@
-
 #pragma once
+
+#include <csignal>
 
 #include <SFML/Graphics.hpp>
 
 #include "Button.h"
 #include "TextBox.h"
-#include <regex>
-#include <string>
+#include "NetworkManager.h"
+
 #include <vector>
-#include <iostream>
 
 class Menu {
 public:
-    enum class MenuState 
+    enum class MenuState
     {
         MainPage,
         AuthentificationPage,
-        RoomSelectionPage,
-        LobbyPage
+        RoomSelectionPage
     };
 
     Menu(float width, float height);
@@ -25,9 +24,6 @@ public:
     void setState(MenuState state);
     void handleEvent(sf::RenderWindow& window, const sf::Event& event);
     void draw(sf::RenderWindow& window);
-
-    bool passwordValidator(const std::string& password);
-
 
     MenuState getState() const;
 
@@ -38,18 +34,18 @@ private:
     MenuState m_currentState;
     sf::Text  m_displayText;
     sf::Font  m_font;
-    sf::Text m_passwordValidationMessage;
 
-
+    // Main Page buttons
     Button m_playButton;
     Button m_exitButton;
 
+    // Login Page buttons and textboxs
     Button  m_loginButton;
     Button  m_registerButton;
     TextBox m_usernameTextBox;
     TextBox m_passwordTextBox;
 
-    Button              m_joinRoomButton;
+    // Room Selection Page buttons, text and list of available rooms
     Button              m_createRoomButton;
     sf::Text            m_roomIdText;
     sf::Text            m_playersText;
@@ -57,10 +53,10 @@ private:
 
     Button m_mainMenuButton;
 
+private:
     void handleMainPageEvents            (sf::RenderWindow& window, const sf::Event& event);
     void handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::Event& event);
     void handleRoomSelectionPageEvents   (sf::RenderWindow& window, const sf::Event& event);
-    void handleLobbyPageEvent            (sf::RenderWindow& window, const sf::Event& event);
 
     void drawMainPage            (sf::RenderWindow& window);
     void drawAuthentificationPage(sf::RenderWindow& window);

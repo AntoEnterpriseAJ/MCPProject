@@ -11,15 +11,16 @@
 #include "BulletManager.h";
 #include "PowerUpManager.h";
 #include "Level.h";
+#include "Menu.h";
 
 class Game
 {
 public:
     enum class GameState
     {
-        Authentificate,
         Menu,
         Waiting,
+        Authentificate,
         Playing,
     };
 
@@ -29,6 +30,7 @@ public:
 
     static uint16_t getWindowWidth();
     static uint16_t getWindowHeight();
+
 private:
     void handleInputs(float deltaTime);
     void createRoom();
@@ -42,18 +44,22 @@ private:
     void handleMenu();
     void handleRoomWaiting();
     void handleAuthentification();
+
 private:
     static constexpr uint16_t kWindowWidth{ 1200 };
     static constexpr uint16_t kWindowHeight{ 800 };
+
 private:
     std::unordered_map<uint16_t, Player> m_players;
-    sf::Clock              m_lastFrametimeClock;
-    Level                  m_level;
-    NetworkManager         m_networkManager;
-    PowerUpManager         m_powerUpManager;
-    BulletManager          m_bulletManager;
-    uint16_t               m_internalID;
-    uint16_t               m_databaseID;
-    GameState              m_gameState;
-    sf::RenderWindow       m_window;
+
+    GameState        m_gameState;
+    Menu             m_menu;
+    sf::Clock        m_lastFrametimeClock;
+    Level            m_level;
+    NetworkManager   m_networkManager;
+    PowerUpManager   m_powerUpManager;
+    BulletManager    m_bulletManager;
+    uint16_t         m_internalID;
+    uint16_t         m_databaseID;
+    sf::RenderWindow m_window;
 };

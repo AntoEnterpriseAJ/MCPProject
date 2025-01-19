@@ -69,6 +69,15 @@
     <ClCompile Include="src\include\Game.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\Player.h">
@@ -123,6 +132,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\PowerUpManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\TextBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\include\GameRoomState.h">

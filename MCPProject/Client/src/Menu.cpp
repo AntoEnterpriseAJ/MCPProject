@@ -1,28 +1,24 @@
-﻿#include "Menu.h"
+#include "Menu.h"
+
+#include <iostream>
+#include <nlohmann/json.hpp>;
 
 #include "string"
 
 Menu::Menu(float width, float height)
-    : m_width(width), m_height(height)
-    , m_currentState    (MenuState::MainPage)
-    , m_playButton      ("Play",        { 500 , 300 }, { 200, 50 })
-    , m_exitButton      ("Exit",        { 500 , 400 }, { 200, 50 })
-    , m_loginButton     ("Login",       { 500 , 400 }, { 200, 50 })
-    , m_registerButton  ("Register",    { 500 , 500 }, { 200, 50 })
-    , m_joinRoomButton  ("Join Room",   { 1000, 50  }, { 150, 50 })
+    : m_width{width}, m_height{height}
+    , m_currentState(MenuState::MainPage)
+    , m_playButton("Play", { 500 , 300 }, { 200, 50 })
+    , m_exitButton("Exit", { 500 , 400 }, { 200, 50 })
+    , m_loginButton("Login", { 500 , 400 }, { 200, 50 })
+    , m_registerButton("Register", { 500 , 500 }, { 200, 50 })
     , m_createRoomButton("Create Room", { 1000, 150 }, { 150, 50 })
-    , m_mainMenuButton  ("Main Menu",   { 930 , 700 }, { 200, 50 })
+    , m_mainMenuButton("Main Menu", { 930 , 700 }, { 200, 50 })
 {
     m_font.loadFromFile("res/font_text/static/Jaro_9pt-Regular.ttf");
 
     m_usernameTextBox = TextBox({ 300, 50 }, { 450, 200 }, m_font, 30);
     m_passwordTextBox = TextBox({ 300, 50 }, { 450, 260 }, m_font, 30);
-
-    m_passwordValidationMessage.setFont(m_font);
-    m_passwordValidationMessage.setCharacterSize(20);
-    m_passwordValidationMessage.setFillColor(sf::Color::Red);
-    m_passwordValidationMessage.setPosition(450, 320);
-    m_passwordValidationMessage.setString("");
 
     m_roomIdText.setFont(m_font);
     m_roomIdText.setString("Room ID");
@@ -50,15 +46,14 @@ Menu::Menu(float width, float height)
     setState(m_currentState);
 }
 
-void Menu::setState(MenuState state) 
+void Menu::setState(MenuState state)
 {
     m_currentState = state;
-    switch (state) 
+    switch (state)
     {
     case MenuState::MainPage:             m_displayText.setString("Main Page");        break;
     case MenuState::AuthentificationPage: m_displayText.setString("Authentification"); break;
     case MenuState::RoomSelectionPage:    m_displayText.setString("Room Selection");   break;
-    case MenuState::LobbyPage:            m_displayText.setString("Lobby");            break;
     }
 }
 
@@ -69,7 +64,6 @@ void Menu::handleEvent(sf::RenderWindow& window, const sf::Event& event)
     case MenuState::MainPage:             handleMainPageEvents            (window, event); break;
     case MenuState::AuthentificationPage: handleAuthentificationPageEvents(window, event); break;
     case MenuState::RoomSelectionPage:    handleRoomSelectionPageEvents   (window, event); break;
-    case MenuState::LobbyPage:            handleLobbyPageEvent            (window, event); break;
     }
 }
 
@@ -83,14 +77,7 @@ void Menu::draw(sf::RenderWindow& window)
     }
 }
 
-bool Menu::passwordValidator(const std::string& password)
-{
-    std::regex pattern("^(?=.*[A-Z])(?=.*\\d).{8,}$");
-
-    return std::regex_match(password, pattern);
-}
-
-Menu::MenuState Menu::getState() const 
+Menu::MenuState Menu::getState() const
 {
     return m_currentState;
 }
@@ -111,6 +98,7 @@ void Menu::handleMainPageEvents(sf::RenderWindow& window, const sf::Event& event
         }
     }
 }
+
 void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::Event& event)
 {
     m_usernameTextBox.handleEvent(event, window);
@@ -122,26 +110,11 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
 
         if (m_loginButton.isHovered(mousePos))
         {
-            setState(MenuState::RoomSelectionPage);
+            
         }
-        else if (m_registerButton.isHovered(mousePos))
+        if (m_registerButton.isHovered(mousePos))
         {
-            std::string password = m_passwordTextBox.getText();
-
-            if (passwordValidator(password))
-            {
-                m_passwordValidationMessage.setString("");
-                std::cout << "Password is valid. Proceeding with registration..." << std::endl;
-
-                // TODO: Proceed with registration logig
-            }
-            else
-            {
-                m_passwordValidationMessage.setString(
-                    "Password must include a number, a capital letter,\n"
-                    "and be at least 8 characters long."
-                );
-            }
+            
         }
         else if (m_mainMenuButton.isHovered(mousePos))
         {
@@ -149,7 +122,6 @@ void Menu::handleAuthentificationPageEvents(sf::RenderWindow& window, const sf::
         }
     }
 }
-
 
 void Menu::handleRoomSelectionPageEvents(sf::RenderWindow& window, const sf::Event& event)
 {
@@ -157,36 +129,17 @@ void Menu::handleRoomSelectionPageEvents(sf::RenderWindow& window, const sf::Eve
     {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
-        if (m_joinRoomButton.isHovered(mousePos))
-        {
-            // TODO: Join a room
-            setState(MenuState::LobbyPage);
-        }
-        else if (m_createRoomButton.isHovered(mousePos))
-        {
-            // TODO: Create and join a room
-        }
-        else if (m_mainMenuButton.isHovered(mousePos))
-        {
-            setState(MenuState::MainPage);
-        }
-    }
-}
-
-void Menu::handleLobbyPageEvent(sf::RenderWindow& window, const sf::Event& event)
-{
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-    {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
-        //if (m_joinRoomButton.isHovered(mousePos))
+        // TODO : Convert rooms from server to std::vector<Button> activeRooms
+        //for (const auto& room : rooms)
         //{
-        //    // TODO: Join a room
-        //    setState(MenuState::LobbyPage);
+        //    if (room.isHovered(mousePos))
+        //    {
+        //        // TODO: Switch to selected room
+        //    }
         //}
         //else if (m_createRoomButton.isHovered(mousePos))
         //{
-        //    // TODO: Create and join a room
+        //    // TODO: Create room
         //}
         //else if (m_mainMenuButton.isHovered(mousePos))
         //{
@@ -205,20 +158,15 @@ void Menu::drawAuthentificationPage(sf::RenderWindow& window)
 {
     m_usernameTextBox.draw(window);
     m_passwordTextBox.draw(window);
-    m_loginButton.    draw(window);
-    m_registerButton. draw(window);
-    m_mainMenuButton. draw(window);
-    if (!m_passwordValidationMessage.getString().isEmpty())
-    {
-        window.draw(m_passwordValidationMessage);
-    }   
+    m_loginButton.draw(window);
+    m_registerButton.draw(window);
+    m_mainMenuButton.draw(window);
 }
 
 void Menu::drawRoomSelectionPage(sf::RenderWindow& window)
 {
-    m_joinRoomButton.  draw(window);
     m_createRoomButton.draw(window);
-    m_mainMenuButton.  draw(window);
+    m_mainMenuButton.draw(window);
 
     window.draw(m_roomIdText);
     window.draw(m_playersText);
