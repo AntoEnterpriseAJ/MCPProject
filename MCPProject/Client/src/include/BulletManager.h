@@ -7,15 +7,15 @@
 #include <vector>
 #include <memory>
 
-class BulletManager {
+class BulletManager 
+{
 public:
     void draw(sf::RenderWindow& window) const;
     void addExplosion(const Bullet& bullet);
-
-    void clearBullets() noexcept;
     void addBullet(std::unique_ptr<Bullet> bullet);
+    void clearBullets() noexcept;
 
 private:
-    std::vector<std::unique_ptr<Bullet>> m_bullets;
+    std::vector<std::unique_ptr<Bullet>>    m_bullets;
     std::vector<std::unique_ptr<Explosion>> m_explosions;
 };

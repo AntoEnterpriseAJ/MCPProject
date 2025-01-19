@@ -9,7 +9,6 @@ enum class Direction : uint8_t
     Right
 };
 
-// TODO: maybe namespace it
 inline constexpr float getRotation(Direction direction)
 {
     switch (direction)
@@ -26,8 +25,8 @@ inline constexpr float getRotation(Direction direction)
 }
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Direction, {
-    {Direction::Up, "up"},
-    {Direction::Down, "down"},
-    {Direction::Left, "left"},
-    {Direction::Right, "right"}
+    { Direction::Up,    "up"    },
+    { Direction::Down,  "down"  },
+    { Direction::Left,  "left"  },
+    { Direction::Right, "right" }
 })

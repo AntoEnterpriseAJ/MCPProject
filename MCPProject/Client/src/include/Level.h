@@ -12,6 +12,7 @@ public:
     static constexpr uint16_t kHeight{ 20 };
     using Position = std::pair<uint16_t, uint16_t>;
     using levelLayout = std::array<std::unique_ptr<Obstacle>, kHeight* kWidth>;
+
 public:
     Level();
 
@@ -22,14 +23,16 @@ public:
 
     uint8_t getID() const noexcept;
 
-    std::unique_ptr<Obstacle>& operator[](const Position& position);
+          std::unique_ptr<Obstacle>& operator[](const Position& position);
     const std::unique_ptr<Obstacle>& operator[](const Position& position) const;
 
     levelLayout& getBricks();
     const levelLayout& getBricks() const;
+
 private:
     void loadBackground();
     std::unique_ptr<Obstacle> createObstacle(ObstacleType obstacleType, const sf::Vector2f& position);
+
 private:
     uint8_t m_ID;
     levelLayout m_levelLayout;

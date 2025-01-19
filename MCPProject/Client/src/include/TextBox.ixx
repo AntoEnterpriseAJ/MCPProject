@@ -20,15 +20,15 @@ public:
     void setText(const std::string& text);
 
     void setPosition(const sf::Vector2f& position);
-    void setSize(const sf::Vector2f& size);
+    void setSize    (const sf::Vector2f& size);
 
 private:
     sf::RectangleShape m_background;
-    sf::Text m_text;
     sf::RectangleShape m_cursor;
-    bool m_isSelected;
-    float m_cursorBlinkTime;
-    bool m_showCursor;
+    sf::Text           m_text;
+    float              m_cursorBlinkTime;
+    bool               m_isSelected;
+    bool               m_showCursor;
 
     void updateCursorPosition();
 };
