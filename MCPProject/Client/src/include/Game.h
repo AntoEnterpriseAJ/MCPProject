@@ -13,14 +13,13 @@
 #include "Level.h";
 #include "Menu.h";
 
-#include <csignal>
-
 class Game
 {
 public:
     enum class GameState
     {
         Menu,
+        Waiting,
         Authentificate,
         Playing,
     };
@@ -43,6 +42,7 @@ private:
     void move(Direction direction, float deltaTime);
     void displayRooms();
     void handleMenu();
+    void handleRoomWaiting();
     void handleAuthentification();
 
 private:

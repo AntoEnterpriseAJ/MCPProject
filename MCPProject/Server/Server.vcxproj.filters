@@ -131,5 +131,8 @@
     <ClInclude Include="src\include\PowerUpEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\GameRoomState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

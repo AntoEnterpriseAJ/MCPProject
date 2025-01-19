@@ -52,6 +52,7 @@
     <ClInclude Include="src\include\Direction.h" />
     <ClInclude Include="src\include\Explosion.h" />
     <ClInclude Include="src\include\GameObject.h" />
+    <ClInclude Include="src\include\GameRoomState.h" />
     <ClInclude Include="src\include\NetworkManager.h" />
     <ClInclude Include="src\include\Obstacle.h" />
     <ClInclude Include="src\include\Player.h" />

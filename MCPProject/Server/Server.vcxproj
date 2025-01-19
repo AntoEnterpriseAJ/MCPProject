@@ -47,6 +47,7 @@
     <ClInclude Include="src\include\BulletManager.h" />
     <ClInclude Include="src\include\Bush.h" />
     <ClInclude Include="src\include\Direction.h" />
+    <ClInclude Include="src\include\GameRoomState.h" />
     <ClInclude Include="src\include\Level.h" />
     <ClInclude Include="src\include\GameRoom.h" />
     <ClInclude Include="src\include\GameObject.h" />

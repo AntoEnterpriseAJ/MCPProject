@@ -164,8 +164,7 @@ void Game::handleMenu()
         {
             this->createRoom();
             join(m_networkManager.getCurrentRoomID());
-
-            m_gameState = GameState::Playing;
+            m_gameState = GameState::Waiting;
         }
         else if (option == 2)
         {
@@ -179,11 +178,23 @@ void Game::handleMenu()
                 return;
             }
 
-            m_gameState = GameState::Playing;
+            m_gameState = GameState::Waiting;
         }
         else if (option == 3)
         {
             displayRooms();
+        }
+    }
+}
+
+void Game::handleRoomWaiting()
+{
+    if (m_gameState == GameState::Waiting)
+    {
+        GameRoomState gameRoomState = m_networkManager.getRoomState();
+        if (gameRoomState == GameRoomState::Playing)
+        {
+            m_gameState = GameState::Playing;
         }
     }
 }
@@ -236,6 +247,13 @@ void Game::update()
         return;
     }
 
+    GameRoomState roomState{ updateResponse["roomState"] };
+    if (roomState == GameRoomState::Finished)
+    {
+        m_gameState = GameState::Menu;
+        return;
+    }
+
     std::ranges::for_each(updateResponse["players"], [this](const auto& playerData){
         sf::Vector2f newPosition = {playerData["position"][0], playerData["position"][1]};
         uint16_t    playerId  { playerData["id"] };
@@ -245,13 +263,11 @@ void Game::update()
         PlayerState state     { playerData["state"] };
         uint16_t    points    { playerData["points"] };
 
-
         if (!m_players.contains(playerId))
         {
             std::string textureKey = "player" + std::to_string(playerId + 1);
             m_players[playerId] = { newPosition, ResourceManager::getInstance().getTexture(textureKey), sf::Vector2f{39.9f, 39.9f} };
         }
-
 
         m_players[playerId].setPosition(newPosition);
         m_players[playerId].setDirection(direction);
@@ -314,6 +330,10 @@ void Game::render()
                 m_window.display();
             }
         }
+        else if (m_gameState == GameState::Waiting)
+        {
+            handleRoomWaiting();
+        }
         else if (m_gameState == GameState::Playing)
         {
             m_window.clear();
@@ -338,8 +358,7 @@ void Game::render()
 
             if (logClock.getElapsedTime().asSeconds() >= 3.0f)
             {
-                std::cout << "Player Points:\n";
-
+                std::cout << "Players info:\n";
                 std::ranges::for_each(m_players, [](const auto& pair) {
                     auto [playerId, player] = pair;
                     std::cout << std::format("Player id({}), Health({}), Lives({}), Points: {}\n",
