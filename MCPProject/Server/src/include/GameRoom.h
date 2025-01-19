@@ -15,7 +15,7 @@ public:
     GameRoom();
     GameRoom(uint8_t m_roomID);
 
-    uint8_t addPlayer();
+    uint8_t addPlayer(uint16_t databaseID);
     nlohmann::json getGameStateResponse(uint32_t clientVersion) noexcept;
     void move(uint8_t playerID, Direction direction, float deltaTime);
     void setState(GameRoomState state);
@@ -23,12 +23,15 @@ public:
     void tryToStart();
     void checkWinCondition();
     void update();
+    void setUpdatedScore(bool updatedScore);
 
+    bool getUpdatedScore() const noexcept;
     GameRoomState getState() const noexcept;
     const Level& getLevel() const noexcept;
     uint32_t getVersion() const noexcept;
     uint8_t getID() const noexcept;
     Player& getPlayer(uint8_t id);
+    const std::vector<uint8_t>& getEliminatedPlayers() const noexcept;
     const std::unordered_map<uint8_t, Player>& getPlayers() const noexcept;
     std::unordered_map<uint8_t, Player>& getPlayers() noexcept;
 
@@ -59,6 +62,7 @@ private:
     uint32_t m_version;
     Level    m_level;
     bool     m_waitingToStart;
+    bool     m_updatedScore;
     GameRoomState  m_state;
     BulletManager  m_bulletManager;
     PowerUpManager m_powerUpManager;

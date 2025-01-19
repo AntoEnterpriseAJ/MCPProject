@@ -5,20 +5,21 @@
 
 GameRoom::GameRoom()
     : m_idCounter{ 0 }, m_roomID{ 0 }, m_version{ 1 }
-    , m_players{}, m_state{ GameRoomState::Waiting }
+    , m_players{}, m_state{ GameRoomState::Waiting }, m_updatedScore{ false }
 {}
 
 GameRoom::GameRoom(uint8_t m_roomID)
     : m_roomID{ m_roomID }, m_idCounter{ 0 }, m_version{ 0 }
-    , m_players{}, m_level{}, m_state{ GameRoomState::Waiting }
+    , m_players{}, m_level{}, m_state{ GameRoomState::Waiting }, m_updatedScore{ false }
 {
     m_level.load();
 }
 
-uint8_t GameRoom::addPlayer()
+uint8_t GameRoom::addPlayer(uint16_t databaseID)
 {
     m_players.emplace(m_idCounter, m_respawnPositions[m_idCounter]);
     m_players.at(m_idCounter).setRespawnPosition(m_respawnPositions[m_idCounter]);
+    m_players.at(m_idCounter).setDatabaseID(databaseID);
 
     m_version = (m_version + 1) % kMaxVersion;
     return m_idCounter++;
@@ -72,6 +73,11 @@ nlohmann::json GameRoom::getGameStateResponse(uint32_t clientVersion) noexcept
     }
 
     return response;
+}
+
+bool GameRoom::getUpdatedScore() const noexcept
+{
+    return m_updatedScore;
 }
 
 GameRoomState GameRoom::getState() const noexcept
@@ -228,6 +234,7 @@ void GameRoom::checkWinCondition()
     }
 
     m_state = GameRoomState::Finished;
+    m_eliminatedPlayers.push_back(winnerID);
     m_version = (m_version + 1) % kMaxVersion;
 }
 
@@ -240,6 +247,11 @@ void GameRoom::update()
     updateEliminatedPlayers();
     checkWinCondition();
     //m_version = (m_version + 1) % kMaxVersion; TODO: for powerups
+}
+
+void GameRoom::setUpdatedScore(bool updatedScore)
+{
+    m_updatedScore = updatedScore;
 }
 
 void GameRoom::updatePlayerStates()
@@ -316,6 +328,11 @@ uint8_t GameRoom::getID() const noexcept
 Player& GameRoom::getPlayer(uint8_t id)
 {
     return m_players.at(id);
+}
+
+const std::vector<uint8_t>& GameRoom::getEliminatedPlayers() const noexcept
+{
+    return m_eliminatedPlayers;
 }
 
 const std::unordered_map<uint8_t, Player>& GameRoom::getPlayers() const noexcept
