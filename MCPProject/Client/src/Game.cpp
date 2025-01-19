@@ -105,7 +105,7 @@ void Game::buyPowerUp(PowerUpEffect powerUp)
 
 bool Game::join(uint8_t roomID)
 {
-    nlohmann::json response = m_networkManager.join(roomID);
+    nlohmann::json response = m_networkManager.join(roomID, m_databaseID);
 
     if (response.empty())
     {
@@ -125,6 +125,7 @@ bool Game::login(const std::string& username, const std::string& password)
         return false;
     }
 
+    m_databaseID = response["databaseID"];
     std::cout << "Login successful\n";
     return true;
 }
@@ -138,6 +139,7 @@ bool Game::registerUser(const std::string& username, const std::string& password
         return false;
     }
 
+    m_databaseID = response["databaseID"];
     std::cout << "Register successful\n";
     return true;
 }
