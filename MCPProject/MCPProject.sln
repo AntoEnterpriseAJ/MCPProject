@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{264399D4-4464-4C38-8D5C-5896C3CFAD78}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcxproj", "{A807D86A-114F-48DD-856B-9BB8E493C625}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{4F8C378D-19AF-4B89-A2D5-09A095991BEF}"
@@ -19,14 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Debug|x64.ActiveCfg = Debug|x64
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Debug|x64.Build.0 = Debug|x64
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Debug|x86.ActiveCfg = Debug|Win32
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Debug|x86.Build.0 = Debug|Win32
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Release|x64.ActiveCfg = Release|x64
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Release|x64.Build.0 = Release|x64
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Release|x86.ActiveCfg = Release|Win32
-		{264399D4-4464-4C38-8D5C-5896C3CFAD78}.Release|x86.Build.0 = Release|Win32
 		{A807D86A-114F-48DD-856B-9BB8E493C625}.Debug|x64.ActiveCfg = Debug|x64
 		{A807D86A-114F-48DD-856B-9BB8E493C625}.Debug|x64.Build.0 = Debug|x64
 		{A807D86A-114F-48DD-856B-9BB8E493C625}.Debug|x86.ActiveCfg = Debug|Win32
